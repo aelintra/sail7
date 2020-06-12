@@ -369,8 +369,8 @@ Class page {
                                 'unchecked' => 'NO'
                                 ),                                 
                 'callprogress' => array(
-                                'checked' =>'ON',
-                                'unchecked' => 'OFF'
+                                'checked' =>'YES',
+                                'unchecked' => 'NO'
                                 ),                                                 
 				'camponqonoff' => array(
 								'checked' =>'ON',
