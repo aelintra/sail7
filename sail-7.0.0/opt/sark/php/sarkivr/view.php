@@ -105,7 +105,8 @@ private function showMain() {
 	
 
 	
-	$this->myPanel->aHeaderFor('cluster',false,'cluster w3-hide-small w3-hide-medium');		
+	$this->myPanel->aHeaderFor('cluster',false,'cluster w3-hide-small w3-hide-medium');	
+
 	$this->myPanel->aHeaderFor('idd');
 	$this->myPanel->aHeaderFor('ivrname');
 	$this->myPanel->aHeaderFor('greeting',false,'w3-hide-small');	
@@ -127,8 +128,8 @@ private function showMain() {
 		echo '<tr id="' . $row['id'] . '">'. PHP_EOL; 
 		echo '<input type="hidden" name="id" value="' . $row['id'] . '"  />' . PHP_EOL;
 		echo '<td class="w3-hide-small w3-hide-medium">' . $row['cluster']  . '</td>' . PHP_EOL;
-		echo '<td>' . substr($row['pkey'],2) . '</td>' . PHP_EOL;			
-		echo '<td>' . $row['name']  . '</td>' . PHP_EOL;		 
+		echo '<td>' . $row['directdial'] . '</td>' . PHP_EOL;			
+		echo '<td>' . $row['pkey']  . '</td>' . PHP_EOL;		 
 		echo '<td class="w3-hide-small">' . $row['greetnum']  . '</td>' . PHP_EOL;
 		echo '<td class="w3-hide-small w3-hide-medium">' . $row['description']  . '</td>' . PHP_EOL;	
 		echo '<td class="w3-hide-small">' . $row['timeout']  . '</td>' . PHP_EOL;
@@ -171,8 +172,8 @@ private function showNew() {
 	$this->myPanel->displayCluster();
 	$this->myPanel->aHelpBoxFor('cluster');
 	echo '</div>';
-	$this->myPanel->displayInputFor('ivrname','text',null,'name');
-	$this->myPanel->displayInputFor('idd','number',null,'pkey');
+	$this->myPanel->displayInputFor('ivrname','text',null,'pkey');
+	$this->myPanel->displayInputFor('idd','number',null,'directdial');
 	$this->myPanel->displayInputFor('description','text');
 
 
@@ -193,11 +194,11 @@ private function saveNew() {
 //	$_POST['directdial'] = $this->helper->getNextFreeQIvr('ivrmenu',$_POST['cluster'],'startivr');
 
 	$this->validator = new FormValidator();
-    $this->validator->addValidation("name","req","Please supply IVR name");
-    $this->validator->addValidation("pkey","req","Please supply IVR direct dial");    
-    $this->validator->addValidation("pkey","num","IVR direct dial must be numeric");    
-    $this->validator->addValidation("pkey","maxlen=4","IVR direct dial must be 3 or 4 digits");     
-	$this->validator->addValidation("pkey","minlen=3","IVR direct dial must be 3 or 4 digits");     
+    $this->validator->addValidation("directdial","req","Please supply IVR directdial");
+    $this->validator->addValidation("pkey","req","Please supply IVR name");    
+    $this->validator->addValidation("directdial","num","IVR direct dial must be numeric");    
+    $this->validator->addValidation("directdial","maxlen=4","IVR direct dial must be 3 or 4 digits");     
+	$this->validator->addValidation("directdial","minlen=3","IVR direct dial must be 3 or 4 digits");     
 
 
     //Now, validate the form
@@ -205,7 +206,7 @@ private function saveNew() {
     
 // create full pkey
     	$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-		$_POST['pkey'] = $res['id'] . $_POST['pkey']; 
+//		$_POST['pkey'] = $res['id'] . $_POST['pkey']; 
 		$res=NULL;
 		
 // check for dups

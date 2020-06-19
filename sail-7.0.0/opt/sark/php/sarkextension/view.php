@@ -203,8 +203,7 @@ private function showMain() {
  * start page output
  */
 	
-	$res = $this->dbh->query("SELECT PROXY,CLUSTER FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
-	$proxy = $res['PROXY'];
+	$res = $this->dbh->query("SELECT CLUSTER FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	$cluster = $res['CLUSTER'];
 	$buttonArray=array();
 	$ret = $this->helper->getLc(); 
@@ -884,8 +883,7 @@ private function showEdit() {
 		}
 	}
 
-	$res = $this->dbh->query("SELECT FQDN,PROXY,VXT FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
-	$proxy = $res['PROXY'];
+	$res = $this->dbh->query("SELECT FQDN,VXT FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	$fqdn = $res['FQDN'];
 	$vxt = $res['VXT'];
 

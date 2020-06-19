@@ -55,10 +55,8 @@ public function showForm() {
 
 	if ( isset($_POST['save']) || isset($_POST['endsave']) ) { 
 		$this->saveNew();
-		if ($this->invalidForm) {
-			$this->showNew();
-			return;
-		}
+		$this->showEdit();
+		return;
 	}
 
 	if (isset($_POST['update']) || isset($_POST['endupdate']) ) { 
@@ -155,14 +153,14 @@ private function showMain() {
 /*** table rows ****/
 	$sql = "select * from agent ORDER by cluster COLLATE NOCASE ASC";
 	$class = null;
-	$state = '<i class="fas fa-thumbs-down"></i>';
+	$state = 'Idle';
 	$locked = false;
  	foreach ($this->dbh->query($sql) as $row) {
 		$agent = 'Agent\/' . $row['pkey'] ;
 		if (preg_match ("/ $agent /", $amiQrets)) {
 			preg_match ("/$agent.*Local\/(\d+)/", $amiQrets, $matches);
 			$class = 'class="read_only"';
-			$state = '<i class="fas fa-thumbs-up"></i>';
+			$state = 'Active';
 			if (!empty($matches[1])) {
 				$state .= '(' . $matches[1] . ')';
 			}

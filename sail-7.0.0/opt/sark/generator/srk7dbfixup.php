@@ -1,0 +1,154 @@
+<?php
+// +-----------------------------------------------------------------------+
+// |  Copyright (c) CoCoSoft 2005-10                                  |
+// +-----------------------------------------------------------------------+
+// | This file is free software; you can redistribute it and/or modify     |
+// | it under the terms of the GNU General Public License as published by  |
+// | the Free Software Foundation; either version 2 of the License, or     |
+// | (at your option) any later version.                                   |
+// | This file is distributed in the hope that it will be useful           |
+// | but WITHOUT ANY WARRANTY; without even the implied warranty of        |
+// | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          |
+// | GNU General Public License for more details.                          |
+// +-----------------------------------------------------------------------+
+// | Author: CoCoSoft                                                           |
+// +-----------------------------------------------------------------------+
+// 
+
+include("localvars.php");
+
+$custTables = array(
+	"Agent",			
+	"Appl",
+	"COS",
+	"Cluster",
+	"Device",
+	"Globals",
+	"Holiday",
+	"Ipphone",
+	"Ipphonecosclosed",
+	"Ipphonecosopen",
+	"ipphone_Fkey",
+	"Queue",
+	"Route",
+	"User",
+	"Dateseg",
+	"Ivrmenu",
+	"Lineio",
+	"Meetme",
+	"Speed"
+);
+
+	$v7db = 'sqlite:/opt/sark/db/sark.newV7.db';
+	$v7custdata = '/opt/sark/db/v7custdata.sql';	
+
+	if ( $argc == 2) {
+		if (file_exists($argv[1])) {
+			$sarkdb = 'sqlite:' . $argv[1]; 
+		}
+	}
+		
+    /*** connect to SQLite databases, old and new ***/
+    try {
+		$dbh = new PDO($sarkdb);
+	}
+	catch (Exception $e) {
+		echo "Oops failed to open DB $sarkdb" . " $e\n";
+		exit(4);
+	}
+
+    try {
+		$v7dbh = new PDO($v7db);
+	}
+	catch (Exception $e) {
+		echo "Oops failed to open DB $v7db" . " $e\n";
+		exit(4);
+	}
+
+    /*** set the error reporting attribute ***/
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+/*
+ * Delete the global row from the new DB
+ */
+
+	$res = $v7dbh->query("delete from globals");
+    
+/*
+ *  Copy/merge the two db's
+ */
+	$insertfile = '';
+	foreach ($custTables as $table) {
+/*
+ *  Build an intersection of column names
+ */ 
+		$oldtablecols = $dbh->query("PRAGMA table_info($table)")->fetchall(PDO::FETCH_ASSOC);
+		$oldtablecolumnnames = array(); 
+		foreach ($oldtablecols as $col) {
+			if (preg_match(' /^z_/ ', $col['name'])) {
+				continue;
+			} 
+			$oldtablecolumnnames[] = $col['name'];
+		}
+
+		$newtablecols = $v7dbh->query("PRAGMA table_info($table)")->fetchall(PDO::FETCH_ASSOC);
+		$newtablecolumnnames = array();
+		foreach ($newtablecols as $col) {
+			if (preg_match(' /^z_/ ', $col['name'])) {
+				continue;
+			} 
+			$newtablecolumnnames[] = $col['name'];
+		}
+
+		$columnlist = '';
+
+		foreach ($newtablecolumnnames as $col) {
+			$commoncol = null;
+			$commoncol = array_search($col, $oldtablecolumnnames);
+			if ($commoncol === false) {
+				continue;
+			}
+			$columnlist .=  $col . ',';			 
+		}
+		$columnlist  = rtrim($columnlist , ',');
+
+/*
+ *  Fetch the qualifying old data.  Device is a special case.   Only bring customer 
+ */
+		if ($table == 'Device') {
+			$count = $dbh->query("select count(*) from device  WHERE owner != 'system'")->fetchColumn();
+			if ($count) {
+				$oldtable = $dbh->query("select $columnlist from $table WHERE owner != 'system'")->fetchall(PDO::FETCH_ASSOC);
+			}
+			else {
+				continue;
+			}
+		}
+		else {
+			$count = $dbh->query("select count(*) from $table")->fetchColumn();
+			if ($count) {
+				$oldtable = $dbh->query("select $columnlist from $table")->fetchall(PDO::FETCH_ASSOC);
+			}
+			else {
+				continue;
+			}	
+		}
+
+		$valuelist = '';
+		foreach ($oldtable as $row) {
+			foreach ($row as $val) {
+				$valuelist .= "'" . $val . "',";
+			}
+			$valuelist  = rtrim($valuelist , ',');
+			$insertfile .= "INSERT OR IGNORE INTO $table ($columnlist) values ($valuelist)\n";
+			$res = $v7dbh->query("INSERT OR IGNORE INTO $table ($columnlist) values ($valuelist)");
+			$valuelist = '';	
+		}
+	}
+/*
+ *  write the INSERT file
+ */
+	$fh = fopen($v7custdata, 'w') or die('Could not open file!');
+	fwrite($fh,$insertfile) or die('Could not write v7 insertfile to file');
+	fclose($fh);
+	       

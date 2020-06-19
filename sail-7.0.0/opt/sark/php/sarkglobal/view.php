@@ -332,16 +332,6 @@ private function saveEdit() {
 
 	$tuple = array();
 
-/*	
-	if (isset($_POST['EURL'])) {
-		$fvar = filter_var($_POST['EURL'], FILTER_VALIDATE_URL);
-		if ($fvar) {
-			$this->invalidForm = True;
-			$this->message = "<B>  --  Validation Errors!</B>";	
-			$this->error_hash['extensave'] = "External URL is invalid!";
-		}
-	}
-*/
 	$this->validator = new FormValidator();
 	
 	$this->validator->addValidation("pwdlen","num","Extension password length must be numeric"); 

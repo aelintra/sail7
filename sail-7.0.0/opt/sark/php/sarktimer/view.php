@@ -123,7 +123,7 @@ private function showMain() {
 		
 /*** table rows ****/
 
-	$rows = $this->helper->getTable("dateseg");
+	$rows = $this->helper->getTable("dateseg",NULL,true,false,"cluster,dayofweek");
 	foreach ($rows as $row ) {
 		if ( $row['timespan'] == '*') {
 			$beginclosed = '*';

@@ -3,7 +3,7 @@ BEGIN TRANSACTION;
 /* Agent */
 CREATE TABLE IF NOT EXISTS Agent (
 id INTEGER PRIMARY KEY,	
-pkey TEXT,
+pkey INTEGER NOT NULL UNIQUE,
 cluster TEXT,
 conf TEXT,
 name TEXT,
@@ -18,6 +18,7 @@ queue6 TEXT,
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system'
+
 );
 
 /* Custom App */
@@ -71,7 +72,7 @@ z_updater TEXT DEFAULT 'system'
 /* Tenant */
 CREATE TABLE IF NOT EXISTS Cluster (
 id INTEGER PRIMARY KEY,	
-pkey TEXT UNIQUE,
+pkey TEXT NOT NULL UNIQUE,
 abstimeout TEXT, 					-- absolute timeout (in seconds)
 clusterclid TEXT,					-- cluster main CLID
 callgroup TEXT,   					-- asterisk callgroup number (1-63)
@@ -100,21 +101,21 @@ z_updated datetime,
 z_updater TEXT DEFAULT 'system'
 );
 
-INSERT OR IGNORE INTO Cluster(id,pkey,abstimeout,chanmax,include,localarea,localdplan,oclo,operator) values ('10','default','14400','30','ALL',NULL,NULL,'OPEN','System Operator');
+INSERT OR IGNORE INTO Cluster(id,pkey,abstimeout,chanmax,include,oclo,operator) values ('10','default','14400','30','ALL','OPEN','System Operator');
 
 /* phone types */
 CREATE TABLE IF NOT EXISTS Device (
 pkey TEXT PRIMARY KEY,
 blfkeyname TEXT,
-blfkeys INTEGER,
+blfkeys INT,
 desc TEXT,
 device TEXT,
-fkeys INTEGER,
+fkeys INT,
 imageurl TEXT,
 legacy TEXT,
 noproxy TEXT,
 owner TEXT DEFAULT 'system',
-pkeys INTEGER,
+pkeys INT,
 provision TEXT,
 sipiaxfriend TEXT,
 technology TEXT,
@@ -134,7 +135,10 @@ desc TEXT, 								-- Description
 type TEXT,								-- MIME type
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system'
+z_updater TEXT DEFAULT 'system',
+
+UNIQUE (pkey,cluster)
+
 );
 
 /* Holiday overrides */
@@ -145,8 +149,8 @@ cluster TEXT DEFAULT 'default',			-- tenant
 desc TEXT,								-- Description						
 route TEXT,								-- Holiday scheduler route override
 routeclass TEXT,						-- Holiday scheduler route class override
-stime INTEGER,							-- Epoch start
-etime INTEGER,							-- Epoch end
+stime INT,							-- Epoch start
+etime INT,							-- Epoch end
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system'
@@ -216,17 +220,21 @@ id INTEGER PRIMARY KEY,
 pkey TEXT,
 cluster TEXT,
 description TEXT, 
-directdial TEXT, 					-- Not used
+directdial INT, 					-- Not used
 conf TEXT,
 devicerec TEXT,
 greetnum TEXT DEFAULT 'None',
 name TEXT,
 options TEXT,
 outcome TEXT, 
-timeout INTEGER,
+timeout INT,
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system'
+z_updater TEXT DEFAULT 'system',
+
+UNIQUE (pkey,cluster),
+UNIQUE (directdial,cluster)
+
 );
 
 /* Outbound routing */
@@ -247,15 +255,17 @@ route TEXT,
 strategy TEXT DEFAULT 'hunt',
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system'
+z_updater TEXT DEFAULT 'system',
+
+UNIQUE (pkey,cluster)
+
 );
-CREATE INDEX idx_Route_pkey ON Route (pkey);
 
 
 /* open/closed automation */
 CREATE TABLE IF NOT EXISTS dateSeg (
 id INTEGER PRIMARY KEY,
-pkey INTEGER,
+pkey INTEGER UNIQUE,
 cluster TEXT,
 datemonth TEXT,
 dayofweek TEXT,
@@ -265,155 +275,115 @@ state TEXT DEFAULT 'IDLE',
 timespan TEXT,
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system',
-UNIQUE (pkey)
+z_updater TEXT DEFAULT 'system'
 );
 
 /* system settings */
+
 CREATE TABLE IF NOT EXISTS globals (
 pkey TEXT PRIMARY KEY,
-ABSTIMEOUT INTEGER DEFAULT 14400,   -- 4 hours
-ACL TEXT,                           -- ON/OFF 
-AGENTSTART TEXT DEFAULT 6001,	    -- Agent start number
-ALERT TEXT,							-- not used in 4.x 
-ALLOWHASHXFER TEXT,                 -- Allow asterisk non-SIP xfer
-ASTDLIM TEXT,                       -- Asterisk delimiter ','
-ATTEMPTRESTART TEXT,                -- not used in 4.x 
-BINDADDR TEXT,                      -- Asterisk SIP bindaddr
-BLINDBUSY TEXT,                     -- blind transfer busy bounce
+ABSTIMEOUT INTEGER DEFAULT 14400,		-- 4 hours
+ACL TEXT DEFAULT 'OFF',				-- ONOFF 
+AGENTSTART INTEGER DEFAULT 6001,		-- Agent start number
+ALLOWHASHXFER TEXT DEFAULT 'enabled', -- Allow asterisk non-SIP xfer
+ASTDLIM TEXT DEFAULT ',',			-- Asterisk delimiter comma
+BLINDBUSY TEXT,						-- blind transfer busy bounce
 BOUNCEALERT TEXT,                   -- alertinfo string for blind transfer bounce
 CALLPARKING TEXT DEFAULT 'YES',		-- turn call parking on/off
-CALLRECORD1 TEXT,					-- call recording defaults
+CALLRECORD1 TEXT DEFAULT 'None',	-- call recording defaults
 CAMPONQONOFF TEXT,                  -- camp-on miniqueue enable
 CAMPONQOPT TEXT,                    -- camp-on miniqueue options
-CDR TEXT,                           -- not used
-CFEXTRN TEXT,                       -- allow cforward to external numbers
-CFWDEXTRNRULE TEXT,     			-- not used in 4.x 
-CFWDPROGRESS TEXT,                  -- progress tones for cfwd
-CFWDANSWER TEXT,                    -- take call off-hook before forward to external
-CLUSTER TEXT DEFAULT 'ON',		    -- tenant support ON/OFF
-CLUSTERSTART INTEGER DEFAULT 11,	-- default cluster number
-CONFSTART INTEGER DEFAULT 08101,	-- conference number start
-CONFTYPE TEXT,                      -- conference type - deprecated in 4.1
-COSSTART TEXT,                      -- COS on/off                      
-COUNTRYCODE TEXT,                   -- countrycode
-DIGITS TEXT,                    	-- not used in 4.x 
+CFWDEXTRNRULE TEXT DEFAULT 'enabled', -- enable call forwards to external targets 
+CFWDPROGRESS TEXT DEFAULT 'enabled',  -- progress tones for cfwd
+CFWDANSWER TEXT DEFAULT 'enabled',    -- take call off-hook before forward to external
+CLUSTER TEXT DEFAULT 'ON',		    -- tenant support ONOFF
+CLUSTERSTART INTEGER DEFAULT 11,		-- default cluster number
+CONFSTART INTEGER DEFAULT 08101,		-- conference number start
+COSSTART TEXT DEFAULT 'ON',         -- COS onoff
+COUNTRYCODE INTEGER DEFAULT 44,			-- countrycode
 EDOMAIN TEXT,                       -- external IP address of this server
-EURL TEXT							-- external URL for remote phones
 EMAILALERT TEXT,                    -- email alert address
-EMERGENCY TEXT,                     -- emergency numbers which bypass COS
-EXTBLKLST TEXT DEFAULT NO,			-- YES/NO loads voipbl.com external SIP blacklist into an ipset
-EXTLEN TEXT,                        -- extension length
-EXTLIM TEXT,        				-- not used in 4.x 
-FAX TEXT,                           -- FAX flag
-FAXDETECT TEXT,                     -- FAX detect on/off
-FOPPASS TEXT,                       -- Flash opeartor panel password
+EMERGENCY TEXT DEFAULT '999 112 911',  -- emergency numbers which bypass COS
+EXTLEN INTEGER DEFAULT 3,				-- extension length
+EXTLIM TEXT,
+FAX TEXT,							-- FAX flag
+FAXDETECT TEXT,                     -- FAX detect onoff
+FOPPASS INTEGER DEFAULT 1224,			-- Flash opeartor panel password
 FQDN TEXT,							-- FQDN V5+
-FQDNDROPBUFF TEXT DEFAULT 100,		-- fqdn drop set size (in entries)
-FQDNINSPECT TEXT DEFAULT NO,		-- Require FQDN in SIP Ops Shorewall 4.6+
-FQDNHTTP TEXT DEFAULT NO,			-- Require FQDN in remote HTTP Ops 
+FQDNDROPBUFF INTEGER DEFAULT 100,		-- fqdn drop set size (in entries)
+FQDNINSPECT TEXT DEFAULT 'NO',		-- Require FQDN in SIP Ops Shorewall 4.6+
+FQDNHTTP TEXT DEFAULT 'NO',			-- Require FQDN in remote HTTP Ops 
 FQDNPROV TEXT,						-- use FQDN in remote provisioning YES/NO
-FQDNTRUST TEXT DEFAULT NO,			-- construct an ipset of trusted IP's from a list of trusted fqdns
-G729 TEXT,                          -- G729 switch - not used
-HAAUTOFAILBACK TEXT,                -- not used after asha 2
-HACLUSTERIP TEXT,                   -- cluster ip fr HA
-HAENCRYPT TEXT,                     -- not used in 4.x 
-HAMODE TEXT,                        -- not used in 4.x
-HAPRINODE TEXT,                     -- not used in 4.x
-HASECNODE TEXT,                     -- not used in 4.x
-HASYNCH TEXT,                       -- not used in 4.x
+FQDNTRUST TEXT DEFAULT 'NO',		-- construct an ipset of trusted IP's from a list of trusted fqdns
 HAUSECLUSTER TEXT,                  -- use cluster virt IP when provisioning
-INTRINGDELAY TEXT,                  -- ring time before voicemail
-IVRKEYWAIT TEXT,                    -- IVR key wait
-IVRDIGITWAIT TEXT,                  -- IVR inter-digit wait
+INTRINGDELAY INTEGER DEFAULT 20,		-- ring time before voicemail
+IVRKEYWAIT INTEGER DEFAULT 6,
+IVRDIGITWAIT INTEGER DEFAULT 6000,
 LACL TEXT,							-- Generate ACLs
-LANGUAGE TEXT,                      -- not used
-LDAPBASE text,                      -- LDAP base
-LDAPOU text,                        -- LDAP OU
-LDAPUSER text,                      -- LDAP user
-LDAPPASS text,                      -- LDAP password
-LEASEHDTIME INT DEFAULT 43200,      -- Hot desk lease time
+LANGUAGE TEXT DEFAULT 'en-gb',      -- used in extensions.conf 
+LDAPBASE text DEFAULT 'dc=sark,dc=local',  -- LDAP base
+LDAPOU text DEFAULT 'contacts',     -- LDAP OU
+LDAPUSER text DEFAULT 'admin',		-- LDAP user
+LDAPPASS text DEFAULT 'sarkadmin',	-- LDAP password
+LEASEHDTIME INTEGER DEFAULT 43200,		-- Hot desk lease time
 LKEY TEXT,							-- not used
-LOCALAREA TEXT,                     -- not used (See Cluster)
-LOCALDLEN TEXT,                     -- not used (See Cluster)
 LOCALIP TEXT,                       -- local ip address
-LOGLEVEL TEXT DEFAULT 0,            -- internal log level
-LOGSIPDISPSIZE INT DEFAULT 2000,	-- number of SIP pcap lines to display
-LOGSIPNUMFILES INT DEFAULT 10,		-- number of SIP pcap spins to keep
-LOGSIPFILESIZE INT DEFAULT 20000,  	-- SIP pcap max filesize (bytes)
-LOGOPTS TEXT,                       -- not used
-LTERM TEXT,                         -- late termination flag
+LOGLEVEL INTEGER DEFAULT 0,				-- internal log level
+LOGSIPDISPSIZE INTEGER DEFAULT 2000,	-- number of SIP pcap lines to display
+LOGSIPNUMFILES INTEGER DEFAULT 10,		-- number of SIP pcap spins to keep
+LOGSIPFILESIZE INTEGER DEFAULT 20000,	-- SIP pcap max filesize (bytes)
+LTERM TEXT DEFAULT 'NO',			-- late termination flag
 MAXIN TEXT,                         -- maximum inbound calls
-MEETMEDIAL TEXT,                    -- not used in 4.x 
-MISDNRUN TEXT,                      -- not used in 4.x 
 MIXMONITOR TEXT,                    -- force mixmonitor on all recordings
-MONITOROUT TEXT,                    -- monitorout folder
-MONITORSTAGE TEXT,                  -- monstage folder
+MONITOROUT TEXT DEFAULT '/var/spool/asterisk/monout', -- monitorout folder
+MONITORSTAGE TEXT DEFAULT '/var/spool/asterisk/monstage', -- monstage folder
 MONITORTYPE TEXT,					-- Monitor or Mixmonitor
 MYCOMMIT TEXT,                      -- commit outstanding
-NATDEFAULT TEXT DEFAULT local, 		-- V6 NAT defaiult local/remote
-NUMGROUPS TEXT,                     -- not used in 4.x 
-ONBOARDMENU TEXT,                   -- not used in 4.x 
-OPERATOR TEXT DEFAULT 0,            -- sysop
-OPRT TEXT,                          -- not used in 4.x 
-PWDLEN TEXT,                        -- password length
-PCICARDS TEXT,                      -- not used in 4.x 
-PKTINSPECT TEXT,					-- not used
-PLAYBEEP TEXT,                      -- play beep on failover
-PLAYBUSY TEXT,                      -- play busy message or tones
-PLAYCONGESTED TEXT,                 -- play congested message or tones
-PLAYTRANSFER TEXT DEFAULT YES,     	-- play transfer message when transferring off the PBX
-PROXY TEXT,                         -- allow proxy operations
-PROXYIGNORE TEXT,                   -- not used in 4.x
-RECFINALDEST TEXT,                  -- recordings folder
-RECLIMIT TEXT,                      -- Recording folder max size
-RECQDITHER TEXT,                    -- dither (ms) on queuelog searches
-RECQSEARCHLIM TEXT,                 -- search limit on queuelog
-RECRSYNCPARMS TEXT,                 -- not used in 4.x 
-RESTART TEXT,                       -- not used in 4.x
-RHINOSPF TEXT,                      -- not used in 4.x (see asha)
-RINGDELAY TEXT,                     -- default ring timeout (seconds)
-RUNFOP TEXT,                        -- generate FOP objects
-SESSIONTIMOUT INTEGER DEFAULT 600,  -- sessiontimeout (10minutes)
-SENDEDOMAIN TEXT DEFAULT YES,  		-- Send public IP in SIP header YES/NO
-SIPIAXSTART TEXT,                   -- lowest extension number
-SIPFLOOD TEXT DEFAULT NO,			-- detect SIP flood YES/NO
-SIPMULTICAST TEXT,                  -- listen for multicast provisioning requests
-SMSALERT TEXT,                      -- not used in 4.x 
-SMSC TEXT,                          -- not used in 4.x 
-SNO TEXT,                           -- not used in 4.x 
+NATDEFAULT TEXT DEFAULT local,		-- V6 NAT defaiult local/remote
+OPERATOR INTEGER DEFAULT 0,
+PWDLEN INTEGER DEFAULT 12,				-- password length
+PLAYBEEP TEXT DEFAULT 'YES',		-- play beep on failover
+PLAYBUSY TEXT DEFAULT 'YES',		-- play busy message or tones
+PLAYCONGESTED TEXT DEFAULT 'YES',	-- play congested message or tones
+PLAYTRANSFER TEXT DEFAULT 'YES',	-- play transfer message when transferring off
+RECLIMIT INTEGER DEFAULT 1000,			-- Recording folder max size
+RECQDITHER INTEGER DEFAULT 2,			-- dither (ms) on queuelog searches
+RECQSEARCHLIM INTEGER DEFAULT 200,		-- search limit on queuelog
+RINGDELAY INTEGER DEFAULT 20,			-- default ring timeout (seconds)
+RUNFOP TEXT DEFAULT 'disabled',		-- generate FOP objectshe PBX
+RECFINALDEST TEXT 'home/sark/monitor_by_day/`date +%d%m%y`',
+SESSIONTIMOUT INTEGER DEFAULT 600,		-- sessiontimeout (10minutes)
+SENDEDOMAIN TEXT DEFAULT 'YES',		-- Send public IP in SIP header YES/NO
+SIPIAXSTART INTEGER DEFAULT 201,		-- lowest extension number
+SIPFLOOD TEXT DEFAULT 'NO',			-- detect SIP flood YES/NO
 SPYPASS TEXT,                       -- password for SPY ops
 SUPEMAIL TEXT,                      -- supervisor email
-SYSOP TEXT DEFAULT 0,                         -- system operator real extension
-SYSPASS TEXT,                       -- password for sysops
-TFTP TEXT,                          -- deprecated in 4.0, deleted in 4.1
-TLSPORT	TEXT,						-- TLS port (default 5061)
-UNDO TEXT,                          -- not used in 4.x 
-UNDONUM TEXT,                       -- not used in 4.x 
-UNDOONOFF TEXT,                     -- not used in 4.x 
-USBRECDISK TEXT,                    -- not used in 4.x 
+SYSOP INTEGER DEFAULT 201,				-- system operator real extension
+SYSPASS INTEGER DEFAULT 4444,			-- password for sysops
+TLSPORT	INTEGER DEFAULT 5061,			-- TLS port (default 5061)
 USEROTP TEXT DEFAULT NULL,			-- V6 default OTP.  Seeded by the generator
-USERCREATE TEXT DEFAULT NO,			-- V6 create user when extension created YES/NO		
+USERCREATE TEXT DEFAULT 'NO',		-- V6 create user when extension created YES/NO		
 VCL TEXT,							-- V5 cloud enabled (true/false)
 VCLFULL TEXT,						-- V5 cloud param
 VDELAY TEXT,                        -- artificial ring on inbound SIP
 VLIBS TEXT,                         -- not used in 4.x 
 VMAILAGE TEXT,                      -- oldest age of vmail
-VOICEINSTR TEXT,                    -- play long or short Vmail instructions
-VOIPMAX TEXT,                       -- MAX outbound up calls
-VXT	TEXT DEFAULT 0,					-- Enable/disable VXT
-XMPP TEXT,                          -- not used in 4.x 
-XMPPSERV TEXT,                      -- not used in 4.x 
-ZTP TEXT,                           -- Zero touch provisioning on/off
+VOICEINSTR TEXT DEFAULT 'YES',		-- play long or short Vmail instructions
+VOIPMAX INTEGER DEFAULT 30,				-- MAX outbound up calls
+VXT	INTEGER DEFAULT 0,					-- Enable/disable VXT
+ZTP TEXT DEFAULT 'disabled',		-- Zero touch provisioning on/off
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system'
 );
 
+INSERT OR IGNORE INTO Globals (pkey) values ('global');
+
+
 /* IVR menus */
 CREATE TABLE IF NOT EXISTS ivrmenu (
 id INTEGER PRIMARY KEY,	
-pkey TEXT,
+pkey TEXT NOT NULL,
 alert0 TEXT,						-- Alertinfo for each keypress
 alert1 TEXT,
 alert10 TEXT,
@@ -427,12 +397,12 @@ alert7 TEXT,
 alert8 TEXT,
 alert9 TEXT,
 cluster TEXT,
-directdial TEXT,					-- dial from dialplan
+directdial INTEGER,					-- dial from dialplan
 description TEXT DEFAULT 'None',
 greetnum TEXT DEFAULT 'None',		-- greeting number to play
 listenforext TEXT,
 name TEXT,
-option0 TEXT,						-- routed name for each keypress
+option0 TEXT,
 option1 TEXT,
 option10 TEXT,
 option11 TEXT,
@@ -444,7 +414,7 @@ option6 TEXT,
 option7 TEXT,
 option8 TEXT,
 option9 TEXT,
-routeclass0 TEXT,					-- routeclass for each keypress
+routeclass0 TEXT,
 routeclass1 TEXT,
 routeclass10 TEXT,
 routeclass11 TEXT,
@@ -456,7 +426,7 @@ routeclass6 TEXT,
 routeclass7 TEXT,
 routeclass8 TEXT,
 routeclass9 TEXT,
-tag0 TEXT,							-- alphatag for each keypress
+tag0 TEXT,
 tag1 TEXT,
 tag10 TEXT,
 tag11 TEXT,
@@ -468,13 +438,17 @@ tag6 TEXT,
 tag7 TEXT,
 tag8 TEXT,
 tag9 TEXT,
-timeout TEXT,						-- timeout name 					
-timeoutrouteclass TEXT,				-- timeout routeclass
+timeout TEXT,		
+timeoutrouteclass TEXT,
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system'
+z_updater TEXT DEFAULT 'system',
+
+UNIQUE(cluster,pkey),
+UNIQUE(cluster,directdial)
+
 );
-CREATE INDEX idx_ivrmenu_pkey ON ivrmenu (pkey);
+
 
 /* trunks and DDI's */
 CREATE TABLE IF NOT EXISTS lineIO (
@@ -486,16 +460,7 @@ callerid TEXT,				-- high-order (weak) CLID
 callprogress TEXT,			-- send progress tones on dial
 carrier TEXT,				-- Foreign key to carrier class
 channel TEXT, 				-- used by analogue trunks
-closecallback TEXT,			-- not used
-closecustom TEXT,			-- not used
-closedisa TEXT,				-- not used
-closeext TEXT,				-- not used
-closegreet TEXT,			-- default closed greeting
-closeivr TEXT,				-- not used
-closequeue TEXT,			-- not used
 closeroute TEXT,			-- closed inbound route
-closesibling TEXT,			-- not used
-closespeed TEXT,			-- not used
 cluster TEXT,				-- cluster (Tenant) this trunk belongs to
 custom TEXT,				-- Custome dial string for non-standard technologies 
 desc TEXT,					-- weak Asterisk username 
@@ -510,7 +475,6 @@ forceivr TEXT,				-- Not used in 4.x
 host TEXT,					-- Host IP address
 inprefix TEXT,				-- prepend prefix on inbound
 lcl TEXT,					-- denotes a local endpoint (no longer used)
-macaddr TEXT,				-- Not used
 match TEXT,					-- trunk seize sequence
 method TEXT,				-- referenced in extensions generator but no setter in 4.x
 moh TEXT,					-- play moh instead of ring
@@ -518,24 +482,19 @@ monitor TEXT,				-- referenced in Helper but no setter
 openfirewall TEXT, 			-- not used in 4.0.x+
 opengreet TEXT,				-- default open greeting
 openroute TEXT,				-- open inbound route
-opensibling TEXT,			-- not used
 password TEXT,				-- far end password
 pat TEXT,					-- V2; no longer used
 peername TEXT,				-- strong Asterisk username
 postdial TEXT,				-- post dial string for custom trunks	
 predial TEXT,				-- pre dial string for custom trunks
 privileged TEXT,			-- IAX siblings ONLY
-provision TEXT,				-- not used
-queue TEXT,					-- not used
 register TEXT,				-- registration string
 remotenum TEXT,				-- used in sibling links
 routeable TEXT,				-- denotes whether Analogue lines are routeable 
 routeclassopen TEXT,		-- routeclass
 routeclassclosed TEXT,		-- routeclass
-service TEXT,				-- Not used
 sipiaxpeer TEXT,			-- Asterisk peer stanza
 sipiaxuser TEXT,			-- Asterisk user stanza
-speed TEXT,					-- not used
 swoclip TEXT DEFAULT 'YES',	-- Switch On CLIP
 tag TEXT,					-- Alpha tag
 technology TEXT,			-- SIP/IAX/DAHDI/Custom
@@ -572,7 +531,7 @@ z_updater TEXT DEFAULT 'system'
 /* callgroups */
 CREATE TABLE IF NOT EXISTS speed (
 id INTEGER PRIMARY KEY,	
-pkey TEXT,
+pkey INT,
 callerid TEXT,
 calleridname TEXT,
 cluster TEXT,
@@ -594,7 +553,10 @@ speedalert TEXT,
 trunk TEXT,
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system'
+z_updater TEXT DEFAULT 'system',
+
+UNIQUE (pkey,cluster)
+
 );
 CREATE INDEX idx_speed_pkey ON speed (pkey);
 
@@ -656,7 +618,7 @@ PRIMARY KEY (PanelGroup_pkey, Panel_pkey)
 /* system admins and users */
 CREATE TABLE IF NOT EXISTS User (
 id INTEGER PRIMARY KEY,
-pkey TEXT NOT NULL,					-- UID
+pkey TEXT NOT NULL UNIQUE,			-- UID
 cluster TEXT,						-- Home tenant
 email TEXT DEFAULT 'None',							-- email
 extension TEXT,						-- extension
@@ -670,7 +632,6 @@ username TEXT,						-- userId
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system',
-UNIQUE (pkey),
 UNIQUE (extension)
 );
 CREATE INDEX idx_User_username ON User (username);
@@ -683,24 +644,9 @@ perms TEXT DEFAULT 'view',			-- permissions view/update/create
 PRIMARY KEY (User_pkey, Panel_pkey)
 );
 
-
-/* Fkey templates */
-CREATE TABLE IF NOT EXISTS Device_FKEY (
-pkey TEXT,
-seq INTEGER,
-device TEXT,
-label TEXT,
-type TEXT,
-value TEXT,
-z_created datetime,
-z_updated datetime,
-z_updater TEXT DEFAULT 'system',
-PRIMARY KEY (pkey, seq)
-);
-
 /* conference rooms */
 CREATE TABLE IF NOT EXISTS meetme (
-pkey TEXT PRIMARY KEY,
+pkey INTEGER PRIMARY KEY,
 cluster TEXT DEFAULT 'default',
 adminpin TEXT DEFAULT 'None',
 description TEXT,
@@ -708,47 +654,22 @@ pin TEXT default 'None',
 type TEXT,
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system'
+z_updater TEXT DEFAULT 'system',
+
+UNIQUE (pkey,cluster)
+
 );
 
 /* master xref */
 
 CREATE TABLE IF NOT EXISTS master_xref (
-id integer PRIMARY KEY,
+id INTEGER PRIMARY KEY,
 pkey TEXT NOT NULL,
 cluster TEXT DEFAULT 'default',
 relation TEXT
 );
 CREATE INDEX idx_xref_cluster ON master_xref (cluster);
 CREATE INDEX idx_xref_relation ON master_xref (relation);
-
-CREATE TABLE IF NOT EXISTS shorewall_blacklist (
-pkey integer PRIMARY KEY,
-source TEXT,
-comment TEXT,
-z_created datetime,
-z_updated datetime,
-z_updater TEXT DEFAULT 'system'
-);
-
-CREATE TABLE IF NOT EXISTS shorewall_whitelist (
-pkey integer PRIMARY KEY,
-fqdn TEXT,
-comment TEXT,
-z_created datetime,
-z_updated datetime,
-z_updater TEXT DEFAULT 'system'
-);
-
-CREATE TABLE IF NOT EXISTS clid_blacklist (
-pkey TEXT PRIMARY KEY,
-action TEXT DEFAULT 'Hangup',
-cluster TEXT DEFAULT 'default',
-desc TEXT,
-z_created datetime,
-z_updated datetime,
-z_updater TEXT DEFAULT 'system'
-);
 
 CREATE TABLE IF NOT EXISTS master_audit (
 pkey integer PRIMARY KEY,
@@ -788,21 +709,6 @@ END;
 CREATE TRIGGER appl_delete AFTER DELETE ON appl
 BEGIN
    INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('DELETE', old.pkey, 'appl', datetime('now'));
-END;
-
-CREATE TRIGGER clid_blacklist_insert AFTER INSERT ON clid_blacklist
-BEGIN
-   UPDATE clid_blacklist set z_created=datetime('now'), z_updated=datetime('now') where pkey=new.pkey;
-   INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('INSERT', new.pkey, 'clid_blacklist', datetime('now'));   
-END;
-CREATE TRIGGER clid_blacklist_update AFTER UPDATE ON clid_blacklist
-BEGIN
-   UPDATE clid_blacklist set z_updated=datetime('now') where pkey=new.pkey;
-   INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('UPDATE', new.pkey, 'clid_blacklist', datetime('now'));
-END;
-CREATE TRIGGER clid_blacklist_delete AFTER DELETE ON clid_blacklist
-BEGIN
-   INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('DELETE', old.pkey, 'clid_blacklist', datetime('now'));
 END;
 
 CREATE TRIGGER COS_insert AFTER INSERT ON COS
@@ -865,20 +771,6 @@ BEGIN
    INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('DELETE', old.pkey, 'Device', datetime('now'));
 END;
 
-CREATE TRIGGER Device_FKEY_insert AFTER INSERT ON Device_FKEY
-BEGIN
-   UPDATE Device_FKEY set z_created=datetime('now'), z_updated=datetime('now') where pkey=new.pkey;
-   INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('INSERT', new.pkey, 'Device_FKEY', datetime('now'));   
-END;
-CREATE TRIGGER Device_FKEY_update AFTER UPDATE ON Device_FKEY
-BEGIN
-   UPDATE Device_FKEY set z_updated=datetime('now') where pkey=new.pkey;
-   INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('UPDATE', new.pkey, 'Device_FKEY', datetime('now'));
-END;
-CREATE TRIGGER Device_FKEY_delete AFTER DELETE ON Device_FKEY
-BEGIN
-   INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('DELETE', old.pkey, 'Device_FKEY', datetime('now'));
-END;
 CREATE TRIGGER Greeting_insert AFTER INSERT ON Greeting
 BEGIN
    UPDATE Greeting set z_created=datetime('now'), z_updated=datetime('now') where pkey=new.pkey;
@@ -967,21 +859,6 @@ END;
 CREATE TRIGGER Route_delete AFTER DELETE ON Route
 BEGIN
    INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('DELETE', old.pkey, 'Route', datetime('now'));
-END;
-
-CREATE TRIGGER shorewall_blacklist_insert AFTER INSERT ON shorewall_blacklist
-BEGIN
-   UPDATE shorewall_blacklist set z_created=datetime('now'), z_updated=datetime('now') where pkey=new.pkey;
-   INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('INSERT', new.pkey, 'shorewall_blacklist', datetime('now'));   
-END;
-CREATE TRIGGER shorewall_blacklist_update AFTER UPDATE ON shorewall_blacklist
-BEGIN
-   UPDATE shorewall_blacklist set z_updated=datetime('now') where pkey=new.pkey;
-   INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('UPDATE', new.pkey, 'shorewall_blacklist', datetime('now'));
-END;
-CREATE TRIGGER shorewall_blacklist_delete AFTER DELETE ON shorewall_blacklist
-BEGIN
-   INSERT INTO master_audit(act,owner,relation,tstamp) VALUES ('DELETE', old.pkey, 'shorewall_blacklist', datetime('now'));
 END;
 
 CREATE TRIGGER User_insert AFTER INSERT ON User
