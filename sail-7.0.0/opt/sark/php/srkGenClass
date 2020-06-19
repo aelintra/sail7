@@ -926,8 +926,8 @@ LOCAL;
 		foreach ($ivr as $irow) {
 				$OUT .= "\texten => " . $irow['pkey'] . ",1,Answer()\n"; 
 				$OUT .= "\texten => " . $irow['pkey'] . ",n,agi(sarkhpe,IVR," . $irow['pkey'] . ")\n";  
-				$shortdial = substr($irow['pkey'],2);
-				$OUT .= "\texten => " . substr($irow['pkey'],2) . ",1,GoTo(" . $irow['pkey'] . ",1)\n";  
+				$shortdial = substr($irow['directdial'],2);
+				$OUT .= "\texten => " . $shortdial . ",1,GoTo(" . $irow['pkey'] . ",1)\n";  
 		}
 // Extensions
 		$sql = "SELECT * FROM IPphone where cluster = '" . $row['pkey'] . "' ORDER BY pkey";
