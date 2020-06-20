@@ -1838,13 +1838,13 @@ private function printEditNotes ($pkey,$extension,$sip_peers) {
 
     echo 'Transport: <strong>' . $extension['transport'] . '</strong><br/>' . PHP_EOL;
    
-    if (isset($extension['firstseen'])) {
+    if (!empty($extension['firstseen'])) {
     	$epoch = $extension['firstseen'];
     	$dt = new DateTime("@$epoch");
     	echo 'Firstprov: <strong>' . $dt->format('d-m-y H:i') . '</strong><br/>' . PHP_EOL;
     }
 
-    if (isset($extension['lastseen'])) {
+    if (!empty($extension['lastseen'])) {
     	$epoch = $extension['lastseen'];
     	$dt = new DateTime("@$epoch");
     	echo 'Provisioned: <strong>' . $dt->format('d-m-y H:i') . '</strong><br/>' . PHP_EOL;

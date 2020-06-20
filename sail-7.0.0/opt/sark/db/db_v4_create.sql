@@ -176,9 +176,9 @@ dialstring TEXT,                        -- not used
 dvrvmail TEXT,                          -- mailbox
 extalert TEXT,                          -- alert info
 externalip TEXT,                        -- not used
-firstseen TEXT,							-- first date provisioned (or NULL)
-lastseen TEXT,							-- last date provisioned (or NULL)
-location TEXT,                          -- local/remote
+firstseen TEXT DEFAULT NULL,							-- first date provisioned (or NULL)
+lastseen TEXT DEFAULT NULL,				-- last date provisioned (or NULL)
+location TEXT DEFAULT 'LOCAL',          -- local/remote
 macaddr TEXT,                           -- macaddr
 newformat TEXT,							-- set to YES for new format SIP entries
 openfirewall TEXT,                      -- not used
@@ -370,7 +370,7 @@ VLIBS TEXT,                         -- not used in 4.x
 VMAILAGE TEXT,                      -- oldest age of vmail
 VOICEINSTR TEXT DEFAULT 'YES',		-- play long or short Vmail instructions
 VOIPMAX INTEGER DEFAULT 30,				-- MAX outbound up calls
-VXT	INTEGER DEFAULT 0,					-- Enable/disable VXT
+VXT INTEGER DEFAULT 0,					-- Enable/disable VXT
 ZTP TEXT DEFAULT 'disabled',		-- Zero touch provisioning on/off
 z_created datetime,
 z_updated datetime,
