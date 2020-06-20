@@ -173,7 +173,7 @@ private function showNew() {
 	$this->myPanel->aHelpBoxFor('cluster');
 	echo '</div>';
 	$this->myPanel->displayInputFor('ivrname','text',null,'pkey');
-	$this->myPanel->displayInputFor('idd','number',null,'directdial');
+//	$this->myPanel->displayInputFor('idd','number',null,'directdial');
 	$this->myPanel->displayInputFor('description','text');
 
 
@@ -192,21 +192,29 @@ private function saveNew() {
 	$tuple = array();
 
 //	$_POST['directdial'] = $this->helper->getNextFreeQIvr('ivrmenu',$_POST['cluster'],'startivr');
+//	
 
 	$this->validator = new FormValidator();
     $this->validator->addValidation("directdial","req","Please supply IVR directdial");
     $this->validator->addValidation("pkey","req","Please supply IVR name");    
     $this->validator->addValidation("directdial","num","IVR direct dial must be numeric");    
     $this->validator->addValidation("directdial","maxlen=4","IVR direct dial must be 3 or 4 digits");     
-	$this->validator->addValidation("directdial","minlen=3","IVR direct dial must be 3 or 4 digits");     
+	$this->validator->addValidation("directdial","minlen=3","IVR direct dial must be 3 or 4 digits");  
 
+	$res = $this->dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+   	if (empty($res['directdial']) {
+   		$res = $this->dbh->query("SELECT startivr FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+   	}
+
+   	$_POST['directdial'] = $res['directdial'];
+   	$res = NULL;
 
     //Now, validate the form
     if ($this->validator->ValidateForm()) {
     
 // create full pkey
-    	$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-//		$_POST['pkey'] = $res['id'] . $_POST['pkey']; 
+    	$res = $this->dbh->query("SELECT startivr FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+		$_POST['startivr'] = $res['startivr']; 
 		$res=NULL;
 		
 // check for dups
