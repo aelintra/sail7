@@ -655,8 +655,14 @@ public function createTuple($tab,$rec,$check=true,$clusterid=false) {
 
 /*
  * do it
- */  
-	$sql->execute($varg);
+ */ 
+	try {
+		$sql->execute($varg);
+	} 
+	catch (PDOException $e) {
+    	return $e->getMessage();	
+    } 
+	
 	$this->commitOn();
 	$this->logit("I'm creating a new $tab with $vnarg and $varg[0]",3 );
 	return 'OK';
@@ -715,8 +721,14 @@ public function setTuple($tab,$rec,$modpkey=false) {
 	$sql = $dbh->prepare("UPDATE $tab SET $vnarg WHERE pkey=?");
 /*
  * do it
- */  
-	$sql->execute($varg);
+ */
+	try {
+		$sql->execute($varg);
+	} 
+	catch (PDOException $e) {
+    	return $e->getMessage();	
+    }   
+
 	$this->commitOn();
 	$this->logit("I'm updating $tab $vnarg with ...",3 );
 	foreach ($varg as $v) {
@@ -775,8 +787,13 @@ public function setTupleById($tab,$rec) {
 	$sql = $dbh->prepare("UPDATE $tab SET $vnarg WHERE id=?");
 /*
  * do it
- */  
-	$sql->execute($varg);
+ */
+	try {
+		$sql->execute($varg);
+	} 
+	catch (PDOException $e) {
+    	return $e->getMessage();	
+    }   
 	$this->commitOn();
 	$this->logit("I'm updating $tab",3 );
 	return 'OK';
