@@ -213,10 +213,6 @@ private function saveNew() {
     //Now, validate the form
     if ($this->validator->ValidateForm()) {
     
-// create full pkey
-    	$res = $this->dbh->query("SELECT startivr FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-		$_POST['startivr'] = $res['startivr']; 
-		$res=NULL;
 		
 // check for dups
 	
