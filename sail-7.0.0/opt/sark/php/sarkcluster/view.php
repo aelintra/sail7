@@ -305,7 +305,7 @@ private function showEdit($pkey=false) {
 
 	echo '<form id="sarkclusterForm" action="' . $_SERVER['PHP_SELF'] . '" method="post" enctype="multipart/form-data">' . PHP_EOL;
 	
-
+	$this->myPanel->radioSlide('masterclose',$masterclose,array('AUTO','CLOSED'));
 	echo '<div class="w3-margin-bottom">';
 	$this->myPanel->aLabelFor('clustersysop');
 	echo '</div>'; 
