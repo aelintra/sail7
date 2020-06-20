@@ -203,11 +203,15 @@ private function saveNew() {
 	$this->validator->addValidation("directdial","minlen=3","IVR direct dial must be 3 or 4 digits");  
 */
 	$res = $this->dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+
    	if (empty($res['directdial'])) {
    		$res = $this->dbh->query("SELECT startivr FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+   		$_POST['directdial'] = $res['startivr'];
    	}
-
-   	$_POST['directdial'] = $res['directdial'];
+   	else {
+   		$_POST['directdial'] = $res['directdial'];
+   	}
+   	
    	$res = NULL;
 
     //Now, validate the form
