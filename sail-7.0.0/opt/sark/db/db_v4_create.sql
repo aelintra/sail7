@@ -89,12 +89,12 @@ pickupgroup TEXT,  					-- asterisk pickupgroup number (1-63)
 routeclassoverride TEXT,			-- Holiday scheduler route class override
 routeoverride TEXT,					-- Holiday scheduler route override
 startagent INTEGER DEFAULT 8001,	-- default start agent numbers
-startconfroom INTEGER DEFAULT 900,	-- not used, customer nominated
+startconfroom INTEGER DEFAULT 950,	-- not used, customer nominated
 startextension INTEGER DEFAULT 200,	
 startivr INTEGER DEFAULT 750,		-- not used, customer nominated
 startparks INTEGER DEFAULT 700,
 startqueue INTEGER DEFAULT 800,		-- not used, customer nominated
-startringgroup INTEGER DEFAULT 500,	-- not used, customer nominated
+startringgroup INTEGER DEFAULT 400,	-- not used, customer nominated
 usemohcustom TEXT,					-- use custom moh YES/NO
 z_created datetime,
 z_updated datetime,
@@ -136,8 +136,6 @@ type TEXT,								-- MIME type
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system',
-
-UNIQUE (pkey,cluster)
 
 );
 
@@ -232,9 +230,6 @@ z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system',
 
-UNIQUE (pkey,cluster),
-UNIQUE (directdial,cluster)
-
 );
 
 /* Outbound routing */
@@ -256,8 +251,6 @@ strategy TEXT DEFAULT 'hunt',
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system',
-
-UNIQUE (pkey,cluster)
 
 );
 
@@ -444,8 +437,6 @@ z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system',
 
-UNIQUE(cluster,pkey),
-UNIQUE(cluster,directdial)
 
 );
 
@@ -555,8 +546,6 @@ z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system',
 
-UNIQUE (pkey,cluster)
-
 );
 CREATE INDEX idx_speed_pkey ON speed (pkey);
 
@@ -655,8 +644,6 @@ type TEXT,
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system',
-
-UNIQUE (pkey,cluster)
 
 );
 

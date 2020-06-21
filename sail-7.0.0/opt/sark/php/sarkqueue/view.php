@@ -129,8 +129,8 @@ private function showMain() {
 		echo '<tr id="' . $row['pkey'] . '">'. PHP_EOL;
 		echo '<input type="hidden" name="id" value="' . $row['id'] . '"  />' . PHP_EOL;		
 		echo '<td class="w3-hide-small w3-hide-medium">' . $row['cluster']  . '</td>' . PHP_EOL;
-		echo '<td >' . substr($row['pkey'],2) . '</td>' . PHP_EOL;
-		echo '<td>' . $row['name']  . '</td>' . PHP_EOL;	
+		echo '<td>' . $row['directdial'] . '</td>' . PHP_EOL;			
+		echo '<td>' . $row['pkey']  . '</td>' . PHP_EOL;		
 		echo '<td class="w3-hide-small w3-hide-medium">' . $row['description']  . '</td>' . PHP_EOL;					 
 		echo '<td class="w3-hide-small ">' . $row['options']  . '</td>' . PHP_EOL;	
 		echo '<td class="w3-hide-small ">' . $row['devicerec']  . '</td>' . PHP_EOL;	

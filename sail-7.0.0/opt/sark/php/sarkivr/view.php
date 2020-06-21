@@ -223,7 +223,7 @@ private function saveNew() {
     	$retc = $this->helper->checkXref($_POST['pkey'],$_POST['cluster']);
     	if ($retc) {
     		$this->invalidForm = True;
-    		$this->error_hash['extinsert'] = "Duplicate found in table $retc - choose a different extension number";
+    		$this->error_hash['extinsert'] = "Duplicate found in table $retc - choose a different key";
     		return;    	
     	}        
        
@@ -465,7 +465,17 @@ private function saveEdit() {
 		$qRes = $this->dbh->query($sql);
 		$work = $qRes->fetch();
 		$qRes = NULL;
-		$tuple['directdial'] = $work['id'] . $tuple['directdial'];		
+		$tuple['directdial'] = $work['id'] . $tuple['directdial'];	
+
+// check for dups
+	
+    	$retc = $this->helper->checkXref($tuple['directdial'],$_POST['cluster']);
+    	if ($retc) {
+    		$this->invalidForm = True;
+    		$this->error_hash['extinsert'] = "Duplicate found directdial - choose a different key";
+    		return;    	
+    	}   
+
 		
 //		$tuple[$key] = preg_replace ( "/\\\/", '', $tuple[$key]);
 
