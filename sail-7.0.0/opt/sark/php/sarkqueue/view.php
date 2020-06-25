@@ -193,7 +193,7 @@ private function saveNew() {
 	$tuple = array();
 
 	$this->validator = new FormValidator();
-    $this->validator->addValidation("name","req","Please fill in Queue name");
+    $this->validator->addValidation("pkey","req","Please fill in Queue name");
 /*
     $this->validator->addValidation("pkey","req","Please supply Queue direct dial"); 
     $this->validator->addValidation("pkey","num","Queue direct dial must be numeric");    
