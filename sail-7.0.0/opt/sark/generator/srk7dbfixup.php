@@ -44,21 +44,38 @@ $directDialTables = array(
    	
    	$res = NULL; 
 
-   	$ivrmenu = $dbh->query("select * from ivrmenu")->fetchall(PDO::FETCH_ASSOC);
+   	$table = $dbh->query("select * from ivrmenu")->fetchall(PDO::FETCH_ASSOC);
 
-   	foreach ($ivrmenu as $ivr ) {
-   		if (empty($ivr['directdial'])) {
-   			$res = $dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $ivr['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   	foreach ($table as $row ) {
+   		if (empty($row['directdial'])) {
+   			$res = $dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
    			if (empty($res)) {
-   				$res = $dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $ivr['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   				$res = $dbh->query("SELECT startivr FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
    			}
    			$sql = $dbh->prepare("UPDATE ivrmenu SET directdial = ? WHERE id = ?");
-   			$sql->execute(array($res,$ivr['id']));
+   			$sql->execute(array($res,$row['id']));
    			$res = NULL;
    		}
 
    	}
 
+   	$res = NULL;
+   	$table = NULL;
+
+   	$table = $dbh->query("select * from queue")->fetchall(PDO::FETCH_ASSOC);
+
+   	foreach ($table as $row ) {
+   		if (empty($row['directdial'])) {
+   			$res = $dbh->query("SELECT MAX(directdial+1) FROM queue WHERE cluster = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   			if (empty($res)) {
+   				$res = $dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   			}
+   			$sql = $dbh->prepare("UPDATE queue SET directdial = ? WHERE id = ?");
+   			$sql->execute(array($res,$row['id']));
+   			$res = NULL;
+   		}
+
+   	}
     
 
 	       
