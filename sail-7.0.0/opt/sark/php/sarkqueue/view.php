@@ -205,7 +205,7 @@ private function saveNew() {
 
    	if (empty($res['directdial'])) {
    		$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-   		$_POST['directdial'] = $res['startivr'];
+   		$_POST['directdial'] = $res['startqueue'];
    	}
    	else {
    		$_POST['directdial'] = $res['directdial'];
