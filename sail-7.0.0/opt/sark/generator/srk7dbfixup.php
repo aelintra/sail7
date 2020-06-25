@@ -32,7 +32,7 @@ $directDialTables = array(
     /*** connect to SQLite databases, old and new ***/
 
     try {
-		$v7dbh = new PDO($v7db);
+		$dbh = new PDO($v7db);
 	}
 	catch (Exception $e) {
 		echo "Oops failed to open DB $v7db" . " $e\n";
@@ -48,9 +48,9 @@ $directDialTables = array(
 
    	foreach ($ivrmenu as $ivr ) {
    		if (empty($ivr['directdial'])) {
-   			$res = $this->dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $ivr['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   			$res = $dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $ivr['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
    			if (empty($res)) {
-   				$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $ivr['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   				$res = $dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $ivr['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
    			}
    			$sql = $dbh->prepare("UPDATE ivrmenu SET directdial = ? WHERE id = ?");
    			$sql->execute(array($res,$ivr['id']));
