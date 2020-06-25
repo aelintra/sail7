@@ -17,45 +17,19 @@
 
 include("localvars.php");
 
-$custTables = array(
-	"Agent",			
-	"Appl",
-	"COS",
-	"Cluster",
-	"Device",
-	"Globals",
-	"Holiday",
-	"Ipphone",
-	"Ipphonecosclosed",
-	"Ipphonecosopen",
-	"ipphone_Fkey",
+$directDialTables = array(
+
+	"ivrmenu",
 	"Queue",
-	"Route",
-	"User",
-	"Dateseg",
-	"Ivrmenu",
-	"Lineio",
 	"Meetme",
-	"Speed"
+
 );
 
 	$v7db = 'sqlite:/opt/sark/db/sark.newV7.db';
 	$v7custdata = '/opt/sark/db/v7custdata.sql';	
 
-	if ( $argc == 2) {
-		if (file_exists($argv[1])) {
-			$sarkdb = 'sqlite:' . $argv[1]; 
-		}
-	}
 		
     /*** connect to SQLite databases, old and new ***/
-    try {
-		$dbh = new PDO($sarkdb);
-	}
-	catch (Exception $e) {
-		echo "Oops failed to open DB $sarkdb" . " $e\n";
-		exit(4);
-	}
 
     try {
 		$v7dbh = new PDO($v7db);
@@ -68,49 +42,40 @@ $custTables = array(
     /*** set the error reporting attribute ***/
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-/*
- * Delete the global row from the new DB
- */
+	$res = $this->dbh->query("SELECT MAX(directdial+1) FROM queue WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+	$nextddi = $res;
 
-	$res = $v7dbh->query("delete from globals");
+   	if (empty($res['directdial'])) {
+   		$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+   		$_POST['directdial'] = $res['startivr'];
+   	}
+   	else {
+   		$_POST['directdial'] = $res['directdial'];
+   	}
+   	
+   	$res = NULL; 
+
+   	$ivrmenu = $dbh->query("select * from ivrmenu")->fetchall(PDO::FETCH_ASSOC);
+   	foreach ($ivrmenu as $iver ) {
+   		if (empty($ivr['directdial'])) {
+   			$res = $this->dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+   			if (empty($res['directdial'])) {
+   				$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+   				$_POST['directdial'] = $res['startivr'];
+   			}
+   		}
+
+   	}
+
     
 /*
- *  Copy/merge the two db's
+ *  fetch the clusters
  */
-	$insertfile = '';
+	$clustertable = $dbh->query("select * from cluster")->fetchall(PDO::FETCH_ASSOC);
+
+
 	foreach ($custTables as $table) {
-/*
- *  Build an intersection of column names
- */ 
-		$oldtablecols = $dbh->query("PRAGMA table_info($table)")->fetchall(PDO::FETCH_ASSOC);
-		$oldtablecolumnnames = array(); 
-		foreach ($oldtablecols as $col) {
-			if (preg_match(' /^z_/ ', $col['name'])) {
-				continue;
-			} 
-			$oldtablecolumnnames[] = $col['name'];
-		}
 
-		$newtablecols = $v7dbh->query("PRAGMA table_info($table)")->fetchall(PDO::FETCH_ASSOC);
-		$newtablecolumnnames = array();
-		foreach ($newtablecols as $col) {
-			if (preg_match(' /^z_/ ', $col['name'])) {
-				continue;
-			} 
-			$newtablecolumnnames[] = $col['name'];
-		}
-
-		$columnlist = '';
-
-		foreach ($newtablecolumnnames as $col) {
-			$commoncol = null;
-			$commoncol = array_search($col, $oldtablecolumnnames);
-			if ($commoncol === false) {
-				continue;
-			}
-			$columnlist .=  $col . ',';			 
-		}
-		$columnlist  = rtrim($columnlist , ',');
 
 /*
  *  Fetch the qualifying old data.  Device is a special case.   Only bring customer 

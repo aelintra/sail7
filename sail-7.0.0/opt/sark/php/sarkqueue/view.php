@@ -174,7 +174,6 @@ private function showNew() {
 	$this->myPanel->aHelpBoxFor('cluster');
 	echo '</div>';	
 
-	$this->myPanel->displayInputFor('qdd','text',null,'pkey');
 	$this->myPanel->displayInputFor('queuename','text',null,'name');
 	$this->myPanel->displayInputFor('description','text');
 		
@@ -195,11 +194,24 @@ private function saveNew() {
 
 	$this->validator = new FormValidator();
     $this->validator->addValidation("name","req","Please fill in Queue name");
+/*
     $this->validator->addValidation("pkey","req","Please supply Queue direct dial"); 
     $this->validator->addValidation("pkey","num","Queue direct dial must be numeric");    
     $this->validator->addValidation("pkey","maxlen=4","Queue direct dial must be 3 or 4 digits");     
 	$this->validator->addValidation("pkey","minlen=3","Queue direct dial must be 3 or 4 digits");     
- 
+*/
+
+	$res = $this->dbh->query("SELECT MAX(directdial+1) FROM queue WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+
+   	if (empty($res['directdial'])) {
+   		$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+   		$_POST['directdial'] = $res['startivr'];
+   	}
+   	else {
+   		$_POST['directdial'] = $res['directdial'];
+   	}
+   	
+   	$res = NULL; 
     //Now, validate the form
     if ($this->validator->ValidateForm()) {
 
@@ -213,7 +225,7 @@ private function saveNew() {
     $retc = $this->helper->checkXref($_POST['pkey'],$_POST['cluster']);
     if ($retc) {
     	$this->invalidForm = True;
-    	$this->error_hash['extinsert'] = "Duplicate found in table $retc - choose a different extension number";
+    	$this->error_hash['extinsert'] = "Duplicate found in table $retc - choose a different key";
     	return;    	
     }
 /*
@@ -332,6 +344,15 @@ private function saveEdit() {
  */  	
 
 		$this->helper->buildTupleArray($_POST,$tuple);
+
+// check for dups
+	
+    	$retc = $this->helper->checkXref($tuple['directdial'],$_POST['cluster']);
+    	if ($retc) {
+    		$this->invalidForm = True;
+    		$this->error_hash['extinsert'] = "Duplicate found directdial - choose a different key";
+    		return;    	
+    	} 
 
 /*
  * update the SQL database
