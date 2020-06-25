@@ -126,7 +126,7 @@ private function showMain() {
 
 	$rows = $this->helper->getTable("queue");
 	foreach ($rows as $row ) { 
-		echo '<tr id="' . $row['pkey'] . '">'. PHP_EOL;
+		echo '<tr id="' . $row['id'] . '">'. PHP_EOL;
 		echo '<input type="hidden" name="id" value="' . $row['id'] . '"  />' . PHP_EOL;		
 		echo '<td class="w3-hide-small w3-hide-medium">' . $row['cluster']  . '</td>' . PHP_EOL;
 		echo '<td>' . $row['directdial'] . '</td>' . PHP_EOL;			
@@ -214,11 +214,6 @@ private function saveNew() {
    	$res = NULL; 
     //Now, validate the form
     if ($this->validator->ValidateForm()) {
-
-// create full pkey
-    	$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-		$_POST['pkey'] = $res['id'] . $_POST['pkey']; 
-		$res=NULL;
 		
 // check for dups
 	
