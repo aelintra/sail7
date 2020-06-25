@@ -41,79 +41,24 @@ $directDialTables = array(
 
     /*** set the error reporting attribute ***/
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-	$res = $this->dbh->query("SELECT MAX(directdial+1) FROM queue WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
-	$nextddi = $res;
-
-   	if (empty($res['directdial'])) {
-   		$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-   		$_POST['directdial'] = $res['startivr'];
-   	}
-   	else {
-   		$_POST['directdial'] = $res['directdial'];
-   	}
    	
    	$res = NULL; 
 
    	$ivrmenu = $dbh->query("select * from ivrmenu")->fetchall(PDO::FETCH_ASSOC);
-   	foreach ($ivrmenu as $iver ) {
+
+   	foreach ($ivrmenu as $ivr ) {
    		if (empty($ivr['directdial'])) {
-   			$res = $this->dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-   			if (empty($res['directdial'])) {
-   				$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-   				$_POST['directdial'] = $res['startivr'];
+   			$res = $this->dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $ivr['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   			if (empty($res)) {
+   				$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $ivr['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
    			}
+   			$sql = $dbh->prepare("UPDATE ivrmenu SET directdial = ? WHERE id = ?");
+   			$sql->execute(array($res,$ivr['id']));
+   			$res = NULL;
    		}
 
    	}
 
     
-/*
- *  fetch the clusters
- */
-	$clustertable = $dbh->query("select * from cluster")->fetchall(PDO::FETCH_ASSOC);
 
-
-	foreach ($custTables as $table) {
-
-
-/*
- *  Fetch the qualifying old data.  Device is a special case.   Only bring customer 
- */
-		if ($table == 'Device') {
-			$count = $dbh->query("select count(*) from device  WHERE owner != 'system'")->fetchColumn();
-			if ($count) {
-				$oldtable = $dbh->query("select $columnlist from $table WHERE owner != 'system'")->fetchall(PDO::FETCH_ASSOC);
-			}
-			else {
-				continue;
-			}
-		}
-		else {
-			$count = $dbh->query("select count(*) from $table")->fetchColumn();
-			if ($count) {
-				$oldtable = $dbh->query("select $columnlist from $table")->fetchall(PDO::FETCH_ASSOC);
-			}
-			else {
-				continue;
-			}	
-		}
-
-		$valuelist = '';
-		foreach ($oldtable as $row) {
-			foreach ($row as $val) {
-				$valuelist .= "'" . $val . "',";
-			}
-			$valuelist  = rtrim($valuelist , ',');
-			$insertfile .= "INSERT OR IGNORE INTO $table ($columnlist) values ($valuelist)\n";
-			$res = $v7dbh->query("INSERT OR IGNORE INTO $table ($columnlist) values ($valuelist)");
-			$valuelist = '';	
-		}
-	}
-/*
- *  write the INSERT file
- */
-	$fh = fopen($v7custdata, 'w') or die('Could not open file!');
-	fwrite($fh,$insertfile) or die('Could not write v7 insertfile to file');
-	fclose($fh);
 	       
