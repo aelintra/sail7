@@ -174,7 +174,7 @@ private function showNew() {
 	$this->myPanel->aHelpBoxFor('cluster');
 	echo '</div>';	
 
-	$this->myPanel->displayInputFor('queuename','text',null,'name');
+	$this->myPanel->displayInputFor('queuename','text',null,'pkey');
 	$this->myPanel->displayInputFor('description','text');
 		
 	echo '</div>';
