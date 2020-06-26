@@ -94,6 +94,10 @@ sqlite3 $DBROOT/$SARKDB 'PRAGMA journal_mode=DELETE;' >/dev/null 2>&1
 echo Running V6 extension fixup
 php $SARKROOT$SIPFIX
 
+# copy the new db over the old
+
+mv $DBROOT/$NEWDB $DBROOT/$SARKDB
+
 # run the generator
 echo Running the Generator
 sh $SARKROOT$GENAST

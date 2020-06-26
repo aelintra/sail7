@@ -122,7 +122,7 @@ private function genMoh() {
  */
 private function genParks() {
 	$OUT = NULL;
-	$res = $this->dbh->query('SELECT id,pkey from cluster');
+	$res = $this->dbh->query('SELECT pkey from cluster');
 	foreach ($res as $row) {
 		$OUT .= "[" . $row['pkey'] . "]\n";
 		$OUT .= "context=" . $row['pkey'] . "park\n";
