@@ -435,8 +435,7 @@ timeout TEXT,
 timeoutrouteclass TEXT,
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system',
-
+z_updater TEXT DEFAULT 'system'
 
 );
 
@@ -544,7 +543,7 @@ speedalert TEXT,
 trunk TEXT,
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system',
+z_updater TEXT DEFAULT 'system'
 
 );
 CREATE INDEX idx_speed_pkey ON speed (pkey);
