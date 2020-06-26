@@ -73,29 +73,29 @@ z_updater TEXT DEFAULT 'system'
 CREATE TABLE IF NOT EXISTS Cluster (
 id INTEGER PRIMARY KEY,	
 pkey TEXT NOT NULL UNIQUE,
-abstimeout TEXT, 					-- absolute timeout (in seconds)
-clusterclid TEXT,					-- cluster main CLID
-callgroup TEXT,   					-- asterisk callgroup number (1-63)
-chanmax TEXT,     					-- maximum active calls
-description TEXT, 					-- freeform description
-include TEXT,     					-- whitespace separated list of clusters OR, the keyword ALL
-localarea TEXT,   					-- local area code
-localdplan TEXT,  					-- local dialplan
-masteroclo TEXT,  					-- master day/night throw
-name TEXT,							-- V2; not used
-oclo TEXT,        					-- calculated day/night throw
-operator TEXT,    					-- tenant sysop
-pickupgroup TEXT,  					-- asterisk pickupgroup number (1-63)
-routeclassoverride TEXT,			-- Holiday scheduler route class override
-routeoverride TEXT,					-- Holiday scheduler route override
-startagent INTEGER DEFAULT 8001,	-- default start agent numbers
-startconfroom INTEGER DEFAULT 950,	-- not used, customer nominated
-startextension INTEGER DEFAULT 200,	
-startivr INTEGER DEFAULT 750,		-- not used, customer nominated
+abstimeout TEXT,
+clusterclid TEXT,
+callgroup TEXT,
+chanmax TEXT,
+description TEXT,
+include TEXT,
+localarea TEXT,
+localdplan TEXT,
+masteroclo TEXT,
+name TEXT,
+oclo TEXT,
+operator TEXT,
+pickupgroup TEXT,
+routeclassoverride TEXT,
+routeoverride TEXT,
+startagent INTEGER DEFAULT 8001,
+startconfroom INTEGER DEFAULT 950,
+startextension INTEGER DEFAULT 200,
+startivr INTEGER DEFAULT 750,
 startparks INTEGER DEFAULT 700,
-startqueue INTEGER DEFAULT 800,		-- not used, customer nominated
-startringgroup INTEGER DEFAULT 400,	-- not used, customer nominated
-usemohcustom TEXT,					-- use custom moh YES/NO
+startqueue INTEGER DEFAULT 800,
+startringgroup INTEGER DEFAULT 400,
+usemohcustom TEXT,
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system'
@@ -130,12 +130,12 @@ z_updater TEXT DEFAULT 'system'
 CREATE TABLE IF NOT EXISTS Greeting (
 id INTEGER PRIMARY KEY,	
 pkey TEXT,
-cluster TEXT DEFAULT 'default',			-- Tenant	
-desc TEXT, 								-- Description
-type TEXT,								-- MIME type
+cluster TEXT DEFAULT 'default',
+desc TEXT,
+type TEXT,
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system',
+z_updater TEXT DEFAULT 'system'
 
 );
 
@@ -189,7 +189,7 @@ sipiaxfriend TEXT,                      -- asterisk SIP string
 stealtime TEXT,                         -- time this extension was stolen by HD
 stolen TEXT,                            -- HD thief 
 technology TEXT,                        -- SIP 
-tls TEXT,                        		-- SSIP on/off
+tls TEXT,
 transport TEXT DEFAULT 'udp',			-- transport(udp/tcp/tls)
 twin TEXT,                              -- not used
 vmailfwd TEXT,                          -- not used
@@ -218,7 +218,7 @@ id INTEGER PRIMARY KEY,
 pkey TEXT,
 cluster TEXT,
 description TEXT, 
-directdial INT, 					-- Not used
+directdial INTEGER,
 conf TEXT,
 devicerec TEXT,
 greetnum TEXT DEFAULT 'None',
@@ -228,7 +228,7 @@ outcome TEXT,
 timeout INT,
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system',
+z_updater TEXT DEFAULT 'system'
 
 );
 
@@ -250,7 +250,7 @@ route TEXT,
 strategy TEXT DEFAULT 'hunt',
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system',
+z_updater TEXT DEFAULT 'system'
 
 );
 
@@ -449,7 +449,7 @@ callback TEXT,				-- denotes callback trunk
 callerid TEXT,				-- high-order (weak) CLID
 callprogress TEXT,			-- send progress tones on dial
 carrier TEXT,				-- Foreign key to carrier class
-channel TEXT, 				-- used by analogue trunks
+channel TEXT,
 closeroute TEXT,			-- closed inbound route
 cluster TEXT,				-- cluster (Tenant) this trunk belongs to
 custom TEXT,				-- Custome dial string for non-standard technologies 
@@ -468,8 +468,8 @@ lcl TEXT,					-- denotes a local endpoint (no longer used)
 match TEXT,					-- trunk seize sequence
 method TEXT,				-- referenced in extensions generator but no setter in 4.x
 moh TEXT,					-- play moh instead of ring
-monitor TEXT,				-- referenced in Helper but no setter
-openfirewall TEXT, 			-- not used in 4.0.x+
+monitor TEXT,
+openfirewall TEXT,
 opengreet TEXT,				-- default open greeting
 openroute TEXT,				-- open inbound route
 password TEXT,				-- far end password
@@ -642,7 +642,7 @@ pin TEXT default 'None',
 type TEXT,
 z_created datetime,
 z_updated datetime,
-z_updater TEXT DEFAULT 'system',
+z_updater TEXT DEFAULT 'system'
 
 );
 
