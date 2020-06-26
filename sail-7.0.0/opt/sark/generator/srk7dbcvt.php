@@ -157,4 +157,44 @@ $custTables = array(
 	$fh = fopen($v7custdata, 'w') or die('Could not open file!');
 	fwrite($fh,$insertfile) or die('Could not write v7 insertfile to file');
 	fclose($fh);
+
+/*
+ * Parse the new ivr and queue tables and fixup the directdials
+ */
+
+	$res = NULL;
+
+	$table = $dbh->query("select * from ivrmenu")->fetchall(PDO::FETCH_ASSOC);
+
+   	foreach ($table as $row ) {
+   		if (empty($row['directdial'])) {
+   			$res = $dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   			if (empty($res)) {
+   				$res = $dbh->query("SELECT startivr FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   			}
+   			$sql = $dbh->prepare("UPDATE ivrmenu SET directdial = ? WHERE id = ?");
+   			$sql->execute(array($res,$row['id']));
+   			$res = NULL;
+   		}
+
+   	}
+
+   	$res = NULL;
+   	$table = NULL;
+
+   	$table = $dbh->query("select * from queue")->fetchall(PDO::FETCH_ASSOC);
+
+   	foreach ($table as $row ) {
+   		if (empty($row['directdial'])) {
+   			$res = $dbh->query("SELECT MAX(directdial+1) FROM queue WHERE cluster = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   			if (empty($res)) {
+   				$res = $dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+   			}
+   			$sql = $dbh->prepare("UPDATE queue SET directdial = ? WHERE id = ?");
+   			$sql->execute(array($res,$row['id']));
+   			$res = NULL;
+   		}
+
+   	}
+
 	       
