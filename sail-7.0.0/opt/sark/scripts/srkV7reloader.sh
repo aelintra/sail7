@@ -35,6 +35,7 @@ sqlite3 $DBROOT/$SARKDB 'PRAGMA journal_mode=MEMORY;' >/dev/null 2>&1
 
 #create the db from the system files
 echo Creating new database
+rm $DBROOT/$NEWDB
 sqlite3 $DBROOT/$NEWDB < $DBROOT/$CREATEDB
 
 #Load the system data
