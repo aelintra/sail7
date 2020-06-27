@@ -1364,7 +1364,7 @@ echo "cluster=$cluster, id=$id  \n";
 	$pagearray = array();
  	foreach ($speed as $row) { 
 		$outlist = $this->synthAlias($row['pkey']);
-		echo "outlist=$outlist \n";
+		print_r($outlist);
 		foreach ($outlist as $ep) {
 			$phonekey = $id . $ep;
 			if (strlen($phonekey) <= 6 ) {
