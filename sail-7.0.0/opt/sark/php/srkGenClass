@@ -1372,7 +1372,8 @@ echo "phonekey=$phonekey \n";
 				$sql = "select * from IPphone WHERE pkey = '" . $phonekey . "'"; 
 				$qRes = $this->dbh->query($sql);
 				$IPphone = $qRes->fetch();
-				$qRes = NULL;				
+				$qRes = NULL;
+print_r($IPphone);				
 				if ($IPphone['technology'] == "Custom") {
 					continue;
 				}
