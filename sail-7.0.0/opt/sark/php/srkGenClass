@@ -1055,7 +1055,7 @@ LOCAL;
 //
 //          don't print if already overridden
 // 
-				if (! $orideopenarray [$coskeys['COS_pkey']]) {
+				if (empty ($orideopenarray [$coskeys['COS_pkey']])) {
 					$OUT .= "\tinclude => " . $coskeys['COS_pkey'] . "\n";
 				} 	
 			}
@@ -1080,7 +1080,7 @@ LOCAL;
 //
 //          don't print if already overridden
 // 
-				if (! $orideclosedarray [$coskeys['COS_pkey']]) {
+				if (empty ($orideclosedarray [$coskeys['COS_pkey']])) {
 					$OUT .= "\tinclude => " . $coskeys['COS_pkey'] . "\n";
 				} 	
 			}

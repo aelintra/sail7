@@ -201,15 +201,11 @@ private function saveNew() {
 	$this->validator->addValidation("pkey","minlen=3","Queue direct dial must be 3 or 4 digits");     
 */
 
-	$res = $this->dbh->query("SELECT MAX(directdial+1) FROM queue WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-
-   	if (empty($res['directdial'])) {
-   		$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-   		$_POST['directdial'] = $res['startqueue'];
-   	}
-   	else {
-   		$_POST['directdial'] = $res['directdial'];
-   	}
+	$res = $this->dbh->query("SELECT MAX(directdial+1) FROM queue WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+	if (empty($res)) {
+		$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+	}
+	$_POST['directdial'] = $res;
    	
    	$res = NULL; 
     //Now, validate the form
