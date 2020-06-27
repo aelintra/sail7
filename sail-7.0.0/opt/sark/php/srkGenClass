@@ -143,10 +143,11 @@ private function genIax() {
 
 //	$global = $this->helper->getTable("globals");
 //	print_r($global);
+/*
 	if ($this->globals['BINDADDR'] == "ON") { 
 		$OUT .= 'bindaddr=' . $this->globals['HACLUSTERIP'] . "\n";	   
 	}
-
+*/
 	if (!empty($OUT)) { 
 		$fh = fopen("/etc/asterisk/sark_iax_localnet_header.conf", 'w') or die('Could not open file sark_iax_localnet_header.conf!');
 		fwrite($fh,$OUT) or die('Could not write to file sark_iax_localnet_header.conf');
@@ -258,12 +259,13 @@ private function genSip() {
             }
 		}
 	}
+/*
 	if ($this->globals['BINDADDR'] == "ON") {
 		if ($this->globals['HACLUSTERIP']) {
 			$OUT .= 'bindaddr=' . $this->globals['HACLUSTERIP'] . "\n";
 		}	   
 	}
-	
+*/	
 //  deal with TLS
 	$tlsport = 'tlsbindaddr=0.0.0.0';
 	if (isset($this->globals['TLSPORT'])) {
