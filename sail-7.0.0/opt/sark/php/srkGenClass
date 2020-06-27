@@ -1395,6 +1395,7 @@ echo "cluster=$cluster, id=$id  \n";
 		$fullKey = $id . $row['pkey'];
 		$shortKey = $row['pkey'];
 
+echo "dialstring=$dialstr \n";
 echo "fullkey=$fullKey shortkey=$shortKey \n)";
 
 		if ($row['grouptype'] != "Page" && $row['pkey'] != 'RINGALL') {
