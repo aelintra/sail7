@@ -911,7 +911,7 @@ LOCAL;
 				$OUT .= "\texten => " . $qrow['pkey'] . ",n,Playback(" . $this->SOUNDIR . $row['pkey'] . "/usergreeting" . $qrow['greetnum'] . ")\n";
 			}
 			$OUT .= $outstring; 
-			$OUT .= "\texten => " . substr($qrow['directdial']) . ",1,GoTo(" . $qrow['pkey'] . ",1)\n";
+			$OUT .= "\texten => " . $qrow['directdial'] . ",1,GoTo(" . $qrow['pkey'] . ",1)\n";
 // ToDo outcome processing...
 
 		} 
