@@ -117,7 +117,6 @@ $custTables = array(
 			$columnlist .=  $col . ',';			 
 		}
 		$columnlist  = rtrim($columnlist , ',');
-echo $columnlist . PHP_EOL;
 
 /*
  *  Fetch the qualifying old data.  Device is a special case.   Only bring customer 
@@ -133,7 +132,6 @@ echo $columnlist . PHP_EOL;
 		}
 		else {
 			$count = $dbh->query("select count(*) from $table")->fetchColumn();
-echo "count = $count \n";
 			if ($count) {
 				$oldtable = $dbh->query("select $columnlist from $table")->fetchall(PDO::FETCH_ASSOC);
 			}
@@ -209,7 +207,9 @@ echo "count = $count \n";
 
    	foreach ($table as $row ) {
    		if (strlen($row['pkey'] <= 4)) {
+ 
    			$id = $v7dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+echo "id=$id \n";   			
    			$sql = $v7dbh->prepare("UPDATE IPphone SET pkey = ? WHERE pkey = ?");
    			$sql->execute(array($id . $row['pkey'], $row['pkey']));
    			$res = NULL;
