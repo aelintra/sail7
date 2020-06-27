@@ -1364,7 +1364,7 @@ echo "cluster=$cluster, id=$id  \n";
 	$pagearray = array();
  	foreach ($speed as $row) { 
 		$outlist = $this->synthAlias($row['pkey']);
-		print_r($outlist);
+print_r($outlist);
 		foreach ($outlist as $ep) {
 			$phonekey = $id . $ep;
 echo "phonekey=$phonekey \n";
@@ -1372,8 +1372,7 @@ echo "phonekey=$phonekey \n";
 				$sql = "select * from IPphone WHERE pkey = '" . $phonekey . "'"; 
 				$qRes = $this->dbh->query($sql);
 				$IPphone = $qRes->fetch();
-				$qRes = NULL;
-print_r($IPphone);				
+				$qRes = NULL;			
 				if ($IPphone['technology'] == "Custom") {
 					continue;
 				}
