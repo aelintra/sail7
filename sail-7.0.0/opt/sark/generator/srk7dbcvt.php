@@ -206,6 +206,7 @@ $custTables = array(
 	$table = $v7dbh->query("select pkey,cluster from IPphone")->fetchall(PDO::FETCH_ASSOC);
 
    	foreach ($table as $row ) {
+echo "pkey=" . $row['pkey'] , PHP_EOL;
    		if (strlen($row['pkey'] <= 4)) {
  
    			$id = $v7dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
