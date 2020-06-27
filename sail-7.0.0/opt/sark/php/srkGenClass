@@ -1394,6 +1394,9 @@ echo "cluster=$cluster, id=$id  \n";
 		$dialstr = preg_replace ( '/&$/',"", $dialstr );
 		$fullKey = $row['pkey'];
 		$shortKey = substr($row['pkey'],2);
+
+echo "fullkey=$fullKey shortkey=$shortKey \n)";
+
 		if ($row['grouptype'] != "Page" && $row['pkey'] != 'RINGALL') {
 // ring group forwarding logic				
 			if (!empty($row['divert'])) {				
