@@ -117,6 +117,7 @@ $custTables = array(
 			$columnlist .=  $col . ',';			 
 		}
 		$columnlist  = rtrim($columnlist , ',');
+echo $columnlist . PHP_EOL;
 
 /*
  *  Fetch the qualifying old data.  Device is a special case.   Only bring customer 
