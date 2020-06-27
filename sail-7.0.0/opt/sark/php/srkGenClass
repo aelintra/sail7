@@ -1352,7 +1352,7 @@ private function confBridge(&$OUT,$cluster=null) {
 
 private function generateRingGroups(&$OUT,$cluster,$id) {
 //  build pageall/ringall group 
-
+echo "cluster=$cluster, id=$id, out=$OUT  \n";
 	$speedflag = false;
 	$sql = "select * from speed where cluster = '" . $cluster ."' ORDER BY pkey";
 	$qRes = $this->dbh->query($sql);
