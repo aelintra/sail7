@@ -133,6 +133,7 @@ echo $columnlist . PHP_EOL;
 		}
 		else {
 			$count = $dbh->query("select count(*) from $table")->fetchColumn();
+echo "count = $count \n";
 			if ($count) {
 				$oldtable = $dbh->query("select $columnlist from $table")->fetchall(PDO::FETCH_ASSOC);
 			}
