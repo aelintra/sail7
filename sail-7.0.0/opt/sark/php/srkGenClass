@@ -1392,8 +1392,8 @@ echo "cluster=$cluster, id=$id  \n";
 			}
 		}
 		$dialstr = preg_replace ( '/&$/',"", $dialstr );
-		$fullKey = $row['pkey'];
-		$shortKey = substr($row['pkey'],2);
+		$fullKey = $id . $row['pkey'];
+		$shortKey = $row['pkey'];
 
 echo "fullkey=$fullKey shortkey=$shortKey \n)";
 
