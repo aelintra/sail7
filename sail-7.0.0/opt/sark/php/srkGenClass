@@ -1367,6 +1367,7 @@ echo "cluster=$cluster, id=$id  \n";
 		print_r($outlist);
 		foreach ($outlist as $ep) {
 			$phonekey = $id . $ep;
+echo "phonekey=$phonekey \n";
 			if (strlen($phonekey) <= 6 ) {
 				$sql = "select * from IPphone WHERE pkey = '" . $phonekey . "'"; 
 				$qRes = $this->dbh->query($sql);
