@@ -215,6 +215,25 @@ $custTables = array(
 
    	}
 
+   	/*
+ * Parse the new conference rooms and fixup the dials if necessary
+ */
+
+	$res = NULL;
+
+	$table = $v7dbh->query("select pkey,cluster from meetme")->fetchall(PDO::FETCH_ASSOC);
+
+   	foreach ($table as $row ) {
+   		if (strlen($row['pkey']) <= 4) {
+   			$id = $v7dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN); 			
+   			$sql = $v7dbh->prepare("UPDATE meetme SET pkey = ? WHERE pkey = ?");
+   			$sql->execute(array($id . $row['pkey'], $row['pkey']));
+   			$res = NULL;
+   		}
+
+   	}
+
+
 
 
 
