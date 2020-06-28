@@ -1354,7 +1354,6 @@ private function confBridge(&$OUT,$cluster=null) {
 
 private function generateRingGroups(&$OUT,$cluster,$id) {
 //  build pageall/ringall group 
-echo "cluster=$cluster, id=$id  \n";
 	$speedflag = false;
 	$sql = "select * from speed where cluster = '" . $cluster ."' ORDER BY pkey";
 	$qRes = $this->dbh->query($sql);
@@ -1364,10 +1363,8 @@ echo "cluster=$cluster, id=$id  \n";
 	$pagearray = array();
  	foreach ($speed as $row) { 
 		$outlist = $this->synthAlias($row['pkey']);
-print_r($outlist);
 		foreach ($outlist as $ep) {
 			$phonekey = $id . $ep;
-echo "phonekey=$phonekey \n";
 			if (strlen($phonekey) <= 6 ) {
 				$sql = "select * from IPphone WHERE pkey = '" . $phonekey . "'"; 
 				$qRes = $this->dbh->query($sql);
@@ -1395,9 +1392,6 @@ echo "phonekey=$phonekey \n";
 		$dialstr = preg_replace ( '/&$/',"", $dialstr );
 		$fullKey = $id . $row['pkey'];
 		$shortKey = $row['pkey'];
-
-echo "dialstring=$dialstr \n";
-echo "fullkey=$fullKey shortkey=$shortKey \n)";
 
 		if ($row['grouptype'] != "Page" && $row['pkey'] != 'RINGALL') {
 // ring group forwarding logic				
