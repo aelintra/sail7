@@ -349,6 +349,7 @@ SESSIONTIMOUT INTEGER DEFAULT 600,		-- sessiontimeout (10minutes)
 SENDEDOMAIN TEXT DEFAULT 'YES',		-- Send public IP in SIP header YES/NO
 SIPIAXSTART INTEGER DEFAULT 201,		-- lowest extension number
 SIPFLOOD TEXT DEFAULT 'NO',			-- detect SIP flood YES/NO
+SIPMULTICAST TEXT,                  -- listen for multicast provisioning requests
 SPYPASS TEXT,                       -- password for SPY ops
 SUPEMAIL TEXT,                      -- supervisor email
 SYSOP INTEGER DEFAULT 201,				-- system operator real extension
