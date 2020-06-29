@@ -23,7 +23,7 @@
 			$('#endsave').show();
         	$('#save').show();
 			if(this.value=='Provisioned') {
-				$('#divmacaddr').show();			
+				$('#divmacblock').show();			
 				$('#divrule').show();
 				$('#divcalleridname').show();
 			}
