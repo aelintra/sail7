@@ -143,7 +143,6 @@ public function showForm() {
 	}	
 			
 	if (isset($_POST['sync'])) { 
-		echo "triggered sync \n";
 		$this->sipNotifyPush();
 		$this->message = "Config request pushed";
 //		echo '<input type="hidden" id="tabselect" name="tabselect" value="1" />' . PHP_EOL;	
@@ -870,7 +869,7 @@ private function showEdit() {
 	$cfim = NULL;
 	$cfbs = NULL;
 	$ringdelay = 20;
-	$this->dbh = DB::getInstance();
+//	$this->dbh = DB::getInstance();
 
 	if (isset($this->keychange)) {
 		$pkey = $this->keychange;		
