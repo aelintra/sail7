@@ -870,6 +870,7 @@ private function showEdit() {
 	$cfim = NULL;
 	$cfbs = NULL;
 	$ringdelay = 20;
+	$this->dbh = DB::getInstance();
 
 	if (isset($this->keychange)) {
 		$pkey = $this->keychange;		
