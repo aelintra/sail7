@@ -134,7 +134,7 @@ private function showMain() {
 		echo '<tr id="' . $row['pkey'] . '">'. PHP_EOL; 
 		echo '<td class="read_only">' . $row['cluster'] . '</td>' . PHP_EOL;
 		echo '<input type="hidden" name="pkey" id="pkey" value="' . $row['pkey'] . '"  />' . PHP_EOL;
-		echo '<td class="read_only">' . $row['pkey'] . '</td>' . PHP_EOL;
+		echo '<td class="read_only">' . substr($row['pkey'],2) . '</td>' . PHP_EOL;
 		echo '<td class="w3-hide-small">' . $row['description']  . '</td>' . PHP_EOL;				 
 		echo '<td class="w3-hide-small">' . $row['type']  . '</td>' . PHP_EOL;		
 		echo '<td class="w3-hide-small">' . $row['pin']  . '</td>' . PHP_EOL;
@@ -273,7 +273,7 @@ private function showEdit() {
 	$this->myPanel->responsiveSetup(2);
 
 	$this->myPanel->internalEditBoxStart();
-	$this->myPanel->subjectBar("Edit Conference " . $tuple['pkey']);
+	$this->myPanel->subjectBar("Edit Conference " . substr($tuple['pkey'],2);
 
 	echo '<form id="sarkconferenceForm" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
 
