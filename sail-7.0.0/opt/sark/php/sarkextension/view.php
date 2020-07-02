@@ -78,7 +78,6 @@ Class sarkextension {
 
 public function showForm() {
 
-print_r($_POST);
 	$this->myPanel = new page;
 	$this->dbh = DB::getInstance();
 	$this->helper = new helper;
@@ -144,6 +143,7 @@ print_r($_POST);
 	}	
 			
 	if (isset($_POST['sync'])) { 
+		echo "triggered sync \n";
 		$this->sipNotifyPush();
 		$this->message = "Config request pushed";
 //		echo '<input type="hidden" id="tabselect" name="tabselect" value="1" />' . PHP_EOL;	
