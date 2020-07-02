@@ -273,7 +273,7 @@ private function showEdit() {
 	$this->myPanel->responsiveSetup(2);
 
 	$this->myPanel->internalEditBoxStart();
-	$this->myPanel->subjectBar("Edit Conference " . substr($tuple['pkey'],2);
+	$this->myPanel->subjectBar("Edit Conference " . substr($tuple['pkey'],2));
 
 	echo '<form id="sarkconferenceForm" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
 
