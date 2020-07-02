@@ -206,21 +206,6 @@ try {
 			$sql = NULL;
 		}
 	}
-
-// create and/or set the model in netphone record
-/*
-		$sql = $db->prepare('select * from netphone WHERE pkey = ?');
-		$sql->execute(array($mac));
-		$thisNetphone = $sql->fetchObject();
-		If (!empty($thisNetphone->pkey)) {
-			$sql = $db->prepare('UPDATE netphone SET model=? WHERE pkey = ?');
-			$sql->execute(array($model,$mac));
-		}
-		else {
-			$sql = $db->prepare('INSERT INTO netphone (pkey,model) VALUES(?,?)');
-			$sql->execute(array($mac,$model));
-		}
-*/
   }	
    
 //  $masterkey = $thisConfig->pkey;
@@ -299,6 +284,7 @@ logit ("====================End of stream======================>",4);
 // send it
 echo $retstring; 
 
+/* removed for now - database locking issues
 // try to update lasteen
 try {
 	$time = time();
@@ -320,7 +306,7 @@ try {
   		send404();
   		exit(1);
 }
-
+*/
 // disable auth send for next time
 if (!$descriptor) {
 	if ($thisConfig->sndcreds != 'Always') { 
