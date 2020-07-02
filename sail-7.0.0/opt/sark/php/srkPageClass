@@ -1526,7 +1526,7 @@ Class page {
 		$speed = $helper->getTable("speed", "SELECT pkey from speed WHERE cluster='" . $cluster . "'");		
 		$html .= '<optgroup label="RING GROUPS">' . PHP_EOL; 
 		foreach ($speed as $speed => $value)  {          
-			$html = $this->genHtml(substr($value['pkey'],2),$html);
+			$html = $this->genHtml($value['pkey'],$html);
 		}
 		$html .= '</optgroup>' . PHP_EOL;
 		

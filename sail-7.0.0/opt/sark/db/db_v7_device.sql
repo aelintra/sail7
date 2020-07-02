@@ -980,7 +980,7 @@ nat=$nat
 transport=$transport
 encryption=$encryption','SIP');
 INSERT OR IGNORE INTO Device(pkey,desc,noproxy,owner,provision,sipiaxfriend,technology) values ('Yealink','yealink SIP phone','1','system','#INCLUDE yealink.Common
-account.1.label = $ext
+account.1.label = $desc
 account.1.auth_name = $ext
 account.1.password = $password  
 account.1.user_name =  $ext
