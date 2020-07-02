@@ -78,7 +78,7 @@ Class sarkextension {
 
 public function showForm() {
 
-
+print_r($_POST);
 	$this->myPanel = new page;
 	$this->dbh = DB::getInstance();
 	$this->helper = new helper;

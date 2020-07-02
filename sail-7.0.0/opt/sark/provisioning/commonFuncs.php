@@ -66,14 +66,6 @@ function cleanConfig($phonepkey,$rawConfig,&$db,&$retstring,&$loopCheck,$sndcred
 				continue 2;
 			}
 		}
-/*
-		if (preg_match(' /\$password/ ',$line)) {
-			continue;
-		}
-		if (preg_match(' /\$ext/ ',$line)) {
-			continue;
-		}	
-*/	
 	}				
 	
 // check for INCLUDE and recurse
