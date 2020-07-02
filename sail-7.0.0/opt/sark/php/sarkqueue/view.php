@@ -275,14 +275,14 @@ private function showEdit($pkey=false) {
 	$this->myPanel->responsiveSetup(2);
 
 	$this->myPanel->internalEditBoxStart();
-	$this->myPanel->subjectBar('Edit Queue ' . substr($res['pkey'],2));
+	$this->myPanel->subjectBar('Edit Queue ' . $res['pkey']);
 
 	echo '<form id="sarkqueueForm" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
 
 	echo '<div id="clustershow">';
 	$this->myPanel->displayInputFor('cluster','text',$res['cluster'],'cluster');
 	echo '</div>';
-	$this->myPanel->displayInputFor('queuename','text',$res['name'],'name');
+//	$this->myPanel->displayInputFor('queuename','text',$res['name'],'name');
 /*	
 	echo '<div id="pkeyshow">';
 	$this->myPanel->displayInputFor('qdd','text',substr($res['pkey'],2),'pkey');
