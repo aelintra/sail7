@@ -1728,8 +1728,8 @@ private function sipNotifyPush () {
 		if (preg_match ( " /Panasonic/ ", $res['device'])) {	
 			$chk = 'panasonic-check-cfg';
 		}			
-		if (preg_match ( " /CiscoMP/ ", $res['device'])) {	
-			$chk = 'ciscoMP-check-cfg';
+		if (preg_match ( " /[Y|y]ealink/ ", $res['device'])) {	
+			$chk = 'yealink-check-cfg';
 		}
 		if ( ! $chk ) {
 			$this->message = "No notify data available";
