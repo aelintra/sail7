@@ -35,7 +35,8 @@ sqlite3 $DBROOT/$SARKDB 'PRAGMA journal_mode=MEMORY;' >/dev/null 2>&1
 
 #create the db from the system files
 echo Creating new database
-rm $DBROOT/$NEWDB
+[[ -e $DBROOT/$NEWDB && rm $DBROOT/$NEWDB ]]
+
 sqlite3 $DBROOT/$NEWDB < $DBROOT/$CREATEDB
 
 #Load the system data
@@ -50,6 +51,7 @@ echo Loading system device data
 sqlite3 $DBROOT/$NEWDB < $DBROOT/$SYSDEVICE
 
 # run the merge routine to map the old DB to the new and merge the data
+echo Running the V7 conversion
 php /opt/sark/generator/srk7dbcvt.php
 
 #run the once files
