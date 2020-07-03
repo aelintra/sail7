@@ -206,16 +206,24 @@ $custTables = array(
 	$table = $v7dbh->query("select pkey,cluster from IPphone")->fetchall(PDO::FETCH_ASSOC);
 
    	foreach ($table as $row ) {
-   		if (strlen($row['pkey']) <= 4) {
+   		if (strlen($row['pkey']) <= 4  && $row['pkey'] != 'default') {
    			$id = $v7dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN); 			
    			$sql = $v7dbh->prepare("UPDATE IPphone SET pkey = ? WHERE pkey = ?");
    			$sql->execute(array($id . $row['pkey'], $row['pkey']));
    			$res = NULL;
+/*
+ *	Handle class of service
+ */
+			$sql = $v7dbh->prepare("UPDATE IPphoneCOSopen SET IPphone_pkey = ? WHERE IPphone_pkey = ?");
+   			$sql->execute(array($id . $row['pkey'], $row['pkey']));
+
+			$sql = $v7dbh->prepare("UPDATE IPphoneCOSclosed SET IPphone_pkey = ? WHERE IPphone_pkey = ?");
+   			$sql->execute(array($id . $row['pkey'], $row['pkey']));
    		}
 
    	}
 
-   	/*
+/*
  * Parse the new conference rooms and fixup the dials if necessary
  */
 
