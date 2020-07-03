@@ -207,15 +207,22 @@ $custTables = array(
 
    	foreach ($table as $row ) {
    		if (strlen($row['pkey']) <= 4  && $row['cluster'] != 'default') {
+/*
+ *	Handle class of service before we change the extensions key
+ */
+			$sql = $v7dbh->prepare("UPDATE IPphoneCOSopen SET ipphone_pkey = ? WHERE ipphone_pkey = ?");
+   			$sql->execute(array($id . $row['pkey'], $row['pkey']));
+
+   			$sql = $v7dbh->prepare("UPDATE IPphoneCOSclosed SET ipphone_pkey = ? WHERE ipphone_pkey = ?");
+   			$sql->execute(array($id . $row['pkey'], $row['pkey']));
+/*
+ *	Handle the extensions
+ */
    			$id = $v7dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN); 			
    			$sql = $v7dbh->prepare("UPDATE IPphone SET pkey = ? WHERE pkey = ?");
    			$sql->execute(array($id . $row['pkey'], $row['pkey']));
    			$res = NULL;
-/*
- *	Handle class of service
- */
-			$sql = $v7dbh->prepare("UPDATE IPphoneCOSopen SET pkey = ? WHERE pkey = ? A");
-   			$sql->execute(array($id . $row['pkey'], $row['pkey']));
+
    		}
 
    	}
