@@ -303,7 +303,8 @@ FAX TEXT,							-- FAX flag
 FAXDETECT TEXT,                     -- FAX detect onoff
 FOPPASS INTEGER DEFAULT 1224,			-- Flash opeartor panel password
 FQDN TEXT,							-- FQDN V5+
-FQDNDROPBUFF INTEGER DEFAULT 100,		-- fqdn drop set size (in entries)
+FQDNCERTINST INTEGER DEFAULT 0,		-- 0 or 1 letsencrypt certificate installed    
+FQDNDROPBUFF INTEGER DEFAULT 100,	-- fqdn drop set size (in entries)
 FQDNINSPECT TEXT DEFAULT 'NO',		-- Require FQDN in SIP Ops Shorewall 4.6+
 FQDNHTTP TEXT DEFAULT 'NO',			-- Require FQDN in remote HTTP Ops 
 FQDNPROV TEXT,						-- use FQDN in remote provisioning YES/NO
