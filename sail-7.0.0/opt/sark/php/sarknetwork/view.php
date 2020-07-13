@@ -36,12 +36,13 @@ Class sarknetwork {
 	protected $myBooleans = array(
 		'toggleDhcpElement',
 		'edomainsend',
+		'fqdncert',
 		'fqdnhttp',		
 		'fqdninspect',
 		'fqdnprov',
 		'icmp',
 		'smtpusetls',
-		'smtpusestrttls'	
+		'smtpusestrttls'
 	);
 	
 public function showForm() {
@@ -88,7 +89,7 @@ private function showMain() {
 	if (isset($this->message)) {
 		$this->myPanel->msg = $this->message;
 	} 
-	$sql = $this->dbh->prepare("SELECT fqdn,fqdnhttp,fqdninspect,fqdnprov,bindaddr,edomain,sendedomain,vcl FROM globals where pkey = ?");
+	$sql = $this->dbh->prepare("SELECT fqdn,fqdncert,fqdnhttp,fqdninspect,fqdnprov,bindaddr,edomain,sendedomain,vcl FROM globals where pkey = ?");
 	$sql->execute(array('global'));
 	$global = $sql->fetchObject();
 		
@@ -271,6 +272,7 @@ private function showMain() {
     $this->myPanel->displayBooleanFor('edomainsend',$global->SENDEDOMAIN);
     $this->myPanel->displayInputFor("fqdn",'text',$global->FQDN); 
     if (!empty($global->FQDN)) {
+    	$this->myPanel->displayBooleanFor('fqdncert',$global->FQDNCERT);
     	$this->myPanel->displayBooleanFor('fqdnprov',$global->FQDNPROV);
     	$this->myPanel->displayBooleanFor('fqdninspect',$global->FQDNINSPECT);
     	$this->myPanel->displayBooleanFor('fqdnhttp',$global->FQDNHTTP);
@@ -459,6 +461,7 @@ private function saveEdit() {
 		$sendedomain	= strip_tags($_POST['edomainsend']);
 		$bindaddr 		= strip_tags($_POST['bindaddr']);
 		$fqdn 			= strip_tags($_POST['fqdn']);
+		$fqdncert 		= strip_tags($_POST['fqdncert']);
 		$fqdnhttp 		= strip_tags($_POST['fqdnhttp']);
 		$fqdninspect 	= strip_tags($_POST['fqdninspect']);
 		$fqdnprov 		= strip_tags($_POST['fqdnprov']);
@@ -482,6 +485,7 @@ private function saveEdit() {
 		if (filter_var($edomain, FILTER_VALIDATE_IP)) {
 			$tuple['edomain'] = $edomain;
 		}
+		$tuple['fqdncert'] = 'NO';
 		$tuple['fqdnprov'] = 'NO';
 		$tuple['fqdninspect'] = 'NO';
 		$tuple['fqdnhttp'] = 'NO';
@@ -490,6 +494,9 @@ private function saveEdit() {
 			$sname = 'ServerName ' . $fqdn;
 			`echo $sname > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
 			$tuple['sendedomain'] = $sendedomain;
+			if (isset($fqdncert)) {
+				$tuple['fqdncert'] = $fqdncert;
+			}			
 			if (isset($fqdnprov)) {
 				$tuple['fqdnprov'] = $fqdnprov;
 			}
@@ -503,6 +510,9 @@ private function saveEdit() {
 		}
 		else {
 			`echo 'ServerName sark.local' > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
+			if (file_exists("/etc/cron.d/srkcertbot")) {
+				`sudo rm -rf /etc/cron.d/srkcertbot`;
+			}
 		}
 
 		$ret = $this->helper->setTuple("globals",$tuple);
