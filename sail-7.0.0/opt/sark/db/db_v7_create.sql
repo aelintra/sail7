@@ -280,6 +280,7 @@ ACL TEXT DEFAULT 'OFF',				-- ONOFF
 AGENTSTART INTEGER DEFAULT 6001,		-- Agent start number
 ALLOWHASHXFER TEXT DEFAULT 'enabled', -- Allow asterisk non-SIP xfer
 ASTDLIM TEXT DEFAULT ',',			-- Asterisk delimiter comma
+BINDADDR TEXT,						-- Asterisk SIP bindaddr
 BLINDBUSY TEXT,						-- blind transfer busy bounce
 BOUNCEALERT TEXT,                   -- alertinfo string for blind transfer bounce
 CALLPARKING TEXT DEFAULT 'YES',		-- turn call parking on/off
@@ -303,14 +304,12 @@ FAX TEXT,							-- FAX flag
 FAXDETECT TEXT,                     -- FAX detect onoff
 FOPPASS INTEGER DEFAULT 1224,			-- Flash opeartor panel password
 FQDN TEXT,							-- FQDN V5+
-FQDNDROPBUFF INTEGER DEFAULT 100,		-- fqdn drop set size (in entries)
+FQDNCERT INTEGER DEFAULT 'NO',		-- FQDN letsencrypt cert installed NO/YES 		
 FQDNINSPECT TEXT DEFAULT 'NO',		-- Require FQDN in SIP Ops Shorewall 4.6+
 FQDNHTTP TEXT DEFAULT 'NO',			-- Require FQDN in remote HTTP Ops 
 FQDNPROV TEXT,						-- use FQDN in remote provisioning YES/NO
-FQDNTRUST TEXT DEFAULT 'NO',		-- construct an ipset of trusted IP's from a list of trusted fqdns
 HAAUTOFAILBACK TEXT,                -- not used after asha 2
 HACLUSTERIP TEXT,                   -- cluster ip fr HAAster3sk@
-
 HAUSECLUSTER TEXT,                  -- use cluster virt IP when provisioning
 INTRINGDELAY INTEGER DEFAULT 20,		-- ring time before voicemail
 IVRKEYWAIT INTEGER DEFAULT 6,

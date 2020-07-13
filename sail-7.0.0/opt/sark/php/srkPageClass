@@ -416,6 +416,10 @@ Class page {
                                 'checked' =>'YES',
                                 'unchecked' => 'NO'
                                 ),
+                'fqdncert'   => array(
+                                'checked' =>'YES',
+                                'unchecked' => 'NO',
+                                ), 
                 'fqdnhttp'   => array(
                                 'checked' =>'YES',
                                 'unchecked' => 'NO',
