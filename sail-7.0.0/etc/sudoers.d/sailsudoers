@@ -4,4 +4,5 @@ www-data ALL=NOPASSWD: /usr/sbin/asterisk
 www-data ALL=NOPASSWD: /sbin/shorewall
 www-data ALL=NOPASSWD: /sbin/shorewall6
 www-data ALL=NOPASSWD: /usr/bin/nmap
-
+www-data ALL=NOPASSWD: /usr/bin/touch
+www-data ALL=NOPASSWD: /bin/rm

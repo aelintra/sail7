@@ -485,35 +485,45 @@ private function saveEdit() {
 		if (filter_var($edomain, FILTER_VALIDATE_IP)) {
 			$tuple['edomain'] = $edomain;
 		}
-		$tuple['fqdncert'] = 'NO';
+		$sql = $this->dbh->prepare("SELECT fqdn,fqdncert,fqdnhttp,fqdninspect,fqdnprov FROM globals");
+		$sql->execute();
+		$global = $sql->fetchObject();
+
+
 		$tuple['fqdnprov'] = 'NO';
 		$tuple['fqdninspect'] = 'NO';
 		$tuple['fqdnhttp'] = 'NO';
-		if (!empty($fqdn)) {		
-			$tuple['fqdn'] = $fqdn;
-			$sname = 'ServerName ' . $fqdn;
-			`echo $sname > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
-			$tuple['sendedomain'] = $sendedomain;
-			if (isset($fqdncert)) {
-				$tuple['fqdncert'] = $fqdncert;
+
+		if ($fqdn != $global->fqdn) {
+			if ($global->fqdncert = 'YES') {
+				$this->doRemoveCert($global->fqdn);
+				
 			}			
-			if (isset($fqdnprov)) {
-				$tuple['fqdnprov'] = $fqdnprov;
+			if (!empty($fqdn)) {
+				$this->doAddCert($fqdn); // add renewal cron link
+				$tuple['fqdncert'] = $fqdncert;		
+				$tuple['fqdn'] = $fqdn;
+				$sname = 'ServerName ' . $fqdn;
+				`echo $sname > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
+				$tuple['sendedomain'] = $sendedomain;
+		
+				if (isset($fqdnprov)) {
+					$tuple['fqdnprov'] = $fqdnprov;
+				}
+				if (isset($fqdninspect)) {
+					$tuple['fqdninspect'] = $fqdninspect;
+				}
+				if (isset($fqdnhttp)) {
+					$tuple['fqdnhttp'] = $fqdnhttp;
+					$this->doHttpFilter($fqdnhttp,$fqdn);
+				}
 			}
-			if (isset($fqdninspect)) {
-				$tuple['fqdninspect'] = $fqdninspect;
-			}
-			if (isset($fqdnhttp)) {
-				$tuple['fqdnhttp'] = $fqdnhttp;
-				$this->doHttpFilter($fqdnhttp,$fqdn);
-			}									
+			else {
+				`echo 'ServerName sark.local' > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
+
+			}								
 		}
-		else {
-			`echo 'ServerName sark.local' > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
-			if (file_exists("/etc/cron.d/srkcertbot")) {
-				`sudo rm -rf /etc/cron.d/srkcertbot`;
-			}
-		}
+
 
 		$ret = $this->helper->setTuple("globals",$tuple);
 		
@@ -891,7 +901,17 @@ function doHttpFilter($filterValue,$fqdn) {
 	`echo $fqdncond >>  /opt/sark/etc/apache2/sark_includes/preventIpAccess.conf`;
 	`echo $fqdnrule >>  /opt/sark/etc/apache2/sark_includes/preventIpAccess.conf`;
 	return;
-}	
+}
 
+function doAddCert($fqdn) {
+	return;
+}	
+function doRemoveCert($fqdn) {
+	return;
+	if (file_exists("/etc/cron.d/srkcertbot")) { //-> move to doRemoveCert() 
+		`sudo rm -rf /etc/cron.d/srkcertbot`;
+	}
+	return;
+}
 
 }

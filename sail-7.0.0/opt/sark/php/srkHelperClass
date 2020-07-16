@@ -50,7 +50,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "../php/srkGenClass";
  */	
 	
 	if (file_exists("/opt/sark/cache/commitflag")) {
-		`/bin/rm -rf /opt/sark/cache/commitflag`;
+		`sudo /bin/rm -rf /opt/sark/cache/commitflag`;
 	} 
 
 
@@ -60,7 +60,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "../php/srkGenClass";
 public function commitOn () {
 //turn the commit lamp on
 
-	`/bin/touch /opt/sark/cache/commitflag`;
+	`sudo /bin/touch /opt/sark/cache/commitflag`;
 //	$dbh = DB::getInstance();
 //	$res=$dbh->exec("UPDATE globals SET MYCOMMIT='YES' WHERE pkey='global'");
 	return;
