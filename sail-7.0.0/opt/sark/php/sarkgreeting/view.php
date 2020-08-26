@@ -48,7 +48,7 @@ public function showForm() {
 				$sox = "/usr/bin/sox " . $_FILES['file']['tmp_name'] . " -r 8000 -c 1 -e signed /tmp/" . $_FILES['file']['name'] . " -q";
 				$rets = `$sox`;
 				if (!$rets) {
-					$this->helper->request_syscmd ("/bin/mv /tmp/" . $_FILES['file']['name'] . ' ' . $this->soundir . $_REQUEST['cluster']);				
+					$this->helper->request_syscmd ("/bin/mv /tmp/" . $_FILES['file']['name'] . ' ' . $this->soundir . $_REQUEST['cluster']);			
 					$this->helper->request_syscmd ("/bin/chown asterisk:asterisk $this->soundir" . $_REQUEST['cluster'] .  "/$filename");
 					$this->helper->request_syscmd ("/bin/chmod 664 $this->soundir" . $_REQUEST['cluster'] .  "/$filename");
 					$this->message = "File $filename uploaded!";

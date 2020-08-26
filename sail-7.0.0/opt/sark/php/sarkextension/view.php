@@ -1294,7 +1294,7 @@ private function saveEdit() {
  */  
  		if ($this->astrunning) {
 			$amiHelper = new amiHelper();
-			$amiHelper->put_database($newkey);			
+			$amiHelper->put_database($_POST['pkey']);			
 		}
  		
 /*

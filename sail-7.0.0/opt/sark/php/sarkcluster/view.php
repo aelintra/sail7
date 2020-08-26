@@ -28,7 +28,7 @@ Class sarkcluster {
 	protected $validator;
 	protected $invalidForm;
 	protected $error_hash = array();
-	protected $soundir = '/usr/share/asterisk/'; // set for Debian/Ubuntu
+	protected $soundir = '/usr/share/asterisk/sarksounds/'; 
 	protected $myBooleans = array(
 		'usemohcustom'
 	);
@@ -252,8 +252,8 @@ private function saveNew() {
 		
 		$ret = $this->helper->createTuple("cluster",$tuple);
 		if ($ret == 'OK') {
-			$this->helper->request_syscmd ("mkdir $this->soundir" . $tuple['pkey']);
-			$this->helper->request_syscmd ("chown asterisk:asterisk $this->soundir" . $tuple['pkey']);
+			$this->helper->request_syscmd ("mkdir " . $this->soundir . $tuple['pkey']);
+			$this->helper->request_syscmd ("chown asterisk:asterisk " . $this->soundir . $tuple['pkey']);
 			$this->message = "Saved new Tenant " . $tuple['pkey'] . "!";
 		}
 		else {
