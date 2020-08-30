@@ -1,3 +1,18 @@
+sail (7.0.0-11+ubuntu18) UNRELEASED; urgency=low
+  * tagged
+
+  - fix to greetings/view and cluster/view for greetings directories
+  - fix AmiHelper twinning on/off bug, fetched forward from 6.0.1
+  - db_v4 cleanupo and remove wheezy legacy
+  - leave default extensions without prefix
+  - Include Yealink hot provision
+  - Use full queue name in edit
+  - Use short (full) numbers for ring groups
+  - add back old HA flags for now listener
+  - add back multicast listener flag
+
+ -- CoCoSoft <admin@aelintra.com>  Fri, 12  June 2020 18:00:00 +0000
+
 sail (7.0.0-10+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
