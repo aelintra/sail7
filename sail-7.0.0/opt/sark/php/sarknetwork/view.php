@@ -36,13 +36,12 @@ Class sarknetwork {
 	protected $myBooleans = array(
 		'toggleDhcpElement',
 		'edomainsend',
-		'fqdncert',
 		'fqdnhttp',		
 		'fqdninspect',
 		'fqdnprov',
 		'icmp',
 		'smtpusetls',
-		'smtpusestrttls'
+		'smtpusestrttls'	
 	);
 	
 public function showForm() {
@@ -89,7 +88,7 @@ private function showMain() {
 	if (isset($this->message)) {
 		$this->myPanel->msg = $this->message;
 	} 
-	$sql = $this->dbh->prepare("SELECT fqdn,fqdncert,fqdnhttp,fqdninspect,fqdnprov,bindaddr,edomain,sendedomain,vcl FROM globals where pkey = ?");
+	$sql = $this->dbh->prepare("SELECT fqdn,fqdnhttp,fqdninspect,fqdnprov,bindaddr,edomain,sendedomain,vcl FROM globals where pkey = ?");
 	$sql->execute(array('global'));
 	$global = $sql->fetchObject();
 		
@@ -272,7 +271,6 @@ private function showMain() {
     $this->myPanel->displayBooleanFor('edomainsend',$global->SENDEDOMAIN);
     $this->myPanel->displayInputFor("fqdn",'text',$global->FQDN); 
     if (!empty($global->FQDN)) {
-    	$this->myPanel->displayBooleanFor('fqdncert',$global->FQDNCERT);
     	$this->myPanel->displayBooleanFor('fqdnprov',$global->FQDNPROV);
     	$this->myPanel->displayBooleanFor('fqdninspect',$global->FQDNINSPECT);
     	$this->myPanel->displayBooleanFor('fqdnhttp',$global->FQDNHTTP);
@@ -461,7 +459,6 @@ private function saveEdit() {
 		$sendedomain	= strip_tags($_POST['edomainsend']);
 		$bindaddr 		= strip_tags($_POST['bindaddr']);
 		$fqdn 			= strip_tags($_POST['fqdn']);
-		$fqdncert 		= strip_tags($_POST['fqdncert']);
 		$fqdnhttp 		= strip_tags($_POST['fqdnhttp']);
 		$fqdninspect 	= strip_tags($_POST['fqdninspect']);
 		$fqdnprov 		= strip_tags($_POST['fqdnprov']);
@@ -485,45 +482,28 @@ private function saveEdit() {
 		if (filter_var($edomain, FILTER_VALIDATE_IP)) {
 			$tuple['edomain'] = $edomain;
 		}
-		$sql = $this->dbh->prepare("SELECT fqdn,fqdncert,fqdnhttp,fqdninspect,fqdnprov FROM globals");
-		$sql->execute();
-		$global = $sql->fetchObject();
-
-
 		$tuple['fqdnprov'] = 'NO';
 		$tuple['fqdninspect'] = 'NO';
 		$tuple['fqdnhttp'] = 'NO';
-
-		if ($fqdn != $global->fqdn) {
-			if ($global->fqdncert = 'YES') {
-				$this->doRemoveCert($global->fqdn);
-				
-			}			
-			if (!empty($fqdn)) {
-				$this->doAddCert($fqdn); // add renewal cron link
-				$tuple['fqdncert'] = $fqdncert;		
-				$tuple['fqdn'] = $fqdn;
-				$sname = 'ServerName ' . $fqdn;
-				`echo $sname > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
-				$tuple['sendedomain'] = $sendedomain;
-		
-				if (isset($fqdnprov)) {
-					$tuple['fqdnprov'] = $fqdnprov;
-				}
-				if (isset($fqdninspect)) {
-					$tuple['fqdninspect'] = $fqdninspect;
-				}
-				if (isset($fqdnhttp)) {
-					$tuple['fqdnhttp'] = $fqdnhttp;
-					$this->doHttpFilter($fqdnhttp,$fqdn);
-				}
+		if (!empty($fqdn)) {		
+			$tuple['fqdn'] = $fqdn;
+			$sname = 'ServerName ' . $fqdn;
+			`echo $sname > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
+			$tuple['sendedomain'] = $sendedomain;
+			if (isset($fqdnprov)) {
+				$tuple['fqdnprov'] = $fqdnprov;
 			}
-			else {
-				`echo 'ServerName sark.local' > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
-
-			}								
+			if (isset($fqdninspect)) {
+				$tuple['fqdninspect'] = $fqdninspect;
+			}
+			if (isset($fqdnhttp)) {
+				$tuple['fqdnhttp'] = $fqdnhttp;
+				$this->doHttpFilter($fqdnhttp,$fqdn);
+			}									
 		}
-
+		else {
+			`echo 'ServerName sark.local' > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
+		}
 
 		$ret = $this->helper->setTuple("globals",$tuple);
 		
@@ -901,17 +881,7 @@ function doHttpFilter($filterValue,$fqdn) {
 	`echo $fqdncond >>  /opt/sark/etc/apache2/sark_includes/preventIpAccess.conf`;
 	`echo $fqdnrule >>  /opt/sark/etc/apache2/sark_includes/preventIpAccess.conf`;
 	return;
-}
-
-function doAddCert($fqdn) {
-	return;
 }	
-function doRemoveCert($fqdn) {
-	return;
-	if (file_exists("/etc/cron.d/srkcertbot")) { //-> move to doRemoveCert() 
-		`sudo rm -rf /etc/cron.d/srkcertbot`;
-	}
-	return;
-}
+
 
 }
