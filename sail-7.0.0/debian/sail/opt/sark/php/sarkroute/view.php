@@ -61,10 +61,8 @@ public function showForm() {
 	
 	if (isset($_POST['update']) || isset($_POST['endupdate'])) { 
 		$this->saveEdit();
-		if ($this->invalidForm) {
-			$this->showEdit($_POST['pkey']);
-			return;
-		}					
+		$this->showEdit($_POST['pkey']);
+		return;					
 	}	
 
 	if (isset($_POST['commit']) || isset($_POST['commitClick'])) { 
@@ -117,10 +115,6 @@ private function showMain() {
 	$this->myPanel->aHeaderFor('routedesc',false,'w3-hide-small w3-hide-medium');
 	$this->myPanel->aHeaderFor('strategy',false,'w3-hide-small');	
 	$this->myPanel->aHeaderFor('path1',false,'w3-hide-small');
-//	$this->myPanel->aHeaderFor('path2',false,'w3-hide-small w3-hide-medium');
-//	$this->myPanel->aHeaderFor('path3');
-//	$this->myPanel->aHeaderFor('path4');			
-//	$this->myPanel->aHeaderFor('auth',false,'w3-hide-small');
 	$this->myPanel->aHeaderFor('Act',false,'w3-hide');	
 	$this->myPanel->aHeaderFor('ed',false,'editcol');
 	$this->myPanel->aHeaderFor('del',false,'delcol');
@@ -133,7 +127,7 @@ private function showMain() {
 
 	$rows = $this->helper->getTable("route");
 	foreach ($rows as $row ) {
-		echo '<tr id="' . $row['pkey'] . '">'. PHP_EOL; 
+		echo '<tr id="' . $row['id'] . '">'. PHP_EOL; 
 	
 		echo '</td>' . PHP_EOL;	
 		echo '<td class="w3-hide-small w3-hide-medium">' . $row['cluster'] . '</td>' . PHP_EOL;	
@@ -143,17 +137,13 @@ private function showMain() {
 		echo '<td class="w3-hide-small w3-hide-medium">' . $row['desc'] . '</td>' . PHP_EOL;		
 		echo '<td class="w3-hide-small">' . $row['strategy'] . '</td>' . PHP_EOL;		
 		echo '<td class="w3-hide-small">' . $row['path1'] . '</td>' . PHP_EOL;
-//		echo '<td class="w3-hide-small w3-hide-medium">' . $row['path2'] . '</td>' . PHP_EOL;
-//		echo '<td >' . $row['path3'] . '</td>' . PHP_EOL;
-//		echo '<td >' . $row['path4'] . '</td>' . PHP_EOL;		
-//		echo '<td class="w3-hide-small">' . $row['auth'] . '</td>' . PHP_EOL;
 		echo '<td class="w3-hide">' . $row['active'] . '</td>' . PHP_EOL;		
-		$get = '?edit=yes&amp;pkey=';
-		$get .= $row['pkey'];	
+		$get = '?edit=yes&amp;id=';
+		$get .= $row['id'];	
 		$this->myPanel->editClick($_SERVER['PHP_SELF'],$get);	
-		$get = '?id=' . $row['pkey'];		
+		$get = '?id=' . $row['id'];		
 		$this->myPanel->ajaxdeleteClick($get);	
-		echo '<input type="hidden" name="pkey" id="pkey" value="' . $row['pkey'] . '"  />' . PHP_EOL;
+		echo '<input type="hidden" name="id" id="id" value="' . $row['id'] . '"  />' . PHP_EOL;
 		echo '</tr>'. PHP_EOL;
 	}
 
@@ -228,20 +218,29 @@ private function saveNew() {
     //Now, validate the form
     if ($this->validator->ValidateForm()) {
 
+// check for dups
+	
+    $retc = $this->helper->checkXref($_POST['pkey'],$_POST['cluster']);
+    if ($retc) {
+    	$this->invalidForm = True;
+    	$this->error_hash['extinsert'] = "Duplicate found in table $retc - choose a different extension number";
+    	return;    	
+    }
+
 /*
  * 	call the tuple builder to create a table row array 
  */  
 //		$tuple['pkey'] 	 = '_route' . rand(1000, 9999);
 		$this->helper->buildTupleArray($_POST,$tuple);	
 			  
-		$ret = $this->helper->createTuple("route",$tuple);
+		$ret = $this->helper->createTuple("route",$tuple,true,$tuple['cluster']);
 		if ($ret == 'OK') {
 			$this->message = "Saved";
 		}
 		else {
 			$this->invalidForm = True;
 			$this->message = "Validation Errors!";	
-			$this->error_hash['speedinsert'] = $ret;	
+			$this->error_hash['routeinsert'] = $ret;	
 		}
 				
 	}
@@ -254,17 +253,14 @@ private function saveNew() {
 
 }
 
-private function showEdit($key=False) {
+private function showEdit($id=False) {
 	
-	if ($key != False) {
-		$pkey=$key;
-	}
-	else {
-		$pkey = $_GET['pkey']; 
-	}
+
+	$id = $_GET['id']; 
+
 
 	$buttonArray['cancel'] = true;
-	$this->myPanel->actionBar($buttonArray,"sarkrouteForm",false,false,true);
+	$this->myPanel->actionBar($buttonArray,"sarkrouteForm",false,true,true);
 
 	if ($this->invalidForm) {
 		$this->myPanel->showErrors($this->error_hash);
@@ -279,7 +275,7 @@ private function showEdit($key=False) {
 		
 	$trunklist = $this->helper->getTrunklist();;
 	
-	$res = $this->dbh->query("SELECT * FROM route where pkey = '" . $pkey . "'")->fetch(PDO::FETCH_ASSOC);
+	$res = $this->dbh->query("SELECT * FROM route where id = '" . $id . "'")->fetch(PDO::FETCH_ASSOC);
 
 	$this->myPanel->displayBooleanFor('active',$res['active']);	
 		
@@ -312,7 +308,7 @@ private function showEdit($key=False) {
 	$endButtonArray['update'] = "endupdate";	
 	$this->myPanel->endBar($endButtonArray);
 
-	echo '<input type="hidden" name="pkey" id="pkey" value="' . $pkey . '" />' . PHP_EOL;
+	echo '<input type="hidden" name="id" id="id" value="$id" />' . PHP_EOL;
 	
 	echo '</form>' . PHP_EOL; // close the form  
     $this->myPanel->responsiveClose();

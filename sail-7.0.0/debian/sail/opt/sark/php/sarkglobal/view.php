@@ -251,6 +251,16 @@ private function showMain() {
 
 	$this->myPanel->displayInputFor('bouncealert','text',$global['BOUNCEALERT']);
 	echo '</div>';
+		
+	$this->myPanel->internalEditBoxStart();
+ 	$this->myPanel->subjectBar("Continuous SIP PCAP Logging");   
+    $this->myPanel->displayInputFor('logsipfilesize','number',$global['LOGSIPFILESIZE']);
+    $this->myPanel->displayInputFor('logsipnumfiles','number',$global['LOGSIPNUMFILES']);
+    $this->myPanel->displayInputFor('logsipdispsize','number',$global['LOGSIPDISPSIZE']);
+    echo '<div class="w3-container w3-padding w3-margin-top">' . PHP_EOL;
+	echo '<button class="w3-button w3-blue w3-small w3-round-xxlarge w3-padding w3-right" type="submit" name="sipcapClear">Clear PCAP logs</button>';
+	echo '</div>' . PHP_EOL;
+    echo '</div>';	
 
 #
 #       TAB DIVEND
@@ -322,16 +332,6 @@ private function saveEdit() {
 
 	$tuple = array();
 
-/*	
-	if (isset($_POST['EURL'])) {
-		$fvar = filter_var($_POST['EURL'], FILTER_VALIDATE_URL);
-		if ($fvar) {
-			$this->invalidForm = True;
-			$this->message = "<B>  --  Validation Errors!</B>";	
-			$this->error_hash['extensave'] = "External URL is invalid!";
-		}
-	}
-*/
 	$this->validator = new FormValidator();
 	
 	$this->validator->addValidation("pwdlen","num","Extension password length must be numeric"); 
@@ -469,6 +469,14 @@ private function sark_start () {
 	`/usr/bin/sudo /etc/init.d/asterisk start`;
 
 	return ("PBX started");	
+}
+
+private function sipcap_clear () {
+
+	$ret = ($this->helper->request_syscmd ('/usr/bin/touch /opt/sark/service/srk-ua-siplog/down'));
+	$ret = ($this->helper->request_syscmd ('/usr/bin/sv d srk-ua-siplog'));
+	$ret = ($this->helper->request_syscmd ('rm -rf /var/log/siplog/*'));
+	return ("SIP PCAP Logs cleared");	
 }
 
 private function sipcap_stop () {

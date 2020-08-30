@@ -65,10 +65,8 @@ public function showForm() {
 
 	if ( isset($_POST['update']) || isset($_POST['endupdate'])) { 
 		$this->saveEdit();
-		if ($this->invalidForm) {
-			$this->showEdit();
-			return;
-		}
+		$this->showEdit();
+		return;
 	}	
 
 	if (isset($_POST['commit']) || isset($_POST['commitClick'])) { 
@@ -136,15 +134,7 @@ private function showMain() {
 		echo '<tr id="' . $row['pkey'] . '">'. PHP_EOL; 
 		echo '<td class="read_only">' . $row['cluster'] . '</td>' . PHP_EOL;
 		echo '<input type="hidden" name="pkey" id="pkey" value="' . $row['pkey'] . '"  />' . PHP_EOL;
-//		if ($row['cluster'] != 'default') {
-			$shortkey = substr($row['pkey'],2);
-/*
-		}
-		else {
-			$shortkey = $row['pkey'];
-		}
-*/
-		echo '<td class="read_only">' . $shortkey . '</td>' . PHP_EOL;
+		echo '<td class="read_only">' . substr($row['pkey'],2) . '</td>' . PHP_EOL;
 		echo '<td class="w3-hide-small">' . $row['description']  . '</td>' . PHP_EOL;				 
 		echo '<td class="w3-hide-small">' . $row['type']  . '</td>' . PHP_EOL;		
 		echo '<td class="w3-hide-small">' . $row['pin']  . '</td>' . PHP_EOL;
@@ -272,17 +262,9 @@ private function showEdit() {
 	$pkey = $_REQUEST['pkey']; 
 
 	$tuple = $this->dbh->query("SELECT * FROM meetme WHERE pkey='" . $pkey ."'")->fetch(PDO::FETCH_ASSOC);
-
-//	if ($tuple['cluster'] != 'default') {
-		$shortkey = substr($tuple['pkey'],2);
-/*
-	}
-	else {
-		$shortkey = $tuple['pkey'];
-	}
-*/	
+	
 	$buttonArray['cancel'] = true;
-	$this->myPanel->actionBar($buttonArray,"sarkconferenceForm",false,false,true);
+	$this->myPanel->actionBar($buttonArray,"sarkconferenceForm",false,true,true);
 
 	if ($this->invalidForm) {
 		$this->myPanel->showErrors($this->error_hash);
@@ -291,7 +273,7 @@ private function showEdit() {
 	$this->myPanel->responsiveSetup(2);
 
 	$this->myPanel->internalEditBoxStart();
-	$this->myPanel->subjectBar("Edit Conference " . $shortkey);
+	$this->myPanel->subjectBar("Edit Conference " . substr($tuple['pkey'],2));
 
 	echo '<form id="sarkconferenceForm" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
 

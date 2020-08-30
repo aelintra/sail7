@@ -58,10 +58,8 @@ public function showForm() {
 	
 	if (isset($_POST['update']) || isset($_POST['endupdate'])) { 
 		$this->saveEdit();
-//		if ($this->invalidForm) {
-			$this->showEdit($_POST['pkey'],$_POST['cluster']);
-			return;
-//		}					
+		$this->showEdit($_POST['pkey'],$_POST['cluster']);
+		return;				
 	}
 	
 	if (isset($_POST['commit']) || isset($_POST['commitClick'])) { 
@@ -130,7 +128,7 @@ private function showMain() {
 			echo '<input type="hidden" name="pkey" id="pkey" value="' . $row['pkey'] . '"  />' . PHP_EOL;
 
 //			if ($row['cluster'] != 'default') {
-				$shortkey = substr($row['pkey'],2);
+//				$shortkey = substr($row['pkey'],2);
 /*
 			}
 			else {
@@ -138,7 +136,7 @@ private function showMain() {
 			}	
 */		 
 			echo '<td class="w3-hide-medium w3-hide-small">' . $row['cluster'] . '</td>' . PHP_EOL;
-			echo '<td class="read_only">' . $shortkey . '</td>' . PHP_EOL;					
+			echo '<td class="read_only">' . $row['pkey'] . '</td>' . PHP_EOL;					
 			echo '<td >' . $row['longdesc'] . '</td>' . PHP_EOL;
 			echo '<td class="w3-hide-medium w3-hide-small">' . $row['grouptype'] . '</td>' . PHP_EOL;
 			echo '<td class="w3-hide-medium w3-hide-small">' . $row['calleridname'] . '</td>' . PHP_EOL;

@@ -366,12 +366,6 @@ private function restartFirewall() {
 
 private function copyFirewallTemplates() {
 
-// check the rulesets exist 
-/*
-  	$rc = $this->helper->request_syscmd ("ipset -N voipbl iphash");
-	$rc = $this->helper->request_syscmd ("ipset -N fqdntrust iphash");
-	$rc = $this->helper->request_syscmd ("ipset -N fqdndrop iphash");
-*/
 	$this->dbh = DB::getInstance();
 	$res = $this->dbh->query("SELECT EXTBLKLST,FQDN,FQDNINSPECT,FQDNTRUST,SIPFLOOD FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	

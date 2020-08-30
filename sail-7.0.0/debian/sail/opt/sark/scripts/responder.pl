@@ -272,7 +272,7 @@ while (1) {
     my $sipmcast = SarkSubs::SQLiteGet($dbh, "SELECT SIPMULTICAST FROM globals where pkey = 'global'");
 	my $ztp = SarkSubs::SQLiteGet($dbh, "SELECT ZTP FROM globals where pkey = 'global'");
 # check if I'm an inactive standby node in a HA cluster and override mcast if I am 
-    my $rank = SarkSubs::SQLiteGet($dbh, "SELECT HASECNODE FROM globals") ;
+#    my $rank = SarkSubs::SQLiteGet($dbh, "SELECT HASECNODE FROM globals") ;
 
     SarkSubs::SQLiteDisconnect($dbh);
     unless ($sipmcast eq 'enabled') {		

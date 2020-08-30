@@ -25,7 +25,7 @@
 		$arch = 'arm';
 	}
 	
-	$res = $dbh->query("SELECT VCL,PKTINSPECT FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
+	$res = $dbh->query("SELECT VCL FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	
 	$sql =  "SELECT un.pkey, up.panel_pkey, p.classname, p.displayname, p.active, pg.groupname from user un " .
 			"INNER JOIN UserPanel up on up.user_pkey = un.pkey " . 
@@ -73,7 +73,7 @@
 				$nogen=true;
 			}
 		}					
-		if (preg_match(" /^sarkthreat/ ",$row['classname']) && $res['PKTINSPECT'] == false ) {
+		if (preg_match(" /^sarkthreat/ ",$row['classname'])) {
 			$nogen=true;
 		}
 		if (preg_match(" /^sarkdiscover/ ",$row['classname']) && $res['VCL'] == true ) {

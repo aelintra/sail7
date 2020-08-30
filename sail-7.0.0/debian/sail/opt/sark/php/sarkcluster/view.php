@@ -28,7 +28,7 @@ Class sarkcluster {
 	protected $validator;
 	protected $invalidForm;
 	protected $error_hash = array();
-	protected $soundir = '/usr/share/asterisk/'; // set for Debian/Ubuntu
+	protected $soundir = '/usr/share/asterisk/sarksounds/'; 
 	protected $myBooleans = array(
 		'usemohcustom'
 	);
@@ -252,8 +252,8 @@ private function saveNew() {
 		
 		$ret = $this->helper->createTuple("cluster",$tuple);
 		if ($ret == 'OK') {
-			$this->helper->request_syscmd ("mkdir $this->soundir" . $tuple['pkey']);
-			$this->helper->request_syscmd ("chown asterisk:asterisk $this->soundir" . $tuple['pkey']);
+			$this->helper->request_syscmd ("mkdir " . $this->soundir . $tuple['pkey']);
+			$this->helper->request_syscmd ("chown asterisk:asterisk " . $this->soundir . $tuple['pkey']);
 			$this->message = "Saved new Tenant " . $tuple['pkey'] . "!";
 		}
 		else {
@@ -305,7 +305,7 @@ private function showEdit($pkey=false) {
 
 	echo '<form id="sarkclusterForm" action="' . $_SERVER['PHP_SELF'] . '" method="post" enctype="multipart/form-data">' . PHP_EOL;
 	
-
+	$this->myPanel->radioSlide('masterclose',$masterclose,array('AUTO','CLOSED'));
 	echo '<div class="w3-margin-bottom">';
 	$this->myPanel->aLabelFor('clustersysop');
 	echo '</div>'; 
@@ -319,7 +319,15 @@ private function showEdit($pkey=false) {
 	$this->myPanel->displayInputFor('localdplan','text',$res['localdplan']);
 	$this->myPanel->displayInputFor('abstimeout','number',$res['abstimeout']);
 	$this->myPanel->displayInputFor('chanmax','number',$res['chanmax']);
+	$this->myPanel->displayInputFor('startagent','number',$res['startagent']);
+	$this->myPanel->displayInputFor('startconfroom','number',$res['startconfroom']);
+	$this->myPanel->displayInputFor('startextension','number',$res['startextension']);
+	$this->myPanel->displayInputFor('startivr','number',$res['startivr']);
+	$this->myPanel->displayInputFor('startparks','number',$res['startparks']);
+	$this->myPanel->displayInputFor('startqueue','number',$res['startqueue']);
+	$this->myPanel->displayInputFor('startringgroup','number',$res['startringgroup']);
 	$this->myPanel->radioSlide('masterclose',$masterclose,array('AUTO','CLOSED'));
+
 //	$this->myPanel->displayInputFor('oclo','text',$res['oclo'],null,null,true);
 //	
 	$mohlist = array();
@@ -415,6 +423,14 @@ private function saveEdit() {
     $this->validator->addValidation("localdplan","regexp=/^[_0-9XNZxnz!#\s\*\.\-\[\]]+$/","Local Dialplan must be a valid Asterisk dialplan");
     $this->validator->addValidation("abstimeout","num","Absolute Timeout must be numeric");
     $this->validator->addValidation("chanmax","num","Channels must be numeric");
+    $this->validator->addValidation("startagent","num","startagent must be numeric");
+    $this->validator->addValidation("startconfroom","num","startconfroom must be numeric");
+    $this->validator->addValidation("startextension","num","startextension must be numeric");
+    $this->validator->addValidation("startivr","num","startivr must be numeric");
+    $this->validator->addValidation("startparks","num","startparks must be numeric");
+    $this->validator->addValidation("startqueue","num","startqueue must be numeric");
+    $this->validator->addValidation("startringgroup","num","startringgroup must be numeric");
+
     //Now, validate the form
     if ($this->validator->ValidateForm()) {
 /*

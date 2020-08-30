@@ -50,7 +50,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "../php/srkGenClass";
  */	
 	
 	if (file_exists("/opt/sark/cache/commitflag")) {
-		`/bin/rm -rf /opt/sark/cache/commitflag`;
+		`sudo /bin/rm -rf /opt/sark/cache/commitflag`;
 	} 
 
 
@@ -60,7 +60,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "../php/srkGenClass";
 public function commitOn () {
 //turn the commit lamp on
 
-	`/bin/touch /opt/sark/cache/commitflag`;
+	`sudo /bin/touch /opt/sark/cache/commitflag`;
 //	$dbh = DB::getInstance();
 //	$res=$dbh->exec("UPDATE globals SET MYCOMMIT='YES' WHERE pkey='global'");
 	return;
@@ -655,8 +655,14 @@ public function createTuple($tab,$rec,$check=true,$clusterid=false) {
 
 /*
  * do it
- */  
-	$sql->execute($varg);
+ */ 
+	try {
+		$sql->execute($varg);
+	} 
+	catch (PDOException $e) {
+    	return $e->getMessage();	
+    } 
+	
 	$this->commitOn();
 	$this->logit("I'm creating a new $tab with $vnarg and $varg[0]",3 );
 	return 'OK';
@@ -715,8 +721,14 @@ public function setTuple($tab,$rec,$modpkey=false) {
 	$sql = $dbh->prepare("UPDATE $tab SET $vnarg WHERE pkey=?");
 /*
  * do it
- */  
-	$sql->execute($varg);
+ */
+	try {
+		$sql->execute($varg);
+	} 
+	catch (PDOException $e) {
+    	return $e->getMessage();	
+    }   
+
 	$this->commitOn();
 	$this->logit("I'm updating $tab $vnarg with ...",3 );
 	foreach ($varg as $v) {
@@ -775,8 +787,13 @@ public function setTupleById($tab,$rec) {
 	$sql = $dbh->prepare("UPDATE $tab SET $vnarg WHERE id=?");
 /*
  * do it
- */  
-	$sql->execute($varg);
+ */
+	try {
+		$sql->execute($varg);
+	} 
+	catch (PDOException $e) {
+    	return $e->getMessage();	
+    }   
 	$this->commitOn();
 	$this->logit("I'm updating $tab",3 );
 	return 'OK';
@@ -1019,7 +1036,7 @@ public function logIt($someText, $userloglevel=0) {
 	$res = $dbh->query("SELECT LOGLEVEL FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	$dbloglevel = $res['LOGLEVEL'];
 	if ($userloglevel <= $dbloglevel) {
-		syslog(LOG_WARNING, $someText . "\n");	
+		syslog(LOG_WARNING, $_SERVER['PHP_SELF'] . ' ' . $someText . "\n");
 	}
 }
 
