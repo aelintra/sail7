@@ -1207,7 +1207,10 @@ THERE;
         exten => _*26[*]XX,1,agi(sarkhpe,\${EXTEN},,)		; RingDelay
         
         exten => _*3[012345][*],1,agi(sarkhpe,\${EXTEN},,)	; TIMERS
+;
+: *51* moved into tenant context 
 ;        exten => *51*,1,VoiceMailMain()  					; VMAIL
+;
         exten => *52*,1,PlayBack(demo-echotest)        		; Echotest
         exten => *52*,n,Echo
         exten => *52*,n,PlayBack(demo-echodone)
@@ -1390,8 +1393,12 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 			}
 		}
 		$dialstr = preg_replace ( '/&$/',"", $dialstr );
+/*		
 		$fullKey = $id . $row['pkey'];
 		$shortKey = $row['pkey'];
+*/
+        $fullKey = $row['pkey'];
+        $shortKey = substr($row['pkey'],2);		
 
 		if ($row['grouptype'] != "Page" && $row['pkey'] != 'RINGALL') {
 // ring group forwarding logic				
