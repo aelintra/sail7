@@ -1,3 +1,20 @@
+sail (7.0.0-13+deb9u1) UNRELEASED; urgency=low
+  * tagged
+
+  - fix to callgroup edit to cure blank data after update
+  - set default registration=NO on trunk create
+  - remove fromuser on trunk create
+  
+ -- CoCoSoft <admin@aelintra.com>  Sun, 8  Nov 2020 18:00:00 +0000
+
+sail (7.0.0-12+deb9u1) UNRELEASED; urgency=low
+  * tagged
+
+  - fix to *51* for tenant voicemail accounts 
+  - Allow tenant name change on trunks
+  
+ -- CoCoSoft <admin@aelintra.com>  Fri, 15  Oct 2020 18:00:00 +0000
+
 sail (7.0.0-11+deb9u1) UNRELEASED; urgency=low
   * tagged
 
