@@ -122,7 +122,7 @@ private function genMoh() {
  */
 private function genParks() {
 	$OUT = NULL;
-	$res = $this->dbh->query('SELECT id,pkey from cluster');
+	$res = $this->dbh->query('SELECT pkey from cluster');
 	foreach ($res as $row) {
 		$OUT .= "[" . $row['pkey'] . "]\n";
 		$OUT .= "context=" . $row['pkey'] . "park\n";
@@ -143,10 +143,11 @@ private function genIax() {
 
 //	$global = $this->helper->getTable("globals");
 //	print_r($global);
+/*
 	if ($this->globals['BINDADDR'] == "ON") { 
 		$OUT .= 'bindaddr=' . $this->globals['HACLUSTERIP'] . "\n";	   
 	}
-
+*/
 	if (!empty($OUT)) { 
 		$fh = fopen("/etc/asterisk/sark_iax_localnet_header.conf", 'w') or die('Could not open file sark_iax_localnet_header.conf!');
 		fwrite($fh,$OUT) or die('Could not write to file sark_iax_localnet_header.conf');
@@ -258,12 +259,13 @@ private function genSip() {
             }
 		}
 	}
+/*
 	if ($this->globals['BINDADDR'] == "ON") {
 		if ($this->globals['HACLUSTERIP']) {
 			$OUT .= 'bindaddr=' . $this->globals['HACLUSTERIP'] . "\n";
 		}	   
 	}
-	
+*/	
 //  deal with TLS
 	$tlsport = 'tlsbindaddr=0.0.0.0';
 	if (isset($this->globals['TLSPORT'])) {
@@ -911,7 +913,7 @@ LOCAL;
 				$OUT .= "\texten => " . $qrow['pkey'] . ",n,Playback(" . $this->SOUNDIR . $row['pkey'] . "/usergreeting" . $qrow['greetnum'] . ")\n";
 			}
 			$OUT .= $outstring; 
-			$OUT .= "\texten => " . substr($qrow['pkey'],2) . ",1,GoTo(" . $qrow['pkey'] . ",1)\n";
+			$OUT .= "\texten => " . $qrow['directdial'] . ",1,GoTo(" . $qrow['pkey'] . ",1)\n";
 // ToDo outcome processing...
 
 		} 
@@ -926,8 +928,7 @@ LOCAL;
 		foreach ($ivr as $irow) {
 				$OUT .= "\texten => " . $irow['pkey'] . ",1,Answer()\n"; 
 				$OUT .= "\texten => " . $irow['pkey'] . ",n,agi(sarkhpe,IVR," . $irow['pkey'] . ")\n";  
-				$shortdial = substr($irow['pkey'],2);
-				$OUT .= "\texten => " . substr($irow['pkey'],2) . ",1,GoTo(" . $irow['pkey'] . ",1)\n";  
+				$OUT .= "\texten => " . $irow['directdial'] . ",1,GoTo(" . $irow['pkey'] . ",1)\n";  
 		}
 // Extensions
 		$sql = "SELECT * FROM IPphone where cluster = '" . $row['pkey'] . "' ORDER BY pkey";
@@ -980,6 +981,7 @@ LOCAL;
 		$this->confBridge($OUT,$row['pkey']);
 		
         $OUT .= "\texten => *50*,1,VoiceMailMain(\${CALLERID(num)}@" . $row['pkey'] . ")\t;Voicemail Retrieve\n"; 
+        $OUT .= "\texten => *51*,1,VoiceMailMain(@" . $row['pkey'] . ")\t;General Voicemail Retrieve\n";
 		$OUT .= "\texten => _*61*XXXX,1,Playback(/usr/share/asterisk/sarksounds/" . $row['pkey'] . "/usergreeting\${EXTEN:4})\n";  
 	}
 
@@ -1055,7 +1057,7 @@ LOCAL;
 //
 //          don't print if already overridden
 // 
-				if (! $orideopenarray [$coskeys['COS_pkey']]) {
+				if (empty ($orideopenarray [$coskeys['COS_pkey']])) {
 					$OUT .= "\tinclude => " . $coskeys['COS_pkey'] . "\n";
 				} 	
 			}
@@ -1080,7 +1082,7 @@ LOCAL;
 //
 //          don't print if already overridden
 // 
-				if (! $orideclosedarray [$coskeys['COS_pkey']]) {
+				if (empty ($orideclosedarray [$coskeys['COS_pkey']])) {
 					$OUT .= "\tinclude => " . $coskeys['COS_pkey'] . "\n";
 				} 	
 			}
@@ -1205,7 +1207,10 @@ THERE;
         exten => _*26[*]XX,1,agi(sarkhpe,\${EXTEN},,)		; RingDelay
         
         exten => _*3[012345][*],1,agi(sarkhpe,\${EXTEN},,)	; TIMERS
-        exten => *51*,1,VoiceMailMain()  					; VMAIL
+;
+: *51* moved into tenant context 
+;        exten => *51*,1,VoiceMailMain()  					; VMAIL
+;
         exten => *52*,1,PlayBack(demo-echotest)        		; Echotest
         exten => *52*,n,Echo
         exten => *52*,n,PlayBack(demo-echodone)
@@ -1352,7 +1357,6 @@ private function confBridge(&$OUT,$cluster=null) {
 
 private function generateRingGroups(&$OUT,$cluster,$id) {
 //  build pageall/ringall group 
-
 	$speedflag = false;
 	$sql = "select * from speed where cluster = '" . $cluster ."' ORDER BY pkey";
 	$qRes = $this->dbh->query($sql);
@@ -1368,7 +1372,7 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 				$sql = "select * from IPphone WHERE pkey = '" . $phonekey . "'"; 
 				$qRes = $this->dbh->query($sql);
 				$IPphone = $qRes->fetch();
-				$qRes = NULL;				
+				$qRes = NULL;			
 				if ($IPphone['technology'] == "Custom") {
 					continue;
 				}
@@ -1389,8 +1393,13 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 			}
 		}
 		$dialstr = preg_replace ( '/&$/',"", $dialstr );
-		$fullKey = $row['pkey'];
-		$shortKey = substr($row['pkey'],2);
+/*		
+		$fullKey = $id . $row['pkey'];
+		$shortKey = $row['pkey'];
+*/
+        $fullKey = $row['pkey'];
+        $shortKey = substr($row['pkey'],2);		
+
 		if ($row['grouptype'] != "Page" && $row['pkey'] != 'RINGALL') {
 // ring group forwarding logic				
 			if (!empty($row['divert'])) {				

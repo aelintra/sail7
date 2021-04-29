@@ -14,6 +14,14 @@ else {
 <title>SARK PBX</title>
 <meta name="copyright" content="Copyright 2018 Aelintra Telecom Limited" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<?php
+  if (file_exists("/sark-common/Customer_favicon.png")) {
+    echo '<link rel="icon" type="image/png" href="/sark-common/Customer_favicon.png">' . PHP_EOL;
+  }
+  else {
+    echo '<link rel="icon" type="image/png" href="/sark-common/Sark_favicon.png">' . PHP_EOL;
+  }
+?>
 <link rel="icon" type="image/png" href="/sark-common/Sark_favicon.png">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous">
@@ -41,6 +49,7 @@ $(document).ready(function() {
 
 });
 
+
 function srkMenuFunction(id) {
     var x = document.getElementById(id);
     if (x.className.indexOf(" w3-show") == -1) {
@@ -49,6 +58,7 @@ function srkMenuFunction(id) {
     } else { 
         x.className = x.className.replace(" w3-show", "");
     }
+
 }
 
 function checkDec(el){
@@ -68,6 +78,7 @@ function backsnap(id) {
 }
 
 function srkPerms(dtab) {
+//  console.log(dtab);
 
   if ( $('#perms').val() == 'view' ) { 
     $('.buttonUpdate').hide();
@@ -109,12 +120,16 @@ function srkOpenTab(evt, myTabName) {
 }
 
   function dialBack(number) {
+//    console.log(number);
+//    console.log(pkey);
     $(".myspinner").show();
     var pkey = $("#userext").val();
 
     $.post('../dialler.php', { number:number, pkey:pkey },
       function (response) {
         var obj = JSON.parse(response);
+//        console.log('RC=' + obj.msg);
+//        console.log('dialled ' + number + ' for ' + pkey);  
       });
     setTimeout(hideSpinner, 2000);
   };
@@ -164,7 +179,6 @@ $(window).load(function() {
     width: 100%;
     height: 100%;
 }
-
 .longdatabox {
     width: 100%;
     height: 30em;

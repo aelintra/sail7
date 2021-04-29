@@ -7,7 +7,7 @@
   $id = $_REQUEST['id'] ;
  
   /* delete a record using information about id, */ 
-  $helper->delTuple("queue",$id); 
+  $helper->delTupleById("queue",$id); 
   echo "ok";
 
 ?>

@@ -28,7 +28,7 @@ sail (7.0.0-11+ubuntu18) UNRELEASED; urgency=low
   - add back old HA flags for now listener
   - add back multicast listener flag
 
- -- CoCoSoft <admin@aelintra.com>  Fri, 12  June 2020 18:00:00 +0000
+ -- CoCoSoft <admin@aelintra.com>  Fri, 12  Jun 2020 18:00:00 +0000
 
 sail (7.0.0-10+ubuntu18) UNRELEASED; urgency=low
   * tagged
@@ -36,7 +36,7 @@ sail (7.0.0-10+ubuntu18) UNRELEASED; urgency=low
   - Fixed bug in PageClass for early media
   - Fixed bug in Trunk/view for IAX subling privilege
 
- -- CoCoSoft <admin@aelintra.com>  Fri, 12  June 2020 18:00:00 +0000
+ -- CoCoSoft <admin@aelintra.com>  Fri, 12  Jun 2020 18:00:00 +0000
 
 sail (7.0.0-9+ubuntu18) UNRELEASED; urgency=low
   * tagged

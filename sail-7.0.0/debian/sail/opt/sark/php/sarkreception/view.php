@@ -21,7 +21,7 @@
 Class sarkreception {
 	
 	protected $message=NULL;
-	protected $head="SARK PBX"; 
+	protected $head="SARK7 PBX"; 
 	protected $myPanel;
 	protected $dbh;
 	protected $helper;
@@ -38,7 +38,7 @@ public function showForm() {
 //	$this->dbh = DB::getInstance();
 	$this->helper = new helper;
 			
-	$this->myPanel->pagename = 'SARK PBX';
+	$this->myPanel->pagename = 'SARK7 PBX';
  
 //	Debugging		
 //	$this->helper->logit(print_r($_POST, TRUE));

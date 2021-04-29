@@ -64,10 +64,8 @@ public function showForm() {
 	
 	if (isset($_POST['update']) || isset($_POST['endupdate'])) {  
 		$this->saveEdit();
-		if ($this->invalidForm) {
-			$this->showEdit();
-			return;
-		}					
+		$this->showEdit();
+		return;					
 	}
 
 	if (isset($_POST['commit']) || isset($_POST['commitClick'])) { 
@@ -128,11 +126,11 @@ private function showMain() {
 
 	$rows = $this->helper->getTable("queue");
 	foreach ($rows as $row ) { 
-		echo '<tr id="' . $row['pkey'] . '">'. PHP_EOL;
+		echo '<tr id="' . $row['id'] . '">'. PHP_EOL;
 		echo '<input type="hidden" name="id" value="' . $row['id'] . '"  />' . PHP_EOL;		
 		echo '<td class="w3-hide-small w3-hide-medium">' . $row['cluster']  . '</td>' . PHP_EOL;
-		echo '<td >' . substr($row['pkey'],2) . '</td>' . PHP_EOL;
-		echo '<td>' . $row['name']  . '</td>' . PHP_EOL;	
+		echo '<td>' . $row['directdial'] . '</td>' . PHP_EOL;			
+		echo '<td>' . $row['pkey']  . '</td>' . PHP_EOL;		
 		echo '<td class="w3-hide-small w3-hide-medium">' . $row['description']  . '</td>' . PHP_EOL;					 
 		echo '<td class="w3-hide-small ">' . $row['options']  . '</td>' . PHP_EOL;	
 		echo '<td class="w3-hide-small ">' . $row['devicerec']  . '</td>' . PHP_EOL;	
@@ -176,8 +174,7 @@ private function showNew() {
 	$this->myPanel->aHelpBoxFor('cluster');
 	echo '</div>';	
 
-	$this->myPanel->displayInputFor('qdd','text',null,'pkey');
-	$this->myPanel->displayInputFor('queuename','text',null,'name');
+	$this->myPanel->displayInputFor('queuename','text',null,'pkey');
 	$this->myPanel->displayInputFor('description','text');
 		
 	echo '</div>';
@@ -196,26 +193,30 @@ private function saveNew() {
 	$tuple = array();
 
 	$this->validator = new FormValidator();
-    $this->validator->addValidation("name","req","Please fill in Queue name");
+    $this->validator->addValidation("pkey","req","Please fill in Queue name");
+/*
     $this->validator->addValidation("pkey","req","Please supply Queue direct dial"); 
     $this->validator->addValidation("pkey","num","Queue direct dial must be numeric");    
     $this->validator->addValidation("pkey","maxlen=4","Queue direct dial must be 3 or 4 digits");     
 	$this->validator->addValidation("pkey","minlen=3","Queue direct dial must be 3 or 4 digits");     
- 
+*/
+
+	$res = $this->dbh->query("SELECT MAX(directdial+1) FROM queue WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+	if (empty($res)) {
+		$res = $this->dbh->query("SELECT startqueue FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
+	}
+	$_POST['directdial'] = $res;
+   	
+   	$res = NULL; 
     //Now, validate the form
     if ($this->validator->ValidateForm()) {
-
-// create full pkey
-    	$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-		$_POST['pkey'] = $res['id'] . $_POST['pkey']; 
-		$res=NULL;
 		
 // check for dups
 	
     $retc = $this->helper->checkXref($_POST['pkey'],$_POST['cluster']);
     if ($retc) {
     	$this->invalidForm = True;
-    	$this->error_hash['extinsert'] = "Duplicate found in table $retc - choose a different extension number";
+    	$this->error_hash['extinsert'] = "Duplicate found in table $retc - choose a different key";
     	return;    	
     }
 /*
@@ -265,7 +266,7 @@ private function showEdit($pkey=false) {
 	$clusterGreetings[] = 'None';	
 
 	$buttonArray['cancel'] = true;
-	$this->myPanel->actionBar($buttonArray,"sarkqueueForm",false,false,true);
+	$this->myPanel->actionBar($buttonArray,"sarkqueueForm",false,true,true);
 
 	if ($this->invalidForm) {
 		$this->myPanel->showErrors($this->error_hash);
@@ -274,14 +275,14 @@ private function showEdit($pkey=false) {
 	$this->myPanel->responsiveSetup(2);
 
 	$this->myPanel->internalEditBoxStart();
-	$this->myPanel->subjectBar('Edit Queue ' . substr($res['pkey'],2));
+	$this->myPanel->subjectBar('Edit Queue ' . $res['pkey']);
 
 	echo '<form id="sarkqueueForm" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
 
 	echo '<div id="clustershow">';
 	$this->myPanel->displayInputFor('cluster','text',$res['cluster'],'cluster');
 	echo '</div>';
-	$this->myPanel->displayInputFor('queuename','text',$res['name'],'name');
+//	$this->myPanel->displayInputFor('queuename','text',$res['name'],'name');
 /*	
 	echo '<div id="pkeyshow">';
 	$this->myPanel->displayInputFor('qdd','text',substr($res['pkey'],2),'pkey');
@@ -334,6 +335,15 @@ private function saveEdit() {
  */  	
 
 		$this->helper->buildTupleArray($_POST,$tuple);
+
+// check for dups
+	
+    	$retc = $this->helper->checkXref($tuple['directdial'],$_POST['cluster']);
+    	if ($retc) {
+    		$this->invalidForm = True;
+    		$this->error_hash['extinsert'] = "Duplicate found directdial - choose a different key";
+    		return;    	
+    	} 
 
 /*
  * update the SQL database

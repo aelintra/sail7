@@ -58,10 +58,8 @@ public function showForm() {
 	
 	if (isset($_POST['update']) || isset($_POST['endupdate'])) { 
 		$this->saveEdit();
-//		if ($this->invalidForm) {
-			$this->showEdit($_POST['pkey'],$_POST['cluster']);
-			return;
-//		}					
+		$this->showEdit($_POST['pkey'],$_POST['cluster']);
+		return;				
 	}
 	
 	if (isset($_POST['commit']) || isset($_POST['commitClick'])) { 
@@ -289,12 +287,8 @@ private function saveNew() {
 
 private function showEdit($key=False,$cluster=false) {
 	
-	if ($key != False) {
-		$pkey=$key;
-	}
-	else {
-		$pkey = $_GET['pkey']; 
-	}
+	$pkey = $_REQUEST['pkey'];
+	
 	if (!$cluster) {
 		$cluster = $_GET['cluster'];
 	}
