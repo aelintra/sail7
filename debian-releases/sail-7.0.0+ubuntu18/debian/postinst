@@ -85,7 +85,7 @@ fi
 
 grep -q '#include sark_moh.conf' /etc/asterisk/musiconhold.conf
 if [  "$?" -ne "0" ] ; then
-        echo "#include sark_cdr.conf" >> /etc/asterisk/musiconhold.conf
+        echo "#include sark_moh.conf" >> /etc/asterisk/musiconhold.conf
 fi
 
 if [ -e /etc/asterisk/meetme.conf ] ; then
