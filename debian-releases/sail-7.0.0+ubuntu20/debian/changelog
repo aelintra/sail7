@@ -1,4 +1,11 @@
-sail (7.0.0-13+deb9u1) UNRELEASED; urgency=low
+sail (7.0.1-1+ubuntu20) UNRELEASED; urgency=low
+  * tagged
+
+  - Merge forward changes and features from sail-6.2
+  
+ -- CoCoSoft <admin@aelintra.com>  Sun, 2  May 2021 18:00:00 +0000
+
+sail (7.0.0-13+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
   - fix to callgroup edit to cure blank data after update
@@ -7,7 +14,7 @@ sail (7.0.0-13+deb9u1) UNRELEASED; urgency=low
   
  -- CoCoSoft <admin@aelintra.com>  Sun, 8  Nov 2020 18:00:00 +0000
 
-sail (7.0.0-12+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-12+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
   - fix to *51* for tenant voicemail accounts 
@@ -15,7 +22,7 @@ sail (7.0.0-12+deb9u1) UNRELEASED; urgency=low
   
  -- CoCoSoft <admin@aelintra.com>  Fri, 15  Oct 2020 18:00:00 +0000
 
-sail (7.0.0-11+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-11+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
   - fix to greetings/view and cluster/view for greetings directories
@@ -30,15 +37,15 @@ sail (7.0.0-11+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Fri, 12  Jun 2020 18:00:00 +0000
 
-sail (7.0.0-10+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-10+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
-  - Fixed bug ig PageClass for early media 
+  - Fixed bug in PageClass for early media
   - Fixed bug in Trunk/view for IAX subling privilege
 
  -- CoCoSoft <admin@aelintra.com>  Fri, 12  Jun 2020 18:00:00 +0000
 
-sail (7.0.0-9+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-9+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
   - Modified user login to support multi-tennant - requires 5 digit login
@@ -46,7 +53,7 @@ sail (7.0.0-9+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Thu, 7  Nov 2019 18:00:00 +0000
 
-sail (7.0.0-8+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-8+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
   - fourth alpha release V7
@@ -55,7 +62,7 @@ sail (7.0.0-8+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Wed, 31  July 2019 18:00:00 +0000
 
-sail (7.0.0-7+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-7+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
   - third alpha release V7
@@ -66,7 +73,7 @@ sail (7.0.0-7+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Tue, 30  July 2019 18:00:00 +0000
 
-sail (7.0.0-6+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-6+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
   - second alpha release V7
@@ -80,7 +87,7 @@ sail (7.0.0-6+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Sun, 28  Apr 2019 18:00:00 +0000
  
-sail (7.0.0-5+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-5+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
   - first alpha release V7
@@ -92,8 +99,8 @@ sail (7.0.0-5+deb9u1) UNRELEASED; urgency=low
   - requires sarkhpe 7.0.0-5+
 
  -- CoCoSoft <admin@aelintra.com>  Wed, 24  Apr 2019 18:00:00 +0000
- 
-sail (7.0.0-4+deb9u1) UNRELEASED; urgency=low
+
+sail (7.0.0-4+ubuntu18) UNRELEASED; urgency=low
   * tagged
 
   - *56* mod to only read significant digits
@@ -101,7 +108,7 @@ sail (7.0.0-4+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Sun, 7  Apr 2019 18:00:00 +0000
 
-sail (7.0.0-3+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-3+ubuntu18) UNRELEASED; urgency=low
   * untagged
 
   - SarkGenClass updated to handle IVR clusters
@@ -109,7 +116,7 @@ sail (7.0.0-3+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Sun, 31  Mar 2019 18:00:00 +0000
 
-sail (7.0.0-2+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-2+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - added usemohcustom to cluster
   - message file updates
@@ -135,14 +142,14 @@ sail (7.0.0-2+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Tue, 26  Mar 2019 18:00:00 +0000
 
-sail (7.0.0-1+deb9u1) UNRELEASED; urgency=low
+sail (7.0.0-1+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - synchronized javascript with 6.0.1-43
   - first mule packaging for comment
 
  -- CoCoSoft <admin@aelintra.com>  Sat, 16  Mar 2019 18:00:00 +0000
 
-sail (6.0.1-43+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-43+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - srkfoot gives space before bottom bar
   - srkHelper now defaults to NOCASE sort on table retrieval
@@ -158,7 +165,7 @@ sail (6.0.1-43+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Fri, 15  Mar 2019 18:00:00 +0000
 
-sail (6.0.1-42+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-42+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - fixed incorrect generation of local number dial for tenants
   - fixed HTML5 download MIME mis-interpretation in recorder, backup and greetings
@@ -176,7 +183,7 @@ sail (6.0.1-42+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Tue, 12  Mar 2019 18:00:00 +0000
 
-sail (6.0.1-41+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-41+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - id added to IVR and Queue
   - Unique diallable number allocated to each Queue/IVR
@@ -188,7 +195,7 @@ sail (6.0.1-41+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Mon, 18  Feb 2019 18:00:00 +0000
 
-sail (6.0.1-40+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-40+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - changed callgroup format in generator for the new HPE (6.0.0-2)
   - added switch for transfer comfort message
@@ -196,7 +203,7 @@ sail (6.0.1-40+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Sat, 16  Feb 2019 18:00:00 +0000
 
-sail (6.0.1-38+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-38+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - added HTTP filter for remote operations 
   - added serverName generator
@@ -206,22 +213,22 @@ sail (6.0.1-38+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Thu, 14  Feb 2019 18:00:00 +0000
 
-sail (6.0.1-37+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-37+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - added logging to space and voicemail cron jobs  
   - fix to postinst 
 
  -- CoCoSoft <admin@aelintra.com>  Thu, 14  Feb 2019 18:00:00 +0000
 
-sail (6.0.1-36+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-36+ubuntu18) UNRELEASED; urgency=low
   * untagged
-  - added basic support for high 443 redirection 
+  - added basic support for high 443 resirection 
   - amalgamated new generator code for batch
   - fix for paging
 
  -- CoCoSoft <admin@aelintra.com>  Thu, 07  Feb 2019 18:00:00 +0000
 
-sail (6.0.1-35+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-35+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - fixed bug in Users.  It wasn't recognising spaces in descriptions
   - removed requirement for email address in User add
@@ -230,43 +237,49 @@ sail (6.0.1-35+deb9u1) UNRELEASED; urgency=low
 
  -- CoCoSoft <admin@aelintra.com>  Fri, 01  Feb 2019 18:00:00 +0000
 
-sail (6.0.1-34+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-34+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - fixed php5 incompatibility in callrecording (it was using split)
   - fixed update bug in sarkddi
 
  -- CoCoSoft <admin@aelintra.com>  Thu, 31  Jan 2019 18:00:00 +0000
 
-sail (6.0.1-33+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-33+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - added cluster CLID to Tenants
 
  -- CoCoSoft <admin@aelintra.com>  Wed, 16  Jan 2019 18:00:00 +0000
 
-sail (6.0.1-32+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-32+ubuntu18) UNRELEASED; urgency=low
   * untagged
   - various minor bugfixes
   - bugfix for incorrect tenant select in PageClass
   - change to Timezone handling in line with the new way of doing things in Deb9 Ubu18
   - removed qDistro function in srkHelper.  No longer required
 
- -- CoCoSoft <admin@aelintra.com>  Wed, 16  Jan 2019 18:00:00 +0000
+ -- CoCoSoft <admin@aelintra.com>  Fri, 04  Jan 2019 18:00:00 +0000
 
-sail (6.0.1-31+deb9u1) UNRELEASED; urgency=low
-  * untagged
+sail (6.0.1-31+ubuntu18) UNRELEASED; urgency=low
+  * untagged and unbuilt
   - fix to srkHead to deal with incomplete URI's
 
  -- CoCoSoft <admin@aelintra.com>  Fri, 04  Jan 2019 18:00:00 +0000
 
-sail (6.0.1-30+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-30+ubuntu18) UNRELEASED; urgency=low
   * untagged
-  - bumped to sync with Ubuntu releases
-  - fix minor sudo bugs and add a new stanza to determin diskspace usage
+  - bumped to sync with debu9 releases
 
  -- CoCoSoft <admin@aelintra.com>  Fri, 04  Jan 2019 18:00:00 +0000
 
-sail (6.0.1-26+deb9u1) UNRELEASED; urgency=low
+sail (6.0.1-27ubuntu1.18) UNRELEASED; urgency=low
   * untagged
+  - changed php dependencies to be generic 
+
+ -- CoCoSoft <admin@aelintra.com>  Fri, 04  Jan 2019 18:00:00 +0000
+
+sail (6.0.1-26ubuntu1.18) UNRELEASED; urgency=low
+  * untagged
+  - first attempt at an ubuntu release
   - added column sort for big tables
   - added upload to greetings and backup
   - exposed greeting in IVR edit

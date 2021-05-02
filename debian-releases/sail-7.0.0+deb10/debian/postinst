@@ -1,5 +1,17 @@
 #!/bin/bash
 
+setvcl() {
+# turn on VCL in Globals
+    echo "AWS instance detected, setting cloud flags"
+    /usr/bin/sqlite3 /opt/sark/db/sark.db "update globals set VCL=1"
+# open 80,443 and 22 in the firewall (otherwise we'll be locked out)
+    echo "WARNING!!!  Ports 80, 443 and 22 have been opened to prevent AWS lockout - you should review these and set sensible values"
+    sed -i 's/ACCEPT net:$LAN $FW tcp 80/ACCEPT net $FW tcp 80/' /etc/shorewall/sark_rules
+    sed -i 's/ACCEPT net:$LAN $FW tcp 443/ACCEPT net $FW tcp 443/' /etc/shorewall/sark_rules
+    sed -i 's/ACCEPT net:$LAN $FW tcp 22/ACCEPT net $FW tcp 22/' /etc/shorewall/sark_rules 
+}
+
+
 #Copy Asterisk file fragments
 [ ! -e /etc/asterisk/sark_customer_agents_main.conf ] && cp -f /opt/sark/cache/template_cust.conf /etc/asterisk/sark_customer_agents_main.conf 
 [ ! -e /etc/asterisk/sark_customer_extensions_globals.conf ] && cp -f /opt/sark/cache/template_cust.conf /etc/asterisk/sark_customer_extensions_globals.conf 
@@ -165,13 +177,16 @@ a2enmod ssl
 sed -i 's/Listen 80/Listen [::]:80/' /etc/apache2/ports.conf
 sed -i 's/Listen 443/Listen [::]:443/' /etc/apache2/ports.conf
 
+[ ! -e /etc/ssl/3pcerts ] && mkdir /etc/ssl/3pcerts 
+
 systemctl enable apache2.service
 systemctl stop apache2.service
 systemctl start apache2.service
 
 
 
-#SIP/TLS
+# Generate and sign SIP/TLS certificates
+#
 if [ ! -e /etc/asterisk/ssl ]; then
     mkdir /etc/asterisk/ssl
     echo 00 > /etc/asterisk/ssl/file.srl
@@ -268,6 +283,11 @@ fi
 #run shorewall's own fix routines
 shorewall update
 
+#enable listening on IPV6 for apache
+sed -i 's/Listen 80/Listen [::]:80/' /etc/apache2/ports.conf
+sed -i 's/Listen 443/Listen [::]:443/' /etc/apache2/ports.conf
+
+
 # F2b setup
 [ -e /etc/fail2ban/jail.local ] && rm -rf /etc/fail2ban/jail.local && echo "replacing F2B jail.local" 
 
@@ -283,16 +303,15 @@ if [  "$?" -ne "0" ] ; then
 fi
 
 #Check if I am an AWS instance and set defaults accordingly
-dmidecode -s bios-version | grep amazon
+
+dmidecode -s bios-version | grep -i amazon
 if [ "$?" -eq "0" ] ; then
-# turn on VCL in Globals
-    echo "AWS instance detected, setting cloud flags"
-    /usr/bin/sqlite3 /opt/sark/db/sark.db "update globals set VCL=1"
-# open 80,443 and 22 in the firewall (otherwise we'll be locked out)
-    echo "WARNING!!!  Ports 80, 443 and 22 have been opened to prevent AWS lockout - you should review these and set sensible values"
-    sed -i 's/ACCEPT net:$LAN $FW tcp 80/ACCEPT net $FW tcp 80/' /etc/shorewall/sark_rules
-    sed -i 's/ACCEPT net:$LAN $FW tcp 443/ACCEPT net $FW tcp 443/' /etc/shorewall/sark_rules
-    sed -i 's/ACCEPT net:$LAN $FW tcp 22/ACCEPT net $FW tcp 22/' /etc/shorewall/sark_rules
+    setvcl
+else
+    dmidecode -s bios-vendor | grep -i amazon
+    if [ "$?" -eq "0" ] ; then
+        setvcl
+    fi
 fi
 
 # enable shorewall
@@ -301,7 +320,7 @@ systemctl enable shorewall.service
 systemctl enable shorewall6.service
 
 
-# suppress CDR menu generation for Deb 9 and ubuntu 
+# suppress CDR menu generation for Deb 9 and ubuntu	
 [ -e /opt/sark/cache/1520813339.db_v4_admin_perms2 ] && mv /opt/sark/cache/1520813339.db_v4_admin_perms2 /opt/sark/always/
 
 
