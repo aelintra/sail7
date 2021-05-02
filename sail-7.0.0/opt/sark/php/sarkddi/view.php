@@ -21,7 +21,7 @@
 Class sarkddi {
 	
 	protected $message; 
-	protected $head = "DDI's";
+	protected $head = "DiD's";
 	protected $myPanel;
 	protected $dbh;
 	protected $helper;
@@ -63,7 +63,8 @@ public function showForm() {
 	
 	if (isset($_POST['update']) || isset($_POST['endupdate'])) { 
 		$this->saveEdit();
-		$this->showEdit();				
+		$this->showEdit();
+		return;				
 	}
 
 	if (isset($_POST['commit']) || isset($_POST['commitClick'])) { 
@@ -189,7 +190,7 @@ private function showNew() {
 	$this->myPanel->responsiveSetup(2);
 
 	$this->myPanel->internalEditBoxStart();
-	$this->myPanel->subjectBar("New DDI");
+	$this->myPanel->subjectBar("New DiD");
 
 	echo '<form id="sarkddiForm" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
 		
@@ -316,7 +317,7 @@ private function saveDiD(&$tuple) {
 			else {
 				$this->invalidForm = True;
 				$this->message = "<B>  --  Validation Errors!(1)</B>";	
-				$this->error_hash['DiD'] = "$didnumber - Span (/nnn) must be numeric for DDI range";
+				$this->error_hash['DiD'] = "$didnumber - Span (/nnn) must be numeric for DiD range";
 			}							
 		}
 		else {
@@ -419,14 +420,14 @@ private function showEdit() {
 		$this->myPanel->aLabelFor('Open Inbound Route');
 		echo '</div>'; 	
 		$this->myPanel->selected = $tuple['openroute'];
-		$this->myPanel->sysSelect('openroute',false,false,false,$tuple['cluster']) . PHP_EOL;
+		$this->myPanel->sysSelect('openroute',false,false,true,$tuple['cluster']) . PHP_EOL;
 		$this->myPanel->aHelpBoxFor('openroute');
 
 		echo '<div class="w3-margin-bottom">';
 		$this->myPanel->aLabelFor('Closed Inbound Route');
 		echo '</div>';
 		$this->myPanel->selected = $tuple['closeroute'];
-		$this->myPanel->sysSelect('closeroute',false,false,false,$tuple['cluster']) . PHP_EOL;
+		$this->myPanel->sysSelect('closeroute',false,false,true,$tuple['cluster']) . PHP_EOL;
 		$this->myPanel->aHelpBoxFor('closeroute');	
 //	} 
 

@@ -55,16 +55,16 @@ public function showForm() {
 
 	if ( isset($_POST['save']) || isset($_POST['endsave']) ) { 
 		$this->saveNew();
-		$this->showEdit();
-		return;
+		if ($this->invalidForm) {
+			$this->showNew();
+			return;
+		}
 	}
 
-	if (isset($_POST['update']) || isset($_POST['endupdate']) ) { 
+	if (isset($_POST['update']) || isset($_POST['endupdate'])) { 
 		$this->saveEdit();
-		if ($this->invalidForm) {
-			$this->showEdit();
-			return;
-		}					
+		$this->showEdit();
+		return;				
 	}	
 	
 	if (isset($_POST['commit']) || isset($_POST['commitClick'])) { 
@@ -238,12 +238,12 @@ private function showNew() {
 	echo '<div class="cluster w3-margin-bottom">';
     $this->myPanel->aLabelFor('cluster','cluster');
     echo '</div>';
-	$this->myPanel->selected = "default";
+	$this->myPanel->selected = $tuple['cluster'];
 	$this->myPanel->displayCluster();
 	$this->myPanel->aHelpBoxFor('cluster');
 	echo '</div>';
 
-	$this->myPanel->displayInputFor('pin','number',"1001",'passwd');
+	$this->myPanel->displayInputFor('pin','number',"null",'passwd');
 
 
 
@@ -322,12 +322,12 @@ private function saveNew() {
 
 private function showEdit() {
 
-	$pkey = $_GET['pkey']; 
+	$pkey = $_REQUEST['pkey']; 
 	
 	$res = $this->dbh->query("SELECT * FROM agent where pkey = '" . $pkey . "'")->fetch(PDO::FETCH_ASSOC);
 
 	$buttonArray['cancel'] = true;
-	$this->myPanel->actionBar($buttonArray,"sarkagentForm",false,false,true);
+	$this->myPanel->actionBar($buttonArray,"sarkagentForm",false,true,true);
 
 	if ($this->invalidForm) {
 		$this->myPanel->showErrors($this->error_hash);
@@ -356,11 +356,12 @@ private function showEdit() {
   	}
   	else {
 		$cluster = $dbh->query("SELECT cluster from user where pkey='" . $_SESSION['user']['pkey'] . "'")->fetch(PDO::FETCH_ASSOC);		
+		$wherestring = "ORDER BY pkey WHERE cluster='" . $cluster['cluster'] . "'" ;
   	}
 
   	
   	$queuelist = array();
-  	$sql = "select * from Queue WHERE cluster='" . $res['cluster'] . "'";
+  	$sql = "select * from Queue $wherestring";
   	foreach ($this->dbh->query($sql) as $row) { 
   		$queueList[] = $row['pkey'];
   	}

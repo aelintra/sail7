@@ -10,20 +10,24 @@
 # SARK age regressions
 0 4 * * * root sh /opt/sark/scripts/age.sh >/dev/null 2>&1
 
+#
+# HD pruning disabled
+#
 # SARK HD pruning
-01 * * * * root perl /opt/sark/scripts/aelhdlon.pl prune >/dev/null 2>&1
+#01 * * * * root perl /opt/sark/scripts/aelhdlon.pl prune >/dev/null 2>&1
 
 # SARK VMAIL ageing
 01 * * * * root perl /opt/sark/scripts/agevmail.sh >/dev/null 2>&1
-
+	§
 #sark disk space pruner (ppc and arm)
 */10 * * * * root perl /opt/sark/scripts/diskabs.pl >/dev/null 2>&1
+#SARK age call recordings daily at 2:00AM
+0 2 * * * root sh /opt/sark/scripts/srkagerecordings.sh >/dev/null 2>&1
 
 #run an internet speed test once a day
-0 0 * * * root /usr/bin/speedtest-cli --simple  > /opt/sark/cache/speedtest 
+#0 0 * * * root /usr/bin/speedtest-cli --simple  > /opt/sark/cache/speedtest 
 
 #fetch manufacturer MAC list once a week
-#refresh MAC db weekly
 0 0 * * 0 root sh /opt/sark/scripts/getmaclist.sh
 
 #refresh phone images  weekly

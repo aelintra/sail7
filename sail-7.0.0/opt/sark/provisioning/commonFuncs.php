@@ -371,6 +371,7 @@ function polycomSubConfig($mac,$fname,$db) {
 	}
 	echo $retstring;
 // disable auth send for next time
+/*
 	if ($fname == 'polycom-phone1.cfg') {
 		if ($thisextConfig->sndcreds != 'Always') { 
 			try {
@@ -381,7 +382,8 @@ function polycomSubConfig($mac,$fname,$db) {
 				logIt("Unable to update extension sndcreds - DB error $errorMsg");
 			}
 		}
-	}		
+	}
+*/		
 } 
 
 /*
@@ -508,7 +510,8 @@ function logUA() {
   	"yealink" => 'Yealink\sSIP-([\w-]+)\s',
   	"yealinkDECT" => 'Yealink\s([\w-]+)\s',
   	"panasonic" => 'Panasonic_(KX-\w+)\/',
-  	"aastra" => 'Aastra(\d{4}i)\s'
+  	"aastra" => 'Aastra(\d{4}i)\s',
+  	"fanvil" => 'Fanvil\s(\w+)\s'
   );
   
   $model = NULL;

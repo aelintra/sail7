@@ -88,14 +88,17 @@ private function showMain() {
 	if (isset($this->message)) {
 		$this->myPanel->msg = $this->message;
 	} 
-	$sql = $this->dbh->prepare("SELECT fqdn,fqdnhttp,fqdninspect,fqdnprov,bindaddr,edomain,sendedomain,vcl FROM globals where pkey = ?");
+	$sql = $this->dbh->prepare("SELECT fqdn,fqdnhttp,fqdninspect,fqdnprov,bindaddr,bindport,edomain,staticipv4,sendedomain,vcl FROM globals where pkey = ?");
 	$sql->execute(array('global'));
 	$global = $sql->fetchObject();
 		
 	$dhcp=false;
 	$interface = $this->nethelper->get_interfaceName();
-	if (`grep $interface /etc/network/interfaces | grep -i dhcp` ) {
+	if (`ip -4 a show dev $interface | grep dynamic` ) {
 		$dhcp=true;
+	}
+	else {
+
 	}
 	$dhcpsrvAvail=false;
 	$dhcpsrvUp=false;
@@ -127,21 +130,12 @@ private function showMain() {
 		$icmp='YES';
 	}
 	
-	$ipaddr = $this->nethelper->get_localIPV4();
-	$netmask = $this->nethelper->get_netMask();
+	$ipaddr = $this->nethelper->get_dhcpIPV4();
+	$netcidr = $this->nethelper->get_networkCIDR();
 	$gatewayip = $this->nethelper->get_networkGw();	
 	
 	$hostname = `cat /etc/hostname`;
 
-/*	
-	$file = file("/etc/ntp.conf") or die("Could not read file ntp.conf!");	
-	$astfile = null;
-	foreach ($file as $rec) {
-		if ( preg_match (" /^(server|pool)\s*(.*)$/ ",$rec,$matches)) {
-			$astfile .=  $matches[2]."\n";
-		}
-	}	
-*/	
 	$ret = $this->helper->request_syscmd ("grep 'Port ' /etc/ssh/sshd_config");
 	$ret = preg_replace('/<<EOT>>$/', '', $ret);
 	if (preg_match (" /(\d{2,5})/ ",$ret,$matches)) {
@@ -196,7 +190,6 @@ private function showMain() {
 		$dns[] = "8.8.8.8";
 		$dns[] = "8.8.4.4";
 	}
-	$domain = `hostname -d`;
 /* 
  * start page output
  */
@@ -220,7 +213,7 @@ private function showMain() {
 	
 	$this->myPanel->internalEditBoxStart();
 	$this->myPanel->subjectBar("IPV4 " . $this->nethelper->get_interfaceName() );
-	
+/*	
 	if ( ! $global->VCL) {
 		if ( !$dhcpsrvUp ) {
 			if ( $dhcp ) {			
@@ -232,20 +225,21 @@ private function showMain() {
 			$this->myPanel->aHelpBoxFor('dhcpaddr');		
 		}
 	}
-	
-		echo '<input type="hidden" name="bindaddr" id="bindaddr" size="20"  value="' . $global->BINDADDR . '"  />' . PHP_EOL; 
+*/	
  
 		echo '<div id="elementsToOperateOnDhcp">';
     
-		$this->myPanel->displayInputFor('lanipaddr','text',$ipaddr);
-		$this->myPanel->displayInputFor('netmask','text',$netmask);
+		$this->myPanel->displayInputFor('lanipaddr','text',$ipaddr . "/" . $netcidr);
+//		$this->myPanel->displayInputFor('netmask','text',$netmask);
 		$this->myPanel->displayInputFor('gatewayip','text',$gatewayip);
-		$this->myPanel->displayInputFor('domain','text',$domain);		
+//		$this->myPanel->displayInputFor('domain','text',$domain);	
+//		
+		echo '</div>' . PHP_EOL;	
+		if (! $global->VCL) {
+			$this->myPanel->displayInputFor('staticipv4','text',$global->STATICIPV4);	
+		}	
 		$this->myPanel->displayInputFor('dns','text',$dns[0],"dns1");
 		$this->myPanel->displayInputFor('dns','text',$dns[1],"dns2");
-
-		echo '</div>' . PHP_EOL;
-
 		echo '</div>';
 
 /*
@@ -256,9 +250,7 @@ private function showMain() {
 	$this->myPanel->subjectBar("Identity");
 //	echo '<h2 class="w3-red">Identity</h2>';
 
-    if ( $global->BINDADDR != 'ON' ) {
-		$this->myPanel->displayInputFor("hostname",'text',$hostname); 
-	}
+	$this->myPanel->displayInputFor("hostname",'text',$hostname); 
 
     $edomaindig = $this->nethelper->get_externip();
     if ($edomaindig) { 
@@ -266,6 +258,8 @@ private function showMain() {
     	$this->myPanel->displayInputFor("edomaindig",'text',$edomaindig); 
     	echo '</div>';
     }
+
+    $this->myPanel->displayInputFor('bindport','number',$global->BINDPORT);
    
     $this->myPanel->displayInputFor("edomain",'text',$global->EDOMAIN); 
     $this->myPanel->displayBooleanFor('edomainsend',$global->SENDEDOMAIN);
@@ -273,8 +267,9 @@ private function showMain() {
     if (!empty($global->FQDN)) {
     	$this->myPanel->displayBooleanFor('fqdnprov',$global->FQDNPROV);
     	$this->myPanel->displayBooleanFor('fqdninspect',$global->FQDNINSPECT);
-    	$this->myPanel->displayBooleanFor('fqdnhttp',$global->FQDNHTTP);
+//ToDo    	$this->myPanel->displayBooleanFor('fqdnhttp',$global->FQDNHTTP);
     }
+
 	echo '</div>';
 
 
@@ -377,7 +372,7 @@ private function showMain() {
 	$this->myPanel->internalEditBoxStart();
 	$this->myPanel->subjectBar("Access");
 	$this->myPanel->displayBooleanFor('icmp',$icmp);  
-	$this->myPanel->displayInputFor("sshport",'number',$sshport);
+//	$this->myPanel->displayInputFor("sshport",'number',$sshport);
 	echo '</div>';	
 
 //	echo '<br/>' . PHP_EOL; 
@@ -394,17 +389,8 @@ private function saveEdit() {
 // save the data away
 //print_r ($_POST);
 	$this->myPanel->xlateBooleans($this->myBooleans);
+
 	$interface = $this->nethelper->get_interfaceName();
-	$network_string = "auto lo " . $interface . "\niface lo inet loopback\n";	
-	$dhcp_on_string = 
-		"iface $interface inet dhcp\n".
-/*
-		"allow-hotplug wlan0\n". 
-		"iface wlan0 inet manual\n". 
-		"wpa-roam /etc/wpa_supplicant.conf\n".
-*/ 
-		"iface default inet dhcp\n" .
-		"source /etc/network/interfaces.d/*\n";
 
 	$cur_dhcp=false;
 	if (`grep $interface /etc/network/interfaces | grep -i dhcp` ) {
@@ -413,30 +399,22 @@ private function saveEdit() {
 
 	$this->validator = new FormValidator();
 
-	$this->validator->addValidation("sshpport","num","sshport must be numeric"); 
-	$this->validator->addValidation("sshport","maxlen=5","sshport max length is 5"); 
+//	$this->validator->addValidation("sshpport","num","sshport must be numeric"); 
+//	$this->validator->addValidation("sshport","maxlen=5","sshport max length is 5"); 
     $this->validator->addValidation("smtpuser","alphanum","smtpuser must be alphanumeric");    
 	$this->validator->addValidation("hostname","alphanum","hostname must be alphanumeric");
 	
 	if ( !isset($_POST['toggle'] ) ) {
 		$this->validator->addValidation("lanipaddr","req","You MUST provide an ip address");
-		$this->validator->addValidation("netmask","req","You MUST provide a network mask");
-		$this->validator->addValidation("gatewayip","req","You MUST provide a gateway address");
 		$this->validator->addValidation("dns1","req","You MUST provide at least one nameserver for correct execution of the PBX");
 	}
 	 	
-    $this->validator->addValidation("lanipaddr",
+	$this->validator->addValidation("staticipv4",
 		"regexp=/^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$/",
-		"IP address is invalid");
-    $this->validator->addValidation("netmask",
-		"regexp=/^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$/",
-		"Netmask is invalid");
+		"Static IP address is invalid");    
 	$this->validator->addValidation("gatewayip",
 		"regexp=/^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$/",
 		"Gateway IP address is invalid");	
-	$this->validator->addValidation("domain",
-		"regexp=/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/",
-		"Domain format is invalid");
 	$this->validator->addValidation("fqdn",
 		"regexp=/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/",
 		"FQDN format is invalid");
@@ -451,18 +429,16 @@ private function saveEdit() {
     if ($this->validator->ValidateForm()) {
 		
 		$ipaddr			= strip_tags($_POST['lanipaddr']);	
-		$netmask		= strip_tags($_POST['netmask']);
-		$gatewayip		= strip_tags($_POST['gatewayip']);
+		$staticipv4		= strip_tags($_POST['staticipv4']);
 		$hostname 		= strip_tags($_POST['hostname']);	
-		$domain 		= strip_tags($_POST['domain']);	
 		$edomain 		= strip_tags($_POST['edomain']);
 		$sendedomain	= strip_tags($_POST['edomainsend']);
-		$bindaddr 		= strip_tags($_POST['bindaddr']);
 		$fqdn 			= strip_tags($_POST['fqdn']);
 		$fqdnhttp 		= strip_tags($_POST['fqdnhttp']);
 		$fqdninspect 	= strip_tags($_POST['fqdninspect']);
 		$fqdnprov 		= strip_tags($_POST['fqdnprov']);
-		$sshport		= strip_tags($_POST['sshport']);
+		$bindport 		= strip_tags($_POST['bindport']);
+//		$sshport		= strip_tags($_POST['sshport']);
 		$smtpuser		= strip_tags($_POST['smtpuser']);
 		$smtppwd		= strip_tags($_POST['smtppwd']);
 		$smtphost		= strip_tags($_POST['smtphost']);
@@ -475,6 +451,10 @@ private function saveEdit() {
 		$oldtz 			= strip_tags($_POST['oldtz']);
 		$icmp 			= strip_tags($_POST['icmp']);
 
+		$restartShorewall=false;
+
+		$old = $this->dbh->query("SELECT * FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
+
 		$tuple = array();
 		$tuple['pkey'] = "global";
 		$tuple['edomain'] = null;
@@ -485,6 +465,7 @@ private function saveEdit() {
 		$tuple['fqdnprov'] = 'NO';
 		$tuple['fqdninspect'] = 'NO';
 		$tuple['fqdnhttp'] = 'NO';
+
 		if (!empty($fqdn)) {		
 			$tuple['fqdn'] = $fqdn;
 			$sname = 'ServerName ' . $fqdn;
@@ -502,8 +483,21 @@ private function saveEdit() {
 			}									
 		}
 		else {
+			$tuple['fqdn'] = null;
 			`echo 'ServerName sark.local' > /opt/sark/etc/apache2/sark_includes/sarkServerName.conf`;
 		}
+		
+
+		if (isset($bindport) && $old['BINDPORT'] != $bindport) {
+			$tuple['bindport'] = $bindport;
+			$restartShorewall=true;
+		}
+
+		if (isset($staticipv4) && $staticipv4 != $old['STATICIPV4'] ) {
+			$this->nethelper->set_staticIPV4($old['STATICIPV4'],$staticipv4);
+			$tuple['STATICIPV4'] = $staticipv4;
+			$this->message = "Static IP add/change - Commit Required";
+		}		
 
 		$ret = $this->helper->setTuple("globals",$tuple);
 		
@@ -513,21 +507,8 @@ private function saveEdit() {
 		if (isset($_POST['dhcpend'])) {		
 			$dhcpend		= strip_tags($_POST['dhcpend']);
 		}
-			
-		$cur_ipaddr = $this->nethelper->get_localIPV4();
-		$cur_netmask = $this->nethelper->get_netMask();
-		$cur_gatewayip = $this->nethelper->get_networkGw();
-
-// Removed Jan 2019			
-/*		
-		$file = file("/etc/ntp.conf") or die("Could not read file $pkey !");	
-		$cur_astfile = null;
-		foreach ($file as $rec) {
-			if ( preg_match (" /^server\s*(.*)$/ ",$rec,$matches)) {
-				$cur_astfile .=  $matches[1]."\n";
-			}
-		}		
-*/	
+/*
+	Removed in 6.2
 		$ret = $this->helper->request_syscmd ("grep Port /etc/ssh/sshd_config");
 		$ret = preg_replace('/<<EOT>>$/', '', $ret);
 		if (preg_match (" /(\d{2,5})/ ",$ret,$matches)) {
@@ -536,7 +517,7 @@ private function saveEdit() {
 		else {
 			$cur_sshport = 22;
 		} 
-	
+*/	
 /*
  * update the files
  */ 
@@ -544,37 +525,19 @@ private function saveEdit() {
 		$ret='OK';
 		$reboot=false;
 		$restartDnsmasq=false;
-		$restartShorewall=false;
+
 /*
  * deal with hosts & domains
  */
 		$update_hosts = false;
 		$cur_hostname = `hostname`;
 		$cur_hostname = trim ($cur_hostname);
-		$cur_domain = `hostname -d`;
-		$cur_domain = trim ($cur_domain);
 								
 		if (isset($hostname) && $hostname != $cur_hostname) {
 			$cur_hostname = $hostname;
 			$update_hosts = true;
 		}		
-		$hosts_string = $cur_hostname;	
-		if ($domain != $cur_domain) {	
-			$update_hosts = true;		
-/*
- * set forced server for dnsmasq
- */ 
-			if ($domain) {			
-				$cur_domain = $domain;				
-				$hosts_string .= '.' . $cur_domain . ' '  . $hostname;
-				$myret = $this->helper->request_syscmd ("sed -i '/address=/c address=/$cur_domain/127.0.0.1' /etc/dnsmasq.d/sarkdns");
-				$myret = $this->helper->request_syscmd ("sed -i '/search/c search $cur_domain' /etc/dnsmasq.d/sarkdns");			
-			}
-			else {
-				$myret = $this->helper->request_syscmd ("sed -i '/address=/c address=/nodomain.local/127.0.0.1' /etc/dnsmasq.d/sarkdns");
-				$myret = $this->helper->request_syscmd ("sed -i '/search/c search nodomain.local' /etc/resolv.conf");
-			}
-		}							  
+		$hosts_string = $cur_hostname;						  
 /*
  * repair broken hosts file
  */ 		
@@ -588,26 +551,24 @@ private function saveEdit() {
 			$myret = $this->helper->request_syscmd ("sed -i '1a127.0.1.1 $cur_hostname' /etc/hosts");	
 			$reboot=true;
 		}
+
 /*
  * update hosts
  */ 			
  		
-		if ( $bindaddr != 'ON' ) {
-			if ($update_hosts) {				
-				$myret = $this->helper->request_syscmd ("/bin/echo $cur_hostname > /etc/hostname");
-				$this->helper->request_syscmd ("sed -i '/127.0.1.1/c 127.0.1.1 $hosts_string' /etc/hosts");
-				$reboot=true;
-//				echo "REBOOT 1 hostname is " . $hostname . " and curr_hostname is " . $cur_hostname . "\n";
-			}
-		}	
-/*
- * set ssh port
- */ 		
-		if ($cur_sshport != $sshport) {
-			$myret=$this->helper->request_syscmd ("/bin/sed -i 's/^Port [0-9][0-9]*/Port $sshport/' /etc/ssh/sshd_config");
-//			$myret=$this->helper->request_syscmd ("/usr/sbin/service ssh restart");
+		if ($update_hosts) {				
+			$myret = $this->helper->request_syscmd ("/bin/echo $cur_hostname > /etc/hostname");
+			$this->helper->request_syscmd ("sed -i '/127.0.1.1/c 127.0.1.1 $hosts_string' /etc/hosts");
 			$reboot=true;
 		}
+	
+
+/*
+ * set ssh port
+ * 	Removed in 6.2
+ */ 		
+
+
 /*
  * set ICMP rules
  */
@@ -626,7 +587,7 @@ private function saveEdit() {
 			}
 			$restartShorewall = true;
 		}
-		
+/*		
 		$rewrite = false;
 		if ( isset($_POST['toggle']) ) {
 			if (!$cur_dhcp) {			
@@ -641,7 +602,7 @@ private function saveEdit() {
 			}
 		}
 		else {
-			if ($ipaddr != $cur_ipaddr || $netmask != $cur_netmask || $gatewayip != $cur_gatewayip || $cur_dhcp) {				
+			if ($ipaddr != $cur_ipaddr || $cur_dhcp) {				
 				$network_string .= "iface $interface inet static \n";
 				$network_string .= "\taddress " . $ipaddr . "\n";
 				$network_string .= "\tnetmask " . $netmask . "\n";
@@ -718,7 +679,7 @@ private function saveEdit() {
 				}
 			}												
 		}
-
+*/
 		if (file_exists ("/etc/ssmtp/ssmtp.conf")) {
 			$this->helper->request_syscmd ("chmod 777 /etc/ssmtp/ssmtp.conf");
 			$fh = fopen("/etc/ssmtp/ssmtp.conf", 'w') or die('Could not open ssmtp.conf file!');
@@ -727,8 +688,7 @@ private function saveEdit() {
 			$output .= "mailhub=" . $smtphost . PHP_EOL;
 			if ($smtpuser) {
 				$output .= "AuthUser=" . $smtpuser . PHP_EOL;
-				if ($smtppwd) {
-					$output .= "AuthPass=" . $smtppwd . PHP_EOL;
+				if ($smtppwd) {                                                                  
 				}
 			}
 			$output .= "UseTLS=" . $smtpusetls . PHP_EOL;
@@ -738,19 +698,6 @@ private function saveEdit() {
 			$this->helper->request_syscmd ("chmod 664 /etc/ssmtp/ssmtp.conf");
 		}				
 
-// Removed Jan 2019.  
-/*		
-		$ntpservers = explode("\n", $astfile);
-		if (!empty($ntpservers)) {
-			$this->helper->request_syscmd ("sed -i '/^server/d' /etc/ntp.conf");
-			foreach ($ntpservers as $ntp) {
-				if ($ntp) {
-					$trimntp = trim($ntp);
-					$this->helper->request_syscmd ("echo server $trimntp >> /etc/ntp.conf");
-				}
-			}
-		}
-*/		
 		if ($timez !=  $oldtz ) {
 			$distro = trim(`lsb_release -si`);
 			$rlse = trim(`lsb_release -sr`);
@@ -764,32 +711,11 @@ private function saveEdit() {
 			$this->helper->request_syscmd ("dpkg-reconfigure -f noninteractive tzdata");	
 		}
 				
-		if ($rewrite) {
-			$myret = $this->helper->request_syscmd ("chmod 777 /etc/network/interfaces");
-			$fh = fopen("/etc/network/interfaces", 'w') or die('Could not open interface file!');
-			fwrite($fh, $network_string) or die('Could not write to file');
-			fclose($fh);
-			$myret = $this->helper->request_syscmd ("chmod 644 /etc/network/interfaces");
-//			echo "<strong> Resetting IP address now...</strong>";
-			if ( $this->bindaddr != 'ON' ) {
-				$myret = $this->helper->request_syscmd ("ip addr flush dev $interface && ifdown $interface && ifup $interface");
-				$myret = $this->helper->request_syscmd ("php /opt/sark/generator/setip.php");
-				$myret = $this->helper->request_syscmd ("sv d srk-ua-responder");
-				$myret = $this->helper->request_syscmd ("sv u srk-ua-responder");
-				$this->doResolv();				
-			}
-			else {
-				$reboot=true;
-			}	
-				
-//			return;
-		}	
-				
 /*
  * flag errors
  */ 	
 		if ($ret == 'OK') {
-			$this->message = " - Updated OK!";
+			$this->message .= "Updated OK!";
 			
 			if ($reboot) {
 				$this->message .= " - Reboot required!";
@@ -799,6 +725,7 @@ private function saveEdit() {
 				$this->message .= " - dnsmasq restarted"; 
 			}
 			if ($restartShorewall) {
+				$this->nethelper->copyFirewallTemplates(); 
 				$myret = $this->helper->request_syscmd ("shorewall restart");
 				$this->message .= " - shorewall restarted";
 			}

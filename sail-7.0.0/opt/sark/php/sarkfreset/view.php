@@ -256,7 +256,7 @@ private function doReset() {
 		$this->log .= "<p>greetings PRESERVED</p>";	
 	}	
 	if ( isset($_POST['fresetvmail'] ) ) {
-			$this->helper->request_syscmd ("rm -rf /var/spool/asterisk/voicemail/*");
+		$this->helper->request_syscmd ("rm -rf /var/spool/asterisk/voicemail/*");
 		$this->log .= "<p>voicemail DELETED</p>";
 	}
 	else {

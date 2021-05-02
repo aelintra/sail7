@@ -91,7 +91,7 @@ public function showForm() {
 			$this->message = "Rebooting Now, Please wait...";
 		}
 	}		
-	
+		
 	if (isset($_POST['commit']) || isset($_POST['commitClick'])) { 
 		$this->saveEdit();
 		if ($this->invalidForm) {
@@ -165,8 +165,9 @@ private function showMain() {
 	$buttonArray['reboot'] = "";
 
 
-	if ( file_exists("/opt/sark/service/srk-ua-siplog/down" )) {    
-			$buttonArray['sipcapIsOff'] = "w3-text-green";
+	if ( file_exists("/opt/sark/service/srk-ua-siplog/down" )) { 
+		$buttonArray['sipcapIsOff'] = "w3-text-green";
+			
 	}
 	else {
 		$buttonArray['sipcapIsOn'] = "w3-text-blue";
@@ -268,6 +269,7 @@ private function showMain() {
 //    echo '</div>' . PHP_EOL;
 
 	$this->myPanel->responsiveTwoColRight();
+
 /*
  *       TAB Control
  */
@@ -283,6 +285,7 @@ private function showMain() {
     $this->myPanel->radioSlide('playcongested',$global['PLAYCONGESTED'],array('YES','NO','SIGNAL'));
     $this->myPanel->radioSlide('playbusy',$global['PLAYBUSY'],array('YES','NO','SIGNAL'));
     $this->myPanel->radioSlide('callrecord1',$global['CALLRECORD1'],array('None','OTR','OTRR','In','Out','Both'));	
+    $this->myPanel->displayInputFor('recage','number',$global['RECAGE']);
     $this->myPanel->displayInputFor('vmailage','number',$global['VMAILAGE']);
     $this->myPanel->displayInputFor('intringdelay','number',$global['INTRINGDELAY']);
     $this->myPanel->displayInputFor('abstimeout','number',$global['ABSTIMEOUT']);
@@ -305,6 +308,21 @@ private function showMain() {
 		$this->myPanel->displayInputFor('ldappass','password',$global['LDAPPASS']);
 		echo '</div>';
 	}
+
+/*
+ * ToDo - placeholder for the PJSIP generator
+
+	$this->myPanel->internalEditBoxStart();
+ 	$this->myPanel->subjectBar("SIP Channel Driver");   
+    $this->myPanel->radioSlide('sipdriver',$global['SIPDRIVER'],array('chan_sip'));
+    echo '</div>';	
+*/
+
+	$this->myPanel->internalEditBoxStart();
+ 	$this->myPanel->subjectBar("Phone Browser Security");   
+    $this->myPanel->displayInputFor('puserpass','text',$global['PUSERPASS']);
+    $this->myPanel->displayInputFor('padminpass','text',$global['PADMINPASS']);
+    echo '</div>';	
 
 	$this->myPanel->internalEditBoxStart();
  	$this->myPanel->subjectBar("User Services");   

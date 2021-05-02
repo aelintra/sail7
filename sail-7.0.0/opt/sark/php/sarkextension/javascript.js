@@ -1,6 +1,6 @@
 
   $(document).ready(function() {
-
+  
 	$('#clustershow :input').prop('readonly', true);
 	$('#clustershow :input').css('background-color','#f1f1f1');
 
@@ -107,11 +107,28 @@
 		"bPaginate": false,
 		"bAutoWidth": true,
 		"bStateSave": true,
+		"bstateDuration": 360,		
 		"sDom": 'fti',
 		"aoColumnDefs" : [{
 			"bSortable" : false,
 			"aTargets" : [2,5,6,7,8,10,11]
 		}],
+		"aoColumns": [ 
+			{ "sName": "pkey" },
+			{ "sName": "cluster" },
+			{ "sName": "user" },
+			{ "sName": "device" },
+			{ "sName": "macaddr" },					
+			{ "sName": "ipaddr" },		
+			{ "sName": "location" },
+			{ "sName": "sndcreds"},
+//			{ "sName": "boot"},
+//			{ "sName": "trns"},		
+			{ "sName": "connect"},
+			{ "sName": "active"},
+			{ "sName": "edit" },
+			{ "sName": "del" }		
+		],
 		"createdRow": function( row, data, dataIndex ) {
             if ( ~data[3].indexOf("VXT") &&  ~data[8].indexOf("OK") ) {        
          			$(row).find('td:eq(0)').css('background-color', 'lightgreen');
@@ -128,23 +145,8 @@
        	},		
 		"oLanguage": {
 			"sSearch": "Filter:"
-		},		
-		"aoColumns": [ 
-			{ "sName": "cluster" },
-			{ "sName": "pkey" },			
-			{ "sName": "user" },
-			{ "sName": "device" },
-			{ "sName": "macaddr" },					
-			{ "sName": "ipaddr" },		
-			{ "sName": "location" },
-			{ "sName": "sndcreds"},
-//			{ "sName": "boot"},
-//			{ "sName": "trns"},		
-			{ "sName": "connect"},
-			{ "sName": "active"},
-			{ "sName": "edit" },
-			{ "sName": "del" }		
-		],
+
+		},
 /*
 		"fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
         $('td:eq(7),td:eq(10)', nRow).addClass( "bluetags" );

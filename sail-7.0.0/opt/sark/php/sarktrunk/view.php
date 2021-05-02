@@ -151,7 +151,7 @@ private function showMain() {
 	
 	
 	$this->myPanel->aHeaderFor('trunkname'); 	
-//	$this->myPanel->aHeaderFor('cluster',false,'cluster w3-hide-small w3-hide-medium');
+	$this->myPanel->aHeaderFor('cluster',false,'cluster w3-hide-small w3-hide-medium');
 	$this->myPanel->aHeaderFor('description',false,'w3-hide-small w3-hide-medium');
 //	$this->myPanel->aHeaderFor('carriertype');
 	$this->myPanel->aHeaderFor('ipaddr',false,'w3-hide-small');
@@ -178,7 +178,7 @@ private function showMain() {
 		
 		
 		echo '<td class="read_only">' . $row['pkey'] . '</td>' . PHP_EOL;		
-//		echo '<td class="w3-hide-small  w3-hide-medium">' . $row['cluster'] . '</td>' . PHP_EOL;
+		echo '<td class="w3-hide-small  w3-hide-medium">' . $row['cluster'] . '</td>' . PHP_EOL;
 		if (isset ($row['description'])) {
 			echo '<td class="w3-hide-small w3-hide-medium">' . $row['description'] . '</td>' . PHP_EOL;
 		}
@@ -393,7 +393,7 @@ private function saveSIPIAX(&$tuple) {
 		}
 					
 		if ( $_POST['regthistrunk'] == "YES" ) {
-			$tuple['register'] = $tuple['username'].':'.$tuple['password'].'@'.$tuple['host'].'/'.$tuple['username'];
+			$tuple['register'] = $tuple['username'].':'.$tuple['password'].'@'.$tuple['host'];
 		}
 									
 		$template = $this->copyTemplates ($tuple);
@@ -496,7 +496,7 @@ private function showEdit() {
 	}
 
 	$buttonArray['cancel'] = true;
-	$this->myPanel->actionBar($buttonArray,"sarktrunkForm",false,false,true);
+	$this->myPanel->actionBar($buttonArray,"sarktrunkForm",false,true,true);
 
 	if ($this->invalidForm) {
 		$this->myPanel->showErrors($this->error_hash);

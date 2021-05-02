@@ -2,6 +2,8 @@
 #
 # delete recordings older than $RECAGE days
 #
-RECAGE="+60"
-find /opt/sark/www/origrecs/recordings/*  -mtime $RECAGE -type d -exec rm -rf {} +
+
+RECAGE=`/usr/bin/sqlite3 /opt/sark/db/sark.db "select RECAGE from globals;"`
+
+find /opt/sark/www/origrecs/recordings/*  -mtime +$RECAGE -type d -exec rm -rf {} +
 

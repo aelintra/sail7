@@ -5,6 +5,14 @@
     google.charts.setOnLoadCallback(drawSysChart);
 //google.charts.setOnLoadCallback(drawCallChart);
 
+      $('#chantable').dataTable ( {
+    "bPaginate": false,
+    "bAutoWidth": true,
+    "sDom": 't',
+    "bSort" : false
+  } );   
+
+
  function drawSysChart() {
 
 

@@ -16,14 +16,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
- 
+
+if(php_sapi_name() == 'cli') {
+    require_once "/opt/sark/php/srkDbClass";
+    require_once "/opt/sark/php/srkHelperClass";
+}
+else {
+	require_once $_SERVER["DOCUMENT_ROOT"] . "../php/srkDbClass";
+}
+
 Class nethelper {
 	
 	protected $interfaceName;
 	protected $localIPV4;
+	protected $dhcpIPV4;
+	protected $staticIPV4;
 	protected $networkCIDR;
 	protected $networkBrd;
 	protected $networkIPV4;
+	protected $helper;
+	protected $dbh;
 	
 
 function __construct() {
@@ -40,11 +52,24 @@ function __construct() {
 		$this->interfaceName = trim($matches[1]);
 	}
 
+//	staticIPV4
+    $this->dbh = DB::getInstance();
+	$res = $this->dbh->query("SELECT STATICIPV4 FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
+	if ($res['STATICIPV4']) {
+		$this->staticIPV4 = $res['STATICIPV4'];
+    }
+
 // localIPV4
 	$iprets = shell_exec( "ip addr show dev " . $this->interfaceName);
 	preg_match ( '/inet\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\/\d{1,2}/', $iprets, $matches);
     $this->localIPV4 = $matches[1];
-    
+
+// dhcpIPV4
+	$iprets = shell_exec( "ip -4 addr show dev " . $this->interfaceName . " | grep inet | grep dynamic");
+	preg_match ( '/inet\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\/\d{1,2}/', $iprets, $matches);
+    $this->dhcpIPV4 = $matches[1];    
+
+
  // Broadcast IPV4
  	preg_match ( '/brd\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/', $iprets, $matches); 
 	$this->networkBrd = $matches[1];
@@ -59,7 +84,7 @@ function __construct() {
 }
  	
 /*
-	getters
+ *	functions
  */	
 
 public function get_interfaceName() {
@@ -67,7 +92,46 @@ public function get_interfaceName() {
 }
 
 public function get_localIPV4() {
+	if ($this->staticIPV4) {
+		return $this->staticIPV4;
+    }
 	return $this->localIPV4;
+}
+
+public function get_staticIPV4() {
+	return $this->staticIPV4;
+}
+
+public function set_staticIPV4($oldIp, $newIp) {	
+	$this->helper = new helper;	
+
+	if (empty($oldIp) && empty($newIp)) {
+		return -1;
+	}
+
+	if (!empty($oldIp)) { 	
+		$this->helper->request_syscmd ("ip a delete $oldIp/32 dev " . $this->interfaceName);
+	}
+/* network commands
+	$this->helper->request_syscmd ("rm /etc/network/if-up.d/srkstaticipV4");
+*/
+	if (!empty($newIp)) { 
+		sleep(1);
+		$this->helper->request_syscmd ("ip a add $newIp dev " .  $this->interfaceName);
+/* network commands
+		$this->helper->request_syscmd ("echo '#!/bin/bash' > /etc/network/if-up.d/srkstaticipV4");
+		$ipcmd = "ip a add $newIp dev " . $this->interfaceName;
+		$this->helper->request_syscmd ("echo $ipcmd >> /etc/network/if-up.d/srkstaticipV4");
+		$this->helper->request_syscmd ("chmod +x  /etc/network/if-up.d/srkstaticipV4");
+*/
+	}
+	$this->helper->commitOn();
+	return;
+}
+
+public function get_dhcpIPV4() {
+	
+	return $this->dhcpIPV4;
 }
 
 public function get_networkCIDR() {
@@ -161,6 +225,48 @@ public function get_externip() {
 	}
 //  No IP so lets bug out	
 	return False;   	 		
+}
+
+public function copyFirewallTemplates() {
+
+	$this->dbh = DB::getInstance();
+	$this->helper = new helper;
+	
+	$res = $this->dbh->query("SELECT BINDPORT,FQDN,FQDNINSPECT,SIPFLOOD FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
+
+	if ($res['FQDNINSPECT'] == 'YES') {
+		$rule = "'INLINE(ACCEPT) net \$FW tcp ";
+		$rule .= $res['BINDPORT'];
+		$rule .= ';; -m string --algo bm --to 100 --string "';
+		$rule .= $res['FQDN'];
+		$rule .= '"';
+		$rule .= "'";
+		$rc = $this->helper->request_syscmd ("echo $rule > /etc/shorewall/sark_inline_fqdn");
+
+		$rule = "'INLINE(ACCEPT) net \$FW udp ";
+		$rule .= $res['BINDPORT'];
+		$rule .= ';; -m string --algo bm --to 100 --string "';
+		$rule .= $res['FQDN'];
+		$rule .= '"';
+		$rule .= "'";
+		$rc = $this->helper->request_syscmd ("echo $rule >> /etc/shorewall/sark_inline_fqdn");
+	}
+	else {
+		$rc = $this->helper->request_syscmd ("echo '#' > /etc/shorewall/sark_inline_fqdn");
+	}
+
+#ToDo
+# If we want to use this then it will have to be refactored to use a block like the one above so we can suvstiture 
+# the BINDPORT value into the strings
+# 
+	$file = '/opt/sark/templates/shorewall/sark_inline_limit';
+	if (file_exists($file) && $res['SIPFLOOD'] == 'YES') {
+		$rc = $this->helper->request_syscmd ("cp $file /etc/shorewall");
+	}
+	else {
+		$rc = $this->helper->request_syscmd ("echo '#' > /etc/shorewall/sark_inline_limit");
+	}		
+		
 }
 
 
