@@ -33,7 +33,7 @@ $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // get the global env settings we need
 try {	  
-  	$global = $db->query("select EDOMAIN,FQDN,FQDNPROV,HACLUSTERIP,HAUSECLUSTER,LDAPBASE,LOGLEVEL,TLSPORT from globals")->fetch();
+  	$global = $db->query("select BINDPORT,EDOMAIN,FQDN,FQDNPROV,HACLUSTERIP,HAUSECLUSTER,LDAPBASE,LOGLEVEL,PADMINPASS,PUSERPASS,TLSPORT from globals")->fetch();
 
 } catch (Exception $e) {
   $errorMsg = $e->getMessage();
@@ -48,13 +48,16 @@ if (empty($global)) {
 }
 $haclusterip = $global['HACLUSTERIP'];
 $hausecluster = $global['HAUSECLUSTER'];
+$bindport = $global['BINDPORT'];
 $externip = $global['EDOMAIN'];
 $fqdnprov = $global['FQDNPROV'];
 $fqdn = $global['FQDN'];
 $ldapbase = $global['LDAPBASE'];
 $loglevel = $global['LOGLEVEL'];
 $tlsport = $global['TLSPORT'];
-
+$bindport = $global['BINDPORT'];
+$padminpass = $global['PADMINPASS'];
+$puserpass = $global['PUSERPASS'];
 
 // ignore polycom logging requests
 if (defined('STDIN')) {
@@ -196,16 +199,20 @@ try {
 	$thisConfig = $configs->fetchObject();
 	$configs = NULL;
 // update the phone model (it may have changed or it may not be present yet)
-  	$model = logUA();
-  	if (!empty($model)) {
-  		if ($model != $thisConfig->devicemodel) {
+// ignore VXT phones
+ 	if (!preg_match(" /VXT/ ", $thisConfig->device)) {
+  		$model = logUA();
+  		if (!empty($model)) {
+  			if ($model != $thisConfig->devicemodel) {  			
 // set the model in the extension record  	
- 			logIt("Device model differs between UA and DB.  UA = $model, DB = " . $thisConfig->devicemodel);
-  	  		$sql = $db->prepare('UPDATE ipphone SET devicemodel=? WHERE pkey = ?');
-			$sql->execute(array($model,$thisConfig->pkey));
-			$sql = NULL;
+ 				logIt("Device model differs between UA and DB.  UA = $model, DB = " . $thisConfig->devicemodel);
+  	  			$sql = $db->prepare('UPDATE ipphone SET devicemodel=? WHERE pkey = ?');
+				$sql->execute(array($model,$thisConfig->pkey));
+				$sql = NULL;
+			}
 		}
 	}
+
   }	
    
 //  $masterkey = $thisConfig->pkey;
@@ -241,8 +248,11 @@ if (isset($thisConfig->location) && $thisConfig->location == 'remote') {
 if (preg_match('/\$localip/',$retstring)) {
 	$retstring = preg_replace ( '/\$localip/', ret_localip($thisConfig->provisionwith, $thisConfig->protocol), $retstring); 
 }
+$retstring = preg_replace ( '/\$bindport/', $bindport, $retstring);
 $retstring = preg_replace ( '/\$tlsport/', $tlsport, $retstring);
 $retstring = preg_replace ( '/\$ldapbase/', $ldapbase, $retstring);
+$retstring = preg_replace ( '/\$padminpass/', $padminpass, $retstring);
+$retstring = preg_replace ( '/\$puserpass/', $puserpass, $retstring);
 
 if (!$descriptor) {
 	$retstring = preg_replace ( '/\$desc/', $thisConfig->desc, $retstring);
@@ -284,8 +294,8 @@ logit ("====================End of stream======================>",4);
 // send it
 echo $retstring; 
 
-/* removed for now - database locking issues
 // try to update lasteen
+/*
 try {
 	$time = time();
 	if (isset($_SERVER["REMOTE_ADDR"])) {
@@ -308,8 +318,9 @@ try {
 }
 */
 // disable auth send for next time
+/*
 if (!$descriptor) {
-	if ($thisConfig->sndcreds != 'Always') { 
+	if ($thisConfig->sndcreds = 'Once') { 
 		try {
 			$update = $db->prepare("update ipphone set sndcreds='No' where  pkey = '" . $thisConfig->pkey . "'");
 			$update->execute();

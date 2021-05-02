@@ -51,7 +51,8 @@ if (is_dir($folder))
 
     // If there's a tenant name then we expect an extra field in the file name
     $offset = strlen($TENANT)>0 ? 1 : 0;
-
+    syslog(LOG_WARNING, "Tenant is  $TENANT, offset is $offset");
+    
     if (defined('OLD_FORMAT_CUTOFF_DATE'))
     {
         if (strtotime($_POST['date']) <= strtotime(OLD_FORMAT_CUTOFF_DATE))

@@ -154,7 +154,7 @@ private function showMain() {
 		if ( ! empty($short_vendor_cols[1]) ) {
 			$short_vendor = $short_vendor_cols[1];
 		}
-		if (preg_match('/(Snom|Panasonic|Yealink|Polycom|Cisco|Gigaset|Aastra|Grandstream|2N|Vtech)/i',$short_vendor,$matches)) {
+		if (preg_match('/(Snom|Panasonic|Yealink|Polycom|Cisco|Fanvil|Gigaset|Aastra|Grandstream|2N|Vtech)/i',$short_vendor,$matches)) {
 			$short_vendor = $matches[1];
 		}
 		else {

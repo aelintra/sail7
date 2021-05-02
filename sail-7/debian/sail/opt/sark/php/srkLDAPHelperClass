@@ -61,7 +61,7 @@ public function Get($uid,$arg) {
 }
 
 public function Add($arg) {
-	$sr = ldap_add($this->ds, "uid=" . uniqid("sark-id-") . ","  . $this->addressbook . "," . $this->base, $arg);
+	$sr = ldap_add($this->ds, "uid=" . uniqid('',true) . ","  . $this->addressbook . "," . $this->base, $arg);
 	if (!$sr) {
 		if (ldap_errno($this->ds) == 0x44) { 
          return "Entry already exists!";

@@ -71,7 +71,7 @@ Class page {
 //								'faclass' => 'check',
 								'src' => 'commit.png',
                                 'class' => 'buttonUpdate',
-								'colour' => 'w3-text-green',
+								'colour' => 'w3-text-light-blue',
                                 'alt' => 'Commit',
                                 'title' => 'COMMIT (Generate Asterisk objects)',
                                 'onClick' => "return confirmOK('Commit - Confirm?')",
@@ -120,6 +120,10 @@ Class page {
                                 'title' => 'Initialize & Regenerate the PCI card settings',
                                 'onClick' => "return confirmOK('Regenerate - Confirm?')",
                                 ),
+                'install' => array (
+                                'alt' => 'Install',
+                                'title' => 'Install Certificate and Key',
+                                ),                
  				'list' => array (
  								'faclass' => 'list',
 								'src' => 'list.png',
@@ -162,7 +166,12 @@ Class page {
 								'src' => 'print.png',
                                 'alt' => 'Print',
                                 'title' => 'Print',
-                                ),                                                                                           
+                                ),   
+                'remove' => array (
+                                'alt' => 'Remove',
+                                'title' => 'Remove Certificate and Key',
+                                'onClick' => "return confirmOK('Remove? - Confirm?')",
+                                ),                                                                                                                            
  				'resolve' => array (
  								'faclass' => 'redo',
 								'src' => 'redo.png',
@@ -221,6 +230,8 @@ Class page {
                                 'title' => 'Return'
                                 ),  
                 'rlse' => array (
+//                              'faclass' => 'times',
+//                                'src' => 'cancel.png',
                                 'alt' => 'Rlse',
                                 'title' => 'Rlse'
                                 ),                                                                                     
@@ -416,10 +427,6 @@ Class page {
                                 'checked' =>'YES',
                                 'unchecked' => 'NO'
                                 ),
-                'fqdncert'   => array(
-                                'checked' =>'YES',
-                                'unchecked' => 'NO',
-                                ), 
                 'fqdnhttp'   => array(
                                 'checked' =>'YES',
                                 'unchecked' => 'NO',
@@ -1890,6 +1897,9 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "../php/srkNetHelperClass";
     $global = $dbh->query("SELECT EXTLIM,CLUSTER FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 
     $localip = $nethelper->get_localIPV4();
+    $staticip = $nethelper->get_staticIPV4();
+    $dhcpip = $nethelper->get_dhcpIPV4();
+
     $ipv6lla = $nethelper->get_IPV6LLA();
     $ipv6gua = $nethelper->get_IPV6GUA();
     $updays=false;
@@ -2007,9 +2017,14 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "../php/srkNetHelperClass";
     else {
         echo "Public IP: <strong>Unknown</strong><br/>";
     }
-    if ( $localip ) {
-        echo "Local IP: <strong>$localip</strong><br/>";
+    if ( $dhcpip ) {
+        echo "DHCP IP: <strong>$dhcpip</strong><br/>";
     }
+
+    if ( $staticip ) {
+        echo "Static IP: <strong>$staticip</strong><br/>";
+    }
+
 //  if ( $ipv6gua ) {
 //      echo "IPV6: <strong>$ipv6gua</strong><br/>";
 //  }

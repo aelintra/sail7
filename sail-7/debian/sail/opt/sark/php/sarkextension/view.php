@@ -145,7 +145,7 @@ public function showForm() {
 	if (isset($_POST['sync'])) { 
 		$this->sipNotifyPush();
 		$this->message = "Config request pushed";
-//		echo '<input type="hidden" id="tabselect" name="tabselect" value="1" />' . PHP_EOL;	
+		$this->dbh = DB::getInstance();	
 		$this->showEdit();
 		return;			
 	}
@@ -154,7 +154,7 @@ public function showForm() {
 		$this->sipRelease();
 		$this->dbh = DB::getInstance();	
 	}	
-		
+	
 	if (isset($_POST['save']) || isset($_POST['endsave'])) { 
 		$this->saveNew();
 		if ($this->invalidForm) {
@@ -274,6 +274,7 @@ private function showMain() {
 		echo '<td class="w3-hide-small  w3-hide-medium" title = "' . $row['desc'] . '" >' . $display  . '</td>' . PHP_EOL;
 		
 		$display = $row['device'];
+/*		
 		preg_match('/^(\w+)\s+/',$display,$matches);
 		if (isset($matches[1])) {
 			if (strlen($matches[1]) > 12) {
@@ -284,6 +285,7 @@ private function showMain() {
 				$display = $matches[1];
 			}
 		}
+*/
 		echo '<td class="w3-hide-small  w3-hide-medium" title = "' . $row['device'] . '" >' . $display  . '</td>' . PHP_EOL;	
 		
 		$display_macaddr = 'N/A';
@@ -329,7 +331,7 @@ private function showMain() {
 				$latency = "Stolen(" . $row['stolen'] . ")";
 			} 
 		}
-				
+		
 		echo '<td class="icons" title = "Device State">' . $latency . '</td>' . PHP_EOL;
 		echo '<td class="w3-hide-small" >' . $row['active'] . '</td>' . PHP_EOL;				
 
@@ -337,6 +339,7 @@ private function showMain() {
 		$get .= $row['pkey'];	
 		$this->myPanel->editClick($_SERVER['PHP_SELF'],$get);
 		$this->myPanel->deleteClick($_SERVER['PHP_SELF'],$row['pkey']);
+
 	}
 	
 
@@ -459,6 +462,17 @@ private function saveNew() {
 	$tuple = array();
 	$clustId = NULL;
 
+	$res = $this->dbh->query("SELECT EXTLEN,ACL,NATDEFAULT,PWDLEN,USERCREATE,FQDNPROV,VCL FROM globals WHERE pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
+	$acl = $res['ACL'];
+	$extlen = $res['EXTLEN'];
+	if (isset ($res['PWDLEN'])) {
+		$this->paswordLength = $res['PWDLEN'];
+	}
+	$vcl = $res['VCL'];
+	$natdefault = $res['NATDEFAULT'];
+	$usercreate = $res['USERCREATE'];
+	$fqdnprov = $res['FQDNPROV'];
+	
 	$this->validator = new FormValidator();
     $this->validator->addValidation("pkey","req","Please fill in Extension number");
     $this->validator->addValidation("pkey","num","Extension must be numeric");    
@@ -661,7 +675,7 @@ private function addNewExtension ($tuple) {
 
 
 	$tuple['sipiaxfriend'] 	= 
-	"type=peer
+	"type=friend
 defaultuser=\$desc
 secret=\$password
 mailbox=\$ext@\$clst
@@ -681,7 +695,6 @@ nat=\$nat
 transport=\$transport
 encryption=\$encryption";
 
-//	$this->chkMailbox($tuple['dvrvmail'],$tuple['sipiaxfriend'],$tuple['cluster']);
 
 	if ($resdevice['technology'] == 'SIP') {
 		if ($tuple['device'] != 'General SIP' && $tuple['device'] != 'MAILBOX') {
@@ -706,7 +719,7 @@ encryption=\$encryption";
 	$tuple['dvrvmail'] = $this->helper->displayKey($tuple['pkey']);
 			
 // ToDo permit ipv6 acl
-
+/*
 	if ($tuple['acl'] == 'YES' && $tuple['location'] == 'local') {
 		if ( !preg_match(' /deny=/ ',$tuple['sipiaxfriend'])) {
 			$tuple['sipiaxfriend'] .= "\ndeny=0.0.0.0/0.0.0.0";
@@ -715,7 +728,7 @@ encryption=\$encryption";
 			$tuple['sipiaxfriend'] .= "\npermit=" . $this->netHelper->get_networkIPV4() . '/' . $this->netHelper->get_networkCIDR();
 		}			
 	}
-
+*/
 	$tuple['sipiaxfriend'] = trim($tuple['sipiaxfriend']);
 
 /*
@@ -926,7 +939,6 @@ private function showEdit() {
 //	$xref = $this->xRef($pkey);
 	$buttonArray['cancel'] = true;
 	if (preg_match(' /^OK/ ', $latency) && $extension['device'] != 'General SIP') {
-//		$buttonArray['redo'] = true;
 		$buttonArray['notify'] = true;
 		if (preg_match('/^snom|Panasonic|yealink/i',$extension['device'])) {
 			$buttonArray['sync'] = true;
@@ -1035,13 +1047,14 @@ private function showEdit() {
 	$this->myPanel->internalEditBoxStart();
 //	$this->myPanel->displayBooleanFor('location',$extension['location']);
 	$this->myPanel->radioSlide('location',$extension['location'],array('local','remote'));
-
+/* Removed Dec2020
 	if (isset($extension['macaddr'])) {
 		if (isset($fqdn)) {
 			$this->myPanel->radioSlide('provisionwith',$extension['provisionwith'],array('IP','FQDN'));
 		}
 		$this->myPanel->radioSlide('sndcreds',$extension['sndcreds'],array('No','Once','Always'));	
-	}	
+	}
+*/	
 	if (count($protocol) > 1)	{
 		$this->myPanel->aLabelFor('protocol');
 		$this->myPanel->selected = $extension['protocol'];
@@ -1162,7 +1175,6 @@ private function showEdit() {
 	}	
 	
 
-	
 /*
  *   TAB Asterisk
  */
@@ -1280,7 +1292,14 @@ private function saveEdit() {
 		}
 		
 		$this->helper->buildTupleArray($_POST,$tuple,$custom);
-	
+/*		
+		if ( isset($_POST['twin']) && $_POST['twin'] == "" ) {
+			$tuple['celltwin'] = True;
+		}
+		else {
+			$tuple['celltwin'] = False;
+		}
+*/				
 		$newkey =  trim(strip_tags($_POST['newkey']));
 
 /*
@@ -1294,7 +1313,7 @@ private function saveEdit() {
  */  
  		if ($this->astrunning) {
 			$amiHelper = new amiHelper();
-			$amiHelper->put_database($_POST['pkey']);			
+			$amiHelper->put_database($newkey);			
 		}
  		
 /*
@@ -1326,14 +1345,6 @@ private function saveEdit() {
 /*
  * check for keychange
  */
-//		if ($tuple['cluster'] != 'default') {
-			$sql = $this->dbh->prepare("SELECT id FROM cluster WHERE pkey=?");
-			$sql->execute(array($tuple['cluster']));
-			$cluster = $sql->fetch();	
-			$sql = NULL;
-			$newkey = $cluster['id'] . $newkey;
-//		}
-
 		if ($newkey != $tuple['pkey']) {
 
 			$sql = $this->dbh->prepare("SELECT pkey FROM ipphone WHERE pkey=?");
@@ -1399,7 +1410,6 @@ private function adjustAstProvSettings(&$tuple) {
 /*
  * local/remote processing
  */ 
-
 //		$tuple['sipiaxfriend'] = preg_replace( " /nat=yes/ ",'',$tuple['sipiaxfriend']);		
 		$tuple['sipiaxfriend'] = preg_replace( " /^\#include\s*sark_sip_tls.conf.*$/m ",'',$tuple['sipiaxfriend']);	
 		$tuple['sipiaxfriend'] = preg_replace( " /^\#include\s*sark_sip_tcp.conf.*$/m ",'',$tuple['sipiaxfriend']);	
@@ -1715,9 +1725,7 @@ private function sipNotifyPush () {
 			$this->message = "Ext is not a SIP UA!!.";
 			return;
 		}
-#
-#	Only for Snoms....   and Panasonics... and Yealinks!
-#
+
 		$this->dbh = NULL; 		
 
 		$chk = false;
@@ -1728,7 +1736,10 @@ private function sipNotifyPush () {
 		if (preg_match ( " /Panasonic/ ", $res['device'])) {	
 			$chk = 'panasonic-check-cfg';
 		}			
-		if (preg_match ( " /[Y|y]ealink/ ", $res['device'])) {	
+		if (preg_match ( " /CiscoMP/ ", $res['device'])) {	
+			$chk = 'ciscoMP-check-cfg';
+		}
+		if (preg_match ( " /Yealink/i ", $res['device'])) {	
 			$chk = 'yealink-check-cfg';
 		}
 		if ( ! $chk ) {
@@ -1826,6 +1837,7 @@ private function printEditNotes ($pkey,$extension,$sip_peers) {
 		echo 'State: <strong>UNKNOWN</strong><br/>' . PHP_EOL; 
 	}	
 	
+	
 	if (preg_match(' /^OK/ ', $sip_peers [$pkey]['Status'])) {
 		if (isset ($sip_peers [$pkey]['IPport'])) {
 			echo 'IPport: <strong>' . $sip_peers [$pkey]['IPport'] . '</strong><br/>' . PHP_EOL;
@@ -1868,6 +1880,9 @@ private function printEditNotes ($pkey,$extension,$sip_peers) {
 		if (preg_match ( " /[S|s]nom/ ", $extension['device'])) {
 			$images .= 'snom';
 		}
+		if (preg_match ( " /Fanvil/ ", $extension['device'])) {
+			$images .= 'fanvil';
+		}		
 		if (preg_match ( " /Vtech/ ", $extension['device'])) {
 			$images .= 'vtech';
 		}
@@ -1924,11 +1939,11 @@ private function getVendorFromMac($mac) {
 		if ( ! empty($short_vendor_cols[1]) ) {
 			$short_vendor = $short_vendor_cols[1];
 		}
-		if (preg_match('/(Snom|Panasonic|Yealink|Polycom|Cisco|Gigaset|Aastra|Grandstream|Vtech)/i',$short_vendor_cols[2],$matches)) {
+		if (preg_match('/(Snom|Panasonic|Yealink|Polycom|Fanvil|Cisco|Gigaset|Aastra|Grandstream|Vtech)/i',$short_vendor_cols[2],$matches)) {
 				$short_vendor = $matches[1];
 		}
 		else {
-			if (preg_match('/(Snom|Panasonic|Yealink|Polycom|Cisco|Gigaset|Aastra|Grandstream|Vtech)/i',$short_vendor,$matches)) {
+			if (preg_match('/(Snom|Panasonic|Yealink|Polycom|Fanvil|Cisco|Gigaset|Aastra|Grandstream|Vtech)/i',$short_vendor,$matches)) {
 				$short_vendor = $matches[1];
 			}
 			else {

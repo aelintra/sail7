@@ -24,12 +24,14 @@ $netaddress = $net->get_networkIPV4();
 $cidr = $net->get_networkCIDR();
 $msk = $net->get_netMask();
 $ip = $net->get_localIPV4();
+$staticIPV4 = $net->get_staticIPV4();
 
-echo  "Interface name on this node: $interface\n";
-echo  "IPV4: $ip\n";
-echo  "Network address: $netaddress\n";
-echo  "netmask: $msk\n";
-echo  "CIDR: $cidr\n";
+logit  ("Interface name on this node: $interface");
+logit  ("IPV4: $ip");
+logit  ("staticIPV4: $staticIPV4");
+logit  ("Network address: $netaddress");
+logit  ("netmask: $msk");
+logit  ("CIDR: $cidr");
 
 $Phonelist = array ('aastra'=>'aastra',
 					'cisco'=>'cisco',
@@ -47,14 +49,13 @@ if ($netaddress == '0.0.0.0') {
 	print "No IP from ifconfig  - got $netaddress \n";
 }
 else {
-	print "Setting local subnet as $netaddress/$cidr \n";
+	if ($staticIPV4) {
+		logit  ("Static Virt ip $staticIPV4");
+		$net->set_staticIPV4(false,$staticIPV4);
+	}
 	if ( file_exists( "/etc/shorewall") ) {
 		`echo LAN=$netaddress/$cidr > /etc/shorewall/local.lan`;
 		`echo IF1=$interface > /etc/shorewall/local.if1`;
-		# shorewall pre 4.5.13
-		`sed -i '/^BLACKLISTNEWONLY=/c\\BLACKLISTNEWONLY=NO' /etc/shorewall/shorewall.conf`;
-		# shorewall 4.5.13+
-		`sed -i '/^BLACKLIST=/c\\BLACKLIST=ALL' /etc/shorewall/shorewall.conf`;
 	}
 	
 	if ( file_exists( "/etc/fail2ban/jail.local")) {	
@@ -92,6 +93,16 @@ else {
 			`echo "dhcp-option=$phone,option:tftp-server,\"http://$ip/provisioning$query\"" >> /etc/dnsmasq.d/sarkdhcp-opt66`;
 		}
 	}
+/*
+        Set an IP in /etc/issue for CPE systems
+ */
+	$srkrlse = trim(`dpkg-query -W -f '\${version}\n' sail`);
+	$osrelease = trim (`lsb_release -d --short`);
+	`echo "$osrelease/SARK $srkrlse running at $ip/$cidr" > /etc/issue`;
+}
+
+function logit ($someText) {
+	syslog(LOG_WARNING, "SRK setip $someText");	
 }
 
 ?>		

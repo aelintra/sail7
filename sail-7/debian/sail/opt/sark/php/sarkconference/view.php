@@ -209,11 +209,9 @@ private function saveNew() {
 // save the data away
 	
 	$this->validator = new FormValidator();
-    $this->validator->addValidation("pkey","req","Please supply the Room number"); 
-    $this->validator->addValidation("pkey","num","Room number");    
-    $this->validator->addValidation("pkey","maxlen=4","Room number must be 3 or 4 digits");     
-	$this->validator->addValidation("pkey","minlen=3","Room number must be 3 or 4 digits");     
- 
+    $this->validator->addValidation("pkey","req","Please fill in Room Number");
+    $this->validator->addValidation("pkey","num","Conference room must be numeric");    
+
     //Now, validate the form
     if (!$this->validator->ValidateForm()) {
 		$this->invalidForm = True;

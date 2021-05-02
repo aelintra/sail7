@@ -184,7 +184,7 @@ private function showNew() {
 	$this->myPanel->internalEditBoxStart();
 	$this->myPanel->subjectBar("New Ring Group");
 	$this->myPanel->displayInputFor('callgroup','text',null,'pkey');	
-	
+	$this->myPanel->radioSlide('grouptype','Ring',array('Ring','Hunt','Page'));
 
 	echo '<div class="cluster">';
 	echo '<div class="cluster w3-margin-bottom">';
@@ -194,21 +194,18 @@ private function showNew() {
 	$this->myPanel->displayCluster();
 	$this->myPanel->aHelpBoxFor('cluster');
 	echo '</div>';
-	$this->myPanel->displayInputFor('description','text',null,'longdesc');
-	$this->myPanel->radioSlide('grouptype','Ring',array('Ring','Hunt','Page'));
+
 	echo '<div class="w3-margin-bottom">';
-	$this->myPanel->displayInputFor('groupstring','text',null,'out');
-/*	
 	$this->myPanel->aLabelFor('outcome');
 	echo '</div>'; 
 	$this->myPanel->sysSelect('outcome') . PHP_EOL;
 	$this->myPanel->aHelpBoxFor('outcome');
-*/	
+	$this->myPanel->displayInputFor('groupstring','text',null,'out');
 	$this->myPanel->radioSlide('devicerec','default',array('default','None','OTR','OTRR','Inbound'));
 	$this->myPanel->displayInputFor('ringdelay','number',$intringdelay);
 	$this->myPanel->displayInputFor('alphatag','text',null,'calleridname');
 	$this->myPanel->displayInputFor('alertinfo','text',null,'speedalert');
-	
+	$this->myPanel->displayInputFor('description','text',null,'longdesc');
 
 	echo '</div>';
 	$endButtonArray['cancel'] = true;
@@ -305,14 +302,8 @@ private function showEdit($key=False,$cluster=false) {
 	echo '<form id="sarkcallgroupForm" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
 
 	$this->myPanel->internalEditBoxStart();
-/*
-	if ($cluster == 'default') {
-		$this->myPanel->subjectBar("Ring Group " . $pkey);
-	}
-	else {
-*/
-		$this->myPanel->subjectBar("Ring Group " . substr($pkey,2));
-//	} 
+
+	$this->myPanel->subjectBar("Ring Group " . $pkey);
 
 	$res = $this->dbh->query("SELECT INTRINGDELAY FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	$intringdelay = $res['INTRINGDELAY'];	

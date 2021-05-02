@@ -1,10 +1,10 @@
 # rate limit SIP floods
 
-INLINE net $FW udp 5060 ;  -m recent --set   
+INLINE net $FW udp $bindport ;  -m recent --set   
 INLINE(DROP:warning:UDPFLD) net $FW udp 5060 ; -m recent --update --seconds 10 --hitcount 20
 
-INLINE net $FW tcp 5060 ;  -m recent --set   
+INLINE net $FW tcp $bindport ;  -m recent --set   
 INLINE(DROP:warning:TCPFLD) net $FW tcp 5060 ; -m recent --update --seconds 10 --hitcount 20
 
-INLINE net $FW tcp 5060 ;  -m recent --set  
-INLINE(DROP:warning:TLSFLD) net $FW udp 5060 ; -m recent --update --seconds 10 --hitcount 20
+INLINE net $FW tcp $bindport ;  -m recent --set  
+INLINE(DROP:warning:TLSFLD) net $FW tcp 5060 ; -m recent --update --seconds 10 --hitcount 20

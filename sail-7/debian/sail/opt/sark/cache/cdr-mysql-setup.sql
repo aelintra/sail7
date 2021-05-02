@@ -2,15 +2,14 @@ CONNECT mysql;
 
 CREATE DATABASE IF NOT EXISTS asterisk; 
 
-GRANT ALL
-  ON asterisk.* 
-  TO asterisk@localhost 
-  IDENTIFIED BY 'aster1sk'; 
+CREATE USER 'asterisk'@'localhost' IDENTIFIED BY 'aster1sk';
+
+GRANT ALL ON asterisk.* TO asterisk@localhost; 
 
 USE asterisk; 
 
 CREATE TABLE IF NOT EXISTS `cdr` ( 
-`calldate` datetime NOT NULL default '0000-00-00 00:00:00', 
+`calldate` datetime NOT NULL, 
 `clid` varchar(80) NOT NULL default '', 
 `src` varchar(80) NOT NULL default '', 
 `dst` varchar(80) NOT NULL default '', 
