@@ -1,0 +1,27 @@
+Format: 1.8
+Date: Sun, 2  May 2021 18:00:00 +0000
+Source: sail
+Binary: sail
+Architecture: all
+Version: 7.0.1-1+ubuntu20
+Distribution: UNRELEASED
+Urgency: low
+Maintainer: CoCo <admin@aelintra.com>
+Changed-By: CoCoSoft <admin@aelintra.com>
+Description:
+ sail       - SARK  Asterisk Integration Layer (SAIL) - A fast, lightweight swi
+Changes:
+ sail (7.0.1-1+ubuntu20) UNRELEASED; urgency=low
+ .
+   * tagged
+ .
+   - Merge forward changes and features from sail-6.2
+Checksums-Sha1:
+ d1e80c126eb9f3d8a03c5dbd65914417b703ab85 6707658 sail_7.0.1-1+ubuntu20_all.deb
+ 92e9fe1fbc38e69157962f6654f0607533dfba2b 3679 sail_7.0.1-1+ubuntu20_amd64.buildinfo
+Checksums-Sha256:
+ fd2bac7c6ce85b3950b62ed0f04c3ceac6371234bbcd9bbcaa62f11e4b7dc555 6707658 sail_7.0.1-1+ubuntu20_all.deb
+ 50550226690250f0336c4f95d5713c80482b98551961e90dee9a8570a1184489 3679 sail_7.0.1-1+ubuntu20_amd64.buildinfo
+Files:
+ 1614a88559fcc1718f89a927023b10ea 6707658 network extra sail_7.0.1-1+ubuntu20_all.deb
+ 666599fe8d59ae82fcaa6d25245877bc 3679 network extra sail_7.0.1-1+ubuntu20_amd64.buildinfo
