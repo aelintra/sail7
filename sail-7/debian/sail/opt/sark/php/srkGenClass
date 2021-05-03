@@ -282,7 +282,7 @@ private function genSip() {
 		}
 	}
 	`/bin/echo $tlsport > /etc/asterisk/sark_sip_tlsbindaddr.conf`;
-	
+*/	
 
 	if (file_exists( '/etc/asterisk/sark_sip_localnet.conf' )) {
 		$OUT .= "#include sark_sip_localnet.conf \n";
@@ -1386,9 +1386,9 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 				}
 				else { 
 // check if we found a technology - if not skip expansion of this endpoint
-					if (!empty($IPphone['technology']) {
-						$dialstr .= $IPphone['technology'] . "/" . $phonekey . "&";
-					}	
+					if (!empty($IPphone['technology'])) {
+						$dialstr .= $IPphone['technology'] . "/" . $phonekey . "&";	
+					}
 				}	
 			}
 			elseif (preg_match(' /\// ',$ep)) {

@@ -147,8 +147,8 @@ cluster TEXT DEFAULT 'default',			-- tenant
 desc TEXT,								-- Description						
 route TEXT,								-- Holiday scheduler route override
 routeclass TEXT,						-- Holiday scheduler route class override
-stime INT,							-- Epoch start
-etime INT,							-- Epoch end
+stime INTEGER,							-- Epoch start
+etime INTEGER,							-- Epoch end
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system'
@@ -225,7 +225,7 @@ greetnum TEXT DEFAULT 'None',
 name TEXT,
 options TEXT,
 outcome TEXT, 
-timeout INT,
+timeout INTEGER,
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system'
@@ -275,13 +275,16 @@ z_updater TEXT DEFAULT 'system'
 
 CREATE TABLE IF NOT EXISTS globals (
 pkey TEXT PRIMARY KEY,
-ABSTIMEOUT INTEGER DEFAULT 14400,		-- 4 hours
-ACL TEXT DEFAULT 'OFF',				-- ONOFF 
-AGENTSTART INTEGER DEFAULT 6001,		-- Agent start number
-ALLOWHASHXFER TEXT DEFAULT 'enabled', -- Allow asterisk non-SIP xfer
-ASTDLIM TEXT DEFAULT ',',			-- Asterisk delimiter comma
-BINDADDR TEXT,						-- Asterisk SIP bindaddr
-BLINDBUSY TEXT,						-- blind transfer busy bounce
+ABSTIMEOUT INTEGER DEFAULT 14400,   -- 4 hours
+ACL TEXT,                           -- ON/OFF 
+AGENTSTART TEXT DEFAULT 6001,	    -- Agent start number
+ALERT TEXT,							-- not used in 4.x 
+ALLOWHASHXFER TEXT,                 -- Allow asterisk non-SIP xfer
+ASTDLIM TEXT,                       -- Asterisk delimiter ','
+ATTEMPTRESTART TEXT,                -- not used in 4.x 
+BINDADDR TEXT,                      -- Asterisk SIP bindaddr
+BINDPORT TEXT DEFAULT 5060,			-- SIP BINDPORT
+BLINDBUSY TEXT,                     -- blind transfer busy bounce
 BOUNCEALERT TEXT,                   -- alertinfo string for blind transfer bounce
 CALLPARKING TEXT DEFAULT 'YES',		-- turn call parking on/off
 CALLRECORD1 TEXT DEFAULT 'None',	-- call recording defaults
@@ -303,8 +306,7 @@ EXTLIM TEXT,
 FAX TEXT,							-- FAX flag
 FAXDETECT TEXT,                     -- FAX detect onoff
 FOPPASS INTEGER DEFAULT 1224,			-- Flash opeartor panel password
-FQDN TEXT,							-- FQDN V5+
-FQDNCERT INTEGER DEFAULT 'NO',		-- FQDN letsencrypt cert installed NO/YES 		
+FQDN TEXT,							-- FQDN V5+		
 FQDNINSPECT TEXT DEFAULT 'NO',		-- Require FQDN in SIP Ops Shorewall 4.6+
 FQDNHTTP TEXT DEFAULT 'NO',			-- Require FQDN in remote HTTP Ops 
 FQDNPROV TEXT,						-- use FQDN in remote provisioning YES/NO
@@ -322,6 +324,8 @@ LDAPUSER text DEFAULT 'admin',		-- LDAP user
 LDAPPASS text DEFAULT 'sarkadmin',	-- LDAP password
 LEASEHDTIME INTEGER DEFAULT 43200,		-- Hot desk lease time
 LKEY TEXT,							-- not used
+LOCALAREA TEXT,                     -- not used (See Cluster)
+LOCALDLEN TEXT,                     -- not used (See Cluster)
 LOCALIP TEXT,                       -- local ip address
 LOGLEVEL INTEGER DEFAULT 0,				-- internal log level
 LOGSIPDISPSIZE INTEGER DEFAULT 2000,	-- number of SIP pcap lines to display
@@ -336,23 +340,30 @@ MONITORTYPE TEXT,					-- Monitor or Mixmonitor
 MYCOMMIT TEXT,                      -- commit outstanding
 NATDEFAULT TEXT DEFAULT local,		-- V6 NAT defaiult local/remote
 OPERATOR INTEGER DEFAULT 0,
+PADMINPASS TEXT DEFAULT 'myadminpass',	-- phone browser ADMIN passord
+PUSERPASS TEXT DEFAULT 'myuserpass',	-- phone browser USER passord
 PWDLEN INTEGER DEFAULT 12,				-- password length
 PLAYBEEP TEXT DEFAULT 'YES',		-- play beep on failover
 PLAYBUSY TEXT DEFAULT 'YES',		-- play busy message or tones
 PLAYCONGESTED TEXT DEFAULT 'YES',	-- play congested message or tones
 PLAYTRANSFER TEXT DEFAULT 'YES',	-- play transfer message when transferring off
-RECLIMIT INTEGER DEFAULT 1000,			-- Recording folder max size
-RECQDITHER INTEGER DEFAULT 2,			-- dither (ms) on queuelog searches
-RECQSEARCHLIM INTEGER DEFAULT 200,		-- search limit on queuelog
-RINGDELAY INTEGER DEFAULT 20,			-- default ring timeout (seconds)
-RUNFOP TEXT DEFAULT 'disabled',		-- generate FOP objectshe PBX
-RECFINALDEST TEXT 'home/sark/monitor_by_day/`date +%d%m%y`',
-SESSIONTIMOUT INTEGER DEFAULT 600,		-- sessiontimeout (10minutes)
-SENDEDOMAIN TEXT DEFAULT 'YES',		-- Send public IP in SIP header YES/NO
-SIPIAXSTART INTEGER DEFAULT 201,		-- lowest extension number
-SIPFLOOD TEXT DEFAULT 'NO',			-- detect SIP flood YES/NO
+RECAGE INTEGER DEFAULT 60,			-- How long to keep voice recordings in days
+RECFINALDEST TEXT,                  -- recordings folder
+RECLIMIT TEXT,                      -- Recording folder max size
+RECQDITHER TEXT,                    -- dither (ms) on queuelog searches
+RECQSEARCHLIM TEXT,                 -- search limit on queuelog
+
+RINGDELAY TEXT,                     -- default ring timeout (seconds)
+RUNFOP TEXT,                        -- generate FOP objects
+SESSIONTIMOUT INTEGER DEFAULT 600,  -- sessiontimeout (10minutes)
+SENDEDOMAIN TEXT DEFAULT YES,  		-- Send public IP in SIP header YES/NO
+SIPIAXSTART TEXT,                   -- lowest extension number
+SIPFLOOD TEXT DEFAULT NO,			-- detect SIP flood YES/NO
 SIPMULTICAST TEXT,                  -- listen for multicast provisioning requests
+SIPDRIVER TEXT DEFAULT chan_sip,	-- SIP backend chan_sip or pjsip
+
 SPYPASS TEXT,                       -- password for SPY ops
+STATICIPV4 TEXT,					-- Static IPV4 address
 SUPEMAIL TEXT,                      -- supervisor email
 SYSOP INTEGER DEFAULT 201,				-- system operator real extension
 SYSPASS INTEGER DEFAULT 4444,			-- password for sysops
