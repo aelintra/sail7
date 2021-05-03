@@ -1,3 +1,6 @@
+#
+# SAIL sudoers
+#
 asterisk ALL=NOPASSWD: /usr/bin/sv
 www-data ALL=NOPASSWD: /etc/init.d/asterisk
 www-data ALL=NOPASSWD: /usr/sbin/asterisk
@@ -13,3 +16,6 @@ www-data ALL=NOPASSWD: /usr/sbin/a2ensite
 www-data ALL=NOPASSWD: /usr/bin/openssl
 www-data ALL=NOPASSWD: /usr/sbin/ip
 www-data ALL=NOPASSWD: /usr/bin/touch
+#
+# End of SAIL sudoers
+#
