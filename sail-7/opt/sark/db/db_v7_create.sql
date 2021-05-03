@@ -353,6 +353,7 @@ SIPIAXSTART INTEGER DEFAULT 201,		-- lowest extension number
 SIPFLOOD TEXT DEFAULT 'NO',			-- detect SIP flood YES/NO
 SIPMULTICAST TEXT,                  -- listen for multicast provisioning requests
 SPYPASS TEXT,                       -- password for SPY ops
+STATICIPV4 TEXT,					-- Static IPV4 address
 SUPEMAIL TEXT,                      -- supervisor email
 SYSOP INTEGER DEFAULT 201,				-- system operator real extension
 SYSPASS INTEGER DEFAULT 4444,			-- password for sysops
