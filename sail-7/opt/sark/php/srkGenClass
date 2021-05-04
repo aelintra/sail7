@@ -1046,10 +1046,10 @@ LOCAL;
 			$myCluster = $IPphone['cluster'];
 			if ($myCluster == 'default') {
 				$myCluster = 'qrxvtmny';
-				$lKey = $IPphone['pkey'];
+				$iKey = $IPphone['pkey'];
 			}
 			else { 
-				$lKey = substr($IPphone['pkey'],2); 
+				$iKey = substr($IPphone['pkey'],2); 
 			}
 			$OUT .= "[" . $myCluster . $iKey . "opencos]\n";
 
