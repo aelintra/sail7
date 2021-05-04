@@ -19,6 +19,7 @@ INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('auth','Auth'
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('authnum','Authorized Number','Telephone number you wish to authorize for callback.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('backchan','Back Channel','Channel to use for the Call back.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('beginclosed','Beginning of Closed Period','Select the start time of your closed segment.');
+INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('bindport','SIP Listen Port','This determines the local port at which the PBX will listen for SIP.   By default this is the well known UDP port 5060 but you can set this to some high port to help avoid SIP hack attacks.  N.B. your phones will need to be aware of this value and you will need to provision them accordingly.  You will also need to add port=5060 to your upstream trunk peer definitions.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('blfhead','BLF/DSS Keys','You can edit the BLF rows by clicking or touching the cells. On desktop devices click away from the cell to save it, on mobile devices touch Done, Return or Save, depending upon the mobile OS.  If this phone type is capable of in-flight sync then a Sync button will be shown in the right menu bar and you can use it to update the phone BLF keys without a reboot.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('blfkey','FKEY','Relative FKEY number');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('blfkeyname','Keyfile','Name of the associated BLF key template');
@@ -188,7 +189,7 @@ INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('ivrActive','
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('ivrHelp','IVR Keys','Activate a key by clicking or touching the slider.  From the action dropdown, choose the action you want the IVR to take when the key is pressed. You can also send an alphatag to the phone to give the callee more information about the call type, e.g. sales, accounts, etc. You can set a distinctive ring by incuding an alertinfo tag. These tags are not standard and vary by phone manufacturer so you will need to refer to the relevant documentation from your phone supplier.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('ivrname','IVR Name','IVR keyfield');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('keyboardDial','&nbsp;','Enter the number you wish to call and press the Dial button.');
-INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('lanipaddr','IPV4 Address','The IPV4 address of this server.');
+INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('lanipaddr','DHCP IPV4 Address','The dynamic IPV4 address of this server (from DHCP).');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('latency','latency','The latency of the end-point (i.e. the time taken for Asterisk to receive a response to an IP request).');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('ldapbase','LDAP Base','LDAP base, sometimes called domain; enter it in the form dc=somecompany,dc=com');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('ldapou','Organizational Unit','The name of the OU where the contacts directory is held (default contacts) ');
@@ -218,6 +219,7 @@ INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('mcastlport',
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('mcastpkey','Group','Multicast group extension.  This is the number you will dial to trigger the multicast page.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('mcastport','Port','Multicast port.  This is the port you will multicast on. ');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('mobile','Tel2','Cell phone number');
+INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('modified','Modified','Last time the file was modified.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('moh','MOH on Ring?','Play Music-on-Hold rather than the more usual ringback tone to the caller.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('mohfilename','Music On Hold Files','');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('mohhead','Music-on-Hold','MOH files associated with this tenant.  You can add further music files by uploading them.  Candidate files should be in 8Khz Mono wav format, if they are not then SARK will attempt to convert them but they may not play.  If you have multiple files loaded then one will be chosen at random whenever MOH is called for by a user of this tenant.  If you include no files, then the system default files will be played. ');
@@ -236,6 +238,7 @@ INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('operator','S
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('orideclosed','Override','Set this to YES if you want to force ALL extensions to have this closed restriction');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('orideopen','Override','Set this to YES if you want to force ALL extensions to have this open restriction');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('outcome','Outcome','Where the call will be delivered if the call group fails to terminate the call.');
+INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('padminpass','Phone Admin Password','The global admin password to be set into the phones at the next provision');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('password','Password','The password for this account, called the secret in Asterisk');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('path1','Path 1','You can specify up to 4 paths (1 primary and up to 3 failover) in descending order of priority.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('path2','Path 2','You can specify up to 4 paths (1 primary and up to 3 failover) in descending order of priority.');
@@ -246,7 +249,7 @@ INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('phone','Tel1
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('pin','PIN','Agent PIN.  This is a number unique to each agent. It is recommended you use 4 digit PINs');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('play','Play','Play the sound file');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('playbeep','Play tone on Failover','If set on, a beep tone will be played whenever the system fails over a trunk call to a secondary provider.  If set off, no tone will be played.');
-INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('playbusy','Play tone on Busy','If set on, the PBX will play "Please hold while we try to connect you" whenever it transfers a call to an external endpoint. The default is on');
+INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('playbusy','Play tone on Busy','If set to YES the PBX will come off-hook and play a busy tone, if set to NO the PBX will stay on-hook and play a busy message, if set to SIGNAL a BUSY signal will be sent to the ua.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('playcongested','Play tone on Congested','If set to YES the PBX will come off-hook and play a congestion tone, if set to NO the PBX will stay on-hook and play a congestion message, if set to SIGNAL a CONGESTION signal will be sent to the ua.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('playtransfer','Play message on transfer','If set on the PBX will play, "Please hold while we try to connect you." whenever it attempts to transfer a call to some remote endpoint (for example a cellphone).  if set off, no message will be played.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('port','Port','The port which this end-point is using to receive SIP packets.');
@@ -261,6 +264,7 @@ INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('protocol','I
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('provisioning','Provisioning','Header');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('provisionwith','Provision With URL?','Tells SARK what kind of addresses to set in the provisioning stream.  This will be used by the endpoint to communicate back with SARK. You probably do not want to use a URL with locally attached devices unless you are using IPV6 GUAs or you have a local nameserver, however you should consider using one for IPV6 phones or IPV4 remote phones.  It is easier to manage and you can use stateful firewall rules to inspect inbound INVITEs and REGISTRATIONs to ensure they are correctly marked, which can help against toll fraud attacks.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('proxy','Dynamic Proxy Enable','Enables/disables SARKs dynamic proxy feature (see extensions panel status field).');
+INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('puserpass','Phone User Password','The global user password to be set into the phones at the next provision');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('push','Push','Some phones (Snoms) can reload their config without rebooting');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('pwdlen','Ext password length','Length of the password (in characters) the randomizer will create for new extensions');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('qdd','Dial','Queue direct dial access.  Supply a unique tenant-wide extension number here.');
@@ -273,6 +277,7 @@ INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('q6','Q6','Ag
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('queuename','Name','Tenant wide unique queue name. Name can be letters and numbers but you should not use special characters or spaces.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('queueoptions','Options','Asterisk Queue options.  You can learn what queue options are and what they do by reading the Asterisk sample queues.conf');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('realname','User Name','The name of this user.  N.B. There may be GDPR implications if you are using full names in this field so you may consider using nicknames or abbreviated names instead.');
+INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('recage','Delete old recordings','Set the maximum age of your call recordings here (in days).  This will keep the size of the recording directory relatively constant and prevent the disk from becoming full. The default size is 60 days but you can increase/decrease it depending upon the available storage. The recordings folder will be aged every morning at 02:00');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('register','Registration String','Used to provide a registration string if your carrier requires it');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('regthistrunk','Generate a registration string','Set this on if you want SARK to register this trunk. Your carrier will have given you instructions as to whether registration is required or not');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('regress','Reg','Regress the system to this image');
@@ -298,6 +303,7 @@ INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('sclose','clo
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('searchkey','goKey','Here you can enter all or part of the key for any object in the database, for example: an extension number, ring group number, queue name etc.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('secondary','Secondary Path','The second choice trunk for this route.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('selectall','Select All','');
+INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('sipdriver','SIP Channel Driver','');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('sipflood','Throttle SIP floods?','Turning this on will throttle sipfloods in the firewall. This may help control SIP DOS attacks and over enthusiastic SIP crack robots');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('sipiaxfriend','SIP Peer entry','Asterisk SIP settings');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('sipiaxpeer','Sip Peer entry', 'Asterisk peer stanza name');
@@ -315,6 +321,7 @@ INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('source','Sou
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('span','Span','The Span of your custom app... Your app can be included into the inbound call path, the outbound call path, both inbound and outbound or neither.  SARK will automatically generate the correct includes for you based upon the setting you choose here.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('spypass','4-digit Spy Password','Password used to validate spy requests.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('sshport','SSH Port','Set this value to the required port number, save it and issue a reboot. ');
+INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('staticipv4','Static IPV4 Address','Here you provide a static IP address that your PBX will run VoIP operations from.  SARK will always keep a dynamic IP (if DHCP is available) and a second static IP for operations.  This makes network changes less fraught because as long as there is a DHCP server running then SARK will get at least one IP after a restart.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('strategy','Strategy','Whether to (a) select trunks in priority, i.e only select trunk 2 if trunk 1 is unavailable (hunt) or (b) to load-balance calls across all available trunks in the route (balance) ');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('striptags','Strip Tags?','By default, any tags will be automatically stripped from the input.  You can override this behaviour by setting this switch off');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('supemail','Supervisor Email','Supervisor email address');

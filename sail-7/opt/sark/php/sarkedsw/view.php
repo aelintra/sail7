@@ -388,7 +388,7 @@ private function copyFirewallTemplates() {
 		$rule .= '; -m string --algo bm --to 100 --string "';
 		$rule .= $res['FQDN'];
 		$rule .= '"';
-		$rule .= "'";q
+		$rule .= "'";
 		$rc = $this->helper->request_syscmd ("echo $rule >> /etc/shorewall/sark_inline_fqdn");
 	}
 	else {

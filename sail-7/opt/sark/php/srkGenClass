@@ -1040,14 +1040,19 @@ LOCAL;
 		$sql = "SELECT * FROM IPphone ORDER BY pkey";
 		$qRes = $this->dbh->query($sql);
 		$cosphone = $qRes->fetchAll();
-		$qRes = NULL;		
+		$qRes = NULL;	
+
 		foreach ($cosphone as $IPphone) {
 			$myCluster = $IPphone['cluster'];
 			if ($myCluster == 'default') {
 				$myCluster = 'qrxvtmny';
-			} 
-			$OUT .= "[" . $myCluster . substr($IPphone['pkey'],2) . "opencos]\n";
-//			$OUT .= "[" . $myCluster . $IPphone['pkey'] . "opencos]\n";
+				$lKey = $IPphone['pkey'];
+			}
+			else { 
+				$lKey = substr($IPphone['pkey'],2); 
+			}
+			$OUT .= "[" . $myCluster . $iKey . "opencos]\n";
+
 			
 			$OUT .= "\tinclude => Emergency\n"; 
 //			
@@ -1070,10 +1075,10 @@ LOCAL;
 				} 	
 			}
 
-			$OUT .= "\tinclude => ". $myCluster . substr($IPphone['pkey'],2) . "Cosend\n";
+			$OUT .= "\tinclude => ". $myCluster . $iKey . "Cosend\n";
 //			$OUT .= "\tinclude => ". $myCluster . $IPphone['pkey'] . "Cosend\n";			
 
-			$OUT .= "[" . $myCluster . substr($IPphone['pkey'],2) . "closedcos]\n";
+			$OUT .= "[" . $myCluster . $iKey . "closedcos]\n";
 //			$OUT .= "[" . $myCluster . $IPphone['pkey'] . "closedcos]\n";
 			
 			$OUT .= "\tinclude => Emergency\n"; 
@@ -1094,10 +1099,10 @@ LOCAL;
 					$OUT .= "\tinclude => " . $coskeys['COS_pkey'] . "\n";
 				} 	
 			}
-			$OUT .= "\tinclude => " . $myCluster . substr($IPphone['pkey'],2) . "Cosend\n";
+			$OUT .= "\tinclude => " . $myCluster . $ikey . "Cosend\n";
 //			$OUT .= "\tinclude => " . $myCluster . $IPphone['pkey'] . "Cosend\n";
 			
-			$OUT .= '[' . $myCluster . substr($IPphone['pkey'],2) . "Cosend]\n";
+			$OUT .= '[' . $myCluster . $iKey . "Cosend]\n";
 //			$OUT .= '[' . $myCluster . $IPphone['pkey'] . "Cosend]\n";
 			
 			
