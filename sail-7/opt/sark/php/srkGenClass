@@ -1075,7 +1075,7 @@ LOCAL;
 				} 	
 			}
 
-			$OUT .= "\tinclude => ". $myCluster . $iKey . "Cosend\n";
+			$OUT .= "\tinclude => ". $myCluster . "Cosend\n";
 //			$OUT .= "\tinclude => ". $myCluster . $IPphone['pkey'] . "Cosend\n";			
 
 			$OUT .= "[" . $myCluster . $iKey . "closedcos]\n";
