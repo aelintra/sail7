@@ -985,7 +985,15 @@ LOCAL;
 			$OUT .= "\texten => RINGALL,1,agi(sarkhpe,Alias,$ringall,\${EXTEN},)\n"; 
 		}
 
-		$this->generateRingGroups($OUT,$row['pkey'],$row['id']);	
+		if ($row['pkey'] == 'default') {
+			$myId = NULL;
+		}
+		else { 
+			$myId = $row['pkey']; 
+		}
+
+
+		$this->generateRingGroups($OUT,$row['pkey'],$myId);	
 		$this->confBridge($OUT,$row['pkey']);
 		
         $OUT .= "\texten => *50*,1,VoiceMailMain(\${CALLERID(num)}@" . $row['pkey'] . ")\t;Voicemail Retrieve\n"; 
