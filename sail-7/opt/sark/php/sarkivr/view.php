@@ -241,7 +241,7 @@ private function saveNew() {
 		$qRes = $this->dbh->query($sql);
 		$work = $qRes->fetch();
 		$qRes = NULL;
-		$tuple['directdial'] = $work['id'] . $tuple['directdial'];						   
+//		$tuple['directdial'] = $work['id'] . $tuple['directdial'];						   
 		$ret = $this->helper->createTuple("ivrmenu",$tuple,true,$tuple['cluster']);
 		if ($ret == 'OK') {
 //			$this->helper->commitOn();	
