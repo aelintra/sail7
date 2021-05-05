@@ -321,7 +321,7 @@ private function showEdit() {
 	echo '<div id="clustershow">';
 	$this->myPanel->displayInputFor('cluster','text',$ivrmenu['cluster'],'cluster');
 	echo '</div>';
-	$this->myPanel->displayInputFor('ivrname','text',$ivrmenu['name'],'name');
+	$this->myPanel->displayInputFor('ivrname','text',$ivrmenu['pkey'],'pkey');
 	$this->myPanel->displayInputFor('directdial','number',$ivrmenu['directdial']);
 /*	
 	echo '<div id="pkeyshow">';
