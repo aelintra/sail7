@@ -136,7 +136,7 @@ private function showMain() {
 			}	
 */		 
 			echo '<td class="w3-hide-medium w3-hide-small">' . $row['cluster'] . '</td>' . PHP_EOL;
-			echo '<td class="read_only">' . $shortkey . '</td>' . PHP_EOL;					
+			echo '<td class="read_only">' . $row['pkey'] . '</td>' . PHP_EOL;					
 			echo '<td >' . $row['longdesc'] . '</td>' . PHP_EOL;
 			echo '<td class="w3-hide-medium w3-hide-small">' . $row['grouptype'] . '</td>' . PHP_EOL;
 			echo '<td class="w3-hide-medium w3-hide-small">' . $row['calleridname'] . '</td>' . PHP_EOL;
