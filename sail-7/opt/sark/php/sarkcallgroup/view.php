@@ -237,7 +237,7 @@ private function saveNew() {
 		$resid = $sql->fetch();
 		$sql=NULL;
 		
-		$_POST['pkey'] = $resid['id'] . $_POST['pkey'];
+//		$_POST['pkey'] = $resid['id'] . $_POST['pkey'];
 
     	$retc = $this->helper->checkXref($_POST['pkey'],$_POST['cluster']);
 	    if ($retc) {

@@ -1449,7 +1449,7 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 			else {
 				$OUT .= "\texten => $fullKey,1,agi(sarkhpe,Alias,$dialstr,\${EXTEN},)\n";
 			}
-			$OUT .= "\texten => $shortKey,1,GoTo($fullKey,1)\n";
+//			$OUT .= "\texten => $shortKey,1,GoTo($fullKey,1)\n";
 		}
 		else {
 			// build array of page groups (key & dialstring)
