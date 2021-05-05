@@ -465,7 +465,7 @@ private function saveEdit() {
 		$qRes = $this->dbh->query($sql);
 		$work = $qRes->fetch();
 		$qRes = NULL;
-		$tuple['directdial'] = $work['id'] . $tuple['directdial'];	
+//		$tuple['directdial'] = $work['id'] . $tuple['directdial'];	
 
 // check for dups
 	
