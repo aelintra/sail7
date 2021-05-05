@@ -308,26 +308,20 @@ private function showEdit() {
 	$this->myPanel->responsiveSetup(2);
 
 	$this->myPanel->internalEditBoxStart();
-	$this->myPanel->subjectBar("Edit IVR " . substr($ivrmenu['pkey'],2));
+	$this->myPanel->subjectBar("Edit IVR " . $ivrmenu['pkey']);
 
 	echo '<form id="sarkivrForm" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
-
-    
-//    $this->myPanel->aLabelFor('ivrname'); 		
+	
 //	echo '<input type="hidden" name="newkey" size="20" id="newkey" value="' . $pkey . '"  />' . PHP_EOL;
 
 	$this->myPanel->internalEditBoxStart();
 
 	echo '<div id="clustershow">';
 	$this->myPanel->displayInputFor('cluster','text',$ivrmenu['cluster'],'cluster');
-	echo '</div>';
 	$this->myPanel->displayInputFor('ivrname','text',$ivrmenu['pkey'],'pkey');
-	$this->myPanel->displayInputFor('directdial','number',$ivrmenu['directdial']);
-/*	
-	echo '<div id="pkeyshow">';
-	$this->myPanel->displayInputFor('idd','number',substr($ivrmenu['pkey'],2),'pkey');;
 	echo '</div>';
-*/	
+	
+	$this->myPanel->displayInputFor('directdial','number',$ivrmenu['directdial']);
 	
 	$this->myPanel->aLabelFor('greeting'); 	
 	echo '<br/><br/>';
