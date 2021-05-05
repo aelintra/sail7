@@ -173,7 +173,7 @@ private function showNew() {
 	$this->myPanel->aHelpBoxFor('cluster');
 	echo '</div>';
 	$this->myPanel->displayInputFor('ivrname','text',null,'pkey');
-//	$this->myPanel->displayInputFor('idd','number',null,'directdial');
+	$this->myPanel->displayInputFor('directdial','number',null,'directdial');
 	$this->myPanel->displayInputFor('description','text');
 
 
@@ -196,13 +196,20 @@ private function saveNew() {
 
 	$this->validator = new FormValidator();
     $this->validator->addValidation("pkey","req","Please supply IVR name"); 
-/* 
-    $this->validator->addValidation("directdial","req","Please supply IVR directdial");      
+ 
+    $this->validator->addValidation("directdial","req","Please supply Directdial");      
     $this->validator->addValidation("directdial","num","IVR direct dial must be numeric");    
     $this->validator->addValidation("directdial","maxlen=4","IVR direct dial must be 3 or 4 digits");     
 	$this->validator->addValidation("directdial","minlen=3","IVR direct dial must be 3 or 4 digits");  
-*/
 
+
+    $retc = $this->helper->checkXref($_POST['pkey'],$_POST['cluster']);
+	if ($retc) {
+    	$this->invalidForm = True;
+    	$this->error_hash['insert'] = "Duplicate found in table $retc - choose a different extension number";
+    	return;    	
+    }
+/*
 	$res = $this->dbh->query("SELECT MAX(directdial+1) FROM ivrmenu WHERE cluster = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
 	if (empty($res)) {
 		$res = $this->dbh->query("SELECT startivr FROM cluster WHERE pkey = '" . $_POST['cluster'] . "'")->fetch(PDO::FETCH_COLUMN);
@@ -210,7 +217,7 @@ private function saveNew() {
 	$_POST['directdial'] = $res;
    	
    	$res = NULL; 
-   	
+*/   	
 
     //Now, validate the form
     if ($this->validator->ValidateForm()) {
@@ -315,6 +322,7 @@ private function showEdit() {
 	$this->myPanel->displayInputFor('cluster','text',$ivrmenu['cluster'],'cluster');
 	echo '</div>';
 	$this->myPanel->displayInputFor('ivrname','text',$ivrmenu['name'],'name');
+	$this->myPanel->displayInputFor('directdial','number',$ivrmenu['directdial']);
 /*	
 	echo '<div id="pkeyshow">';
 	$this->myPanel->displayInputFor('idd','number',substr($ivrmenu['pkey'],2),'pkey');;
