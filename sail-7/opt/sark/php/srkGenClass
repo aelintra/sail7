@@ -1506,7 +1506,7 @@ private function synthAlias($alias)  {
 private function getClusterId($cluster)  {
 
 	$sql = $this->dbh->prepare("SELECT id FROM cluster WHERE pkey = ?");
-	$sql->execute(array($room['cluster']));
+	$sql->execute(array($cluster));
 	$resid = $sql->fetch();
 	$sql=NULL;	
 	return ($resid['id']);	
