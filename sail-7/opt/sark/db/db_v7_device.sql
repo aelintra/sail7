@@ -2264,8 +2264,8 @@ INSERT OR IGNORE INTO Device(pkey,desc,owner,provision,technology) values ('yeal
 ##File header "#!version:1.0.0.1" can not be edited or deleted, and must be placed in the first line.##
 
 # # phone browser access - change for your site
-security.user_password = admin:myadminpass
-security.user_password = user:myuserpass
+security.user_password = admin:$myadminpass
+security.user_password = user:$myuserpass
 
 features.direct_ip_call_enable = 0
 
@@ -2867,7 +2867,7 @@ allow=ulaw
 nat=$nat
 transport=$transport
 encryption=$encryption','SIP');
-INSERT OR IGNORE INTO Device(pkey,desc,owner,provision,technology) values ('fanvil.Common','Fanvil common file','cust','phone.date.SNTPEnabled = 1
+INSERT OR IGNORE INTO Device(pkey,desc,owner,provision,technology) values ('fanvil.Common','Fanvil common file','system','phone.date.SNTPEnabled = 1
 phone.date.SNTPServer = pool.ntp.org
 phone.date.SecondSNTPServer = 
 phone.date.TimeZone = 0
