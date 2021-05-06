@@ -156,7 +156,8 @@ z_updater TEXT DEFAULT 'system'
 
 /* Extensions */
 CREATE TABLE IF NOT EXISTS IPphone (
-pkey TEXT PRIMARY KEY,
+id INTEGER PRIMARY KEY,	
+pkey INTEGER,
 abstimeout TEXT,
 active TEXT DEFAULT 'YES',				-- Active/inactive flag
 basemacaddr TEXT,                       -- not used             
@@ -197,6 +198,8 @@ z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system'
 );
+
+CREATE INDEX idx_ipphone_pkey ON ipphone (pkey);
 
 /* phone function (blf) keys */
 CREATE TABLE IF NOT EXISTS IPphone_FKEY (
@@ -450,7 +453,6 @@ timeoutrouteclass TEXT,
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system'
-
 );
 
 
