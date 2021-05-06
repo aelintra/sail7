@@ -1374,7 +1374,7 @@ private function confBridge(&$OUT,$cluster=null) {
  *	prepend the cluster id to the key
  */
     	$sql = $this->dbh->prepare("SELECT id FROM cluster WHERE pkey = ?");
-		$sql->execute(array($meetme['cluster']));
+		$sql->execute(array($room['cluster']));
 		$resid = $sql->fetch();
 		$sql=NULL;		
 
