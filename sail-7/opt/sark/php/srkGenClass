@@ -332,6 +332,9 @@ private function genSip() {
 		if ($row['active'] == "YES") {       
 			if ($row['technology'] == "SIP") {
 				$id = $this->getClusterId($row['cluster']);
+				if ($row[cluster] == 'default') {
+					$id = NULL;
+				}
 				$OUT .= "[$id" . $row['pkey'] . "]\n";
 				if ($row['cluster'] == "default") {
 					$myContext = "qrxvtmny";
