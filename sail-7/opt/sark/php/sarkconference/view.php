@@ -134,7 +134,7 @@ private function showMain() {
 		echo '<tr id="' . $row['pkey'] . '">'. PHP_EOL; 
 		echo '<td class="read_only">' . $row['cluster'] . '</td>' . PHP_EOL;
 		echo '<input type="hidden" name="pkey" id="pkey" value="' . $row['pkey'] . '"  />' . PHP_EOL;
-		echo '<td class="read_only">' . substr($row['pkey'],2) . '</td>' . PHP_EOL;
+		echo '<td class="read_only">' . $row['pkey'] . '</td>' . PHP_EOL;
 		echo '<td class="w3-hide-small">' . $row['description']  . '</td>' . PHP_EOL;				 
 		echo '<td class="w3-hide-small">' . $row['type']  . '</td>' . PHP_EOL;		
 		echo '<td class="w3-hide-small">' . $row['pin']  . '</td>' . PHP_EOL;
@@ -245,7 +245,7 @@ private function saveNew() {
 			  
 	$ret = $this->helper->createTuple("meetme",$tuple);
 	if ($ret == 'OK') {
-		$this->message = "Saved new Conference Room " . substr($tuple['pkey'],2) . "!";
+		$this->message = "Saved new Conference Room " . $tuple['pkey'] . "!";
 	}
 	else {
 		$this->invalidForm = True;
@@ -271,7 +271,7 @@ private function showEdit() {
 	$this->myPanel->responsiveSetup(2);
 
 	$this->myPanel->internalEditBoxStart();
-	$this->myPanel->subjectBar("Edit Conference " . substr($tuple['pkey'],2));
+	$this->myPanel->subjectBar("Edit Conference " . $tuple['pkey']);
 
 	echo '<form id="sarkconferenceForm" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
 
@@ -313,7 +313,7 @@ private function saveEdit() {
 	}	
 	$ret = $this->helper->setTuple("meetme",$tuple);
 	if ($ret == 'OK') {
-		$this->message = "Updated Conference Room " . substr($tuple['pkey'],2);
+		$this->message = "Updated Conference Room " . $tuple['pkey']);
 	}
 	else {
 		$this->invalidForm = True;
