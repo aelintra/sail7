@@ -1113,9 +1113,10 @@ LOCAL;
 //			$OUT .= '[' . $myCluster . $iKey . "Cosend]\n";
 //			$OUT .= '[' . $myCluster . $IPphone['pkey'] . "Cosend]\n";
 						
+		
+			$OUT .= '[' . $myCluster ."Cosend]\n";  
+			$OUT .= "\texten => _.,1,GoTo($myCluster,\${EXTEN},1))\n";
 		}
-		$OUT .= '[' . $myCluster ."Cosend]\n";  
-		$OUT .= "\texten => _.,1,GoTo($myCluster,\${EXTEN},1))\n";
 	}
 			
 //	$sql = "SELECT * FROM COS ORDER BY pkey";
