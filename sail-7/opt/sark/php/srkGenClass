@@ -865,7 +865,7 @@ LOCAL;
 //
 
 		if ($row['pkey'] == 'default') {
-			$OUT .= "\n\texten => _*8XX.,1,Pickup(\${EXTEN}@PICKUPMARK)\n\n";
+			$OUT .= "\n\texten => _*8XX.,1,Pickup(\${EXTEN:2}@PICKUPMARK)\n\n";
 		}
 		else {
 
