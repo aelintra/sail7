@@ -1574,8 +1574,8 @@ Class page {
 			if (!empty($conferences)) {
 				$html .= '<optgroup label="CONF ROOMS">' . PHP_EOL;
 				foreach ($conferences as $conf)  {
-                    $shortkey = substr($conf['pkey'],2);                   
-					$html = $this->genHtml($shortkey,$html);	
+//                    $shortkey = substr($conf['pkey'],2);                   
+					$html = $this->genHtml($pkey,$html);	
 				}
 				$html .= '</optgroup>' . PHP_EOL;
 			}			
@@ -1583,8 +1583,8 @@ Class page {
 			$html .= '<optgroup label="VOICEMAIL">' . PHP_EOL;
 			$ipphone = $helper->getTable("ipphone", "SELECT pkey from ipphone WHERE cluster='" . $cluster . "'"); 		
 			foreach ($ipphone as $ipphone => $value)  {
-				$shortkey = substr($value['pkey'],2); 
-				$html = $this->genHtml("*". $shortkey,$html);
+//				$shortkey = substr($value['pkey'],2); 
+				$html = $this->genHtml("*". $pkey,$html);
 			}
 			$html .= '</optgroup>' . PHP_EOL;	
 	

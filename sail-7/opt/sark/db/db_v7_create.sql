@@ -648,7 +648,8 @@ PRIMARY KEY (User_pkey, Panel_pkey)
 
 /* conference rooms */
 CREATE TABLE IF NOT EXISTS meetme (
-pkey INTEGER PRIMARY KEY,
+id INTEGER PRIMARY KEY,
+pkey INTEGER,
 cluster TEXT DEFAULT 'default',
 adminpin TEXT DEFAULT 'None',
 description TEXT,
