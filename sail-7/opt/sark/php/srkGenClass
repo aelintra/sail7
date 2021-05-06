@@ -325,7 +325,7 @@ private function genSip() {
 	$OUT = $this->genFileBanner();	 
 	$result = $this->helper->getTable("ipphone",null,false);
 
-	$id = getClusterId($result['cluster']);
+	$id = $this->getClusterId($result['cluster']);
 
     foreach ($result as $row) {
 		if ($row['active'] == "YES") {       
