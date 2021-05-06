@@ -1361,15 +1361,18 @@ private function confBridge(&$OUT,$cluster=null) {
 		else {
 			$profile = 'sark_user';
 		}
-		/*
+/*
  *	prepend the cluster id to the key
  */
+
+		$id = $this->getClusterId($room['cluster']);
+/*
     	$sql = $this->dbh->prepare("SELECT id FROM cluster WHERE pkey = ?");
 		$sql->execute(array($room['cluster']));
 		$resid = $sql->fetch();
 		$sql=NULL;		
-
-		$OUT .= "\tsame => n,ConfBridge(" . $resid['id'] . "\${EXTEN},,$profile)\n";
+*/
+		$OUT .= "\tsame => n,ConfBridge($id\${EXTEN},,$profile)\n";
 		$OUT .= "\tsame => n,Hangup()\n";
 //		$OUT .= "\texten => " . substr($room['pkey'],2) . ",1,GoTo(" . $room['pkey'] . ",1)\n";
 	}	   		 	
@@ -1499,5 +1502,16 @@ private function synthAlias($alias)  {
 	}
     	return (isset($array) ? $array : false);
 }
+
+private function getClusterId($cluster)  {
+
+	$sql = $this->dbh->prepare("SELECT id FROM cluster WHERE pkey = ?");
+	$sql->execute(array($room['cluster']));
+	$resid = $sql->fetch();
+	$sql=NULL;	
+	return ($resid['id']);	
+
+}
+
   
 }
