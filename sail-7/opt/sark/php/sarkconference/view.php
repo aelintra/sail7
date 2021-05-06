@@ -313,7 +313,7 @@ private function saveEdit() {
 	}	
 	$ret = $this->helper->setTuple("meetme",$tuple);
 	if ($ret == 'OK') {
-		$this->message = "Updated Conference Room " . $tuple['pkey']);
+		$this->message = "Updated Conference Room " . $tuple['pkey'];
 	}
 	else {
 		$this->invalidForm = True;
