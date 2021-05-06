@@ -1369,10 +1369,18 @@ private function confBridge(&$OUT,$cluster=null) {
 		}
 		else {
 			$profile = 'sark_user';
-		}		
-		$OUT .= "\tsame => n,ConfBridge(\${EXTEN},,$profile)\n";
+		}
+		/*
+ *	prepend the cluster id to the key
+ */
+    	$sql = $this->dbh->prepare("SELECT id FROM cluster WHERE pkey = ?");
+		$sql->execute(array($meetme['cluster']));
+		$resid = $sql->fetch();
+		$sql=NULL;		
+
+		$OUT .= "\tsame => n,ConfBridge(" . $resid['id'] . "\${EXTEN},,$profile)\n";
 		$OUT .= "\tsame => n,Hangup()\n";
-		$OUT .= "\texten => " . substr($room['pkey'],2) . ",1,GoTo(" . $room['pkey'] . ",1)\n";
+//		$OUT .= "\texten => " . substr($room['pkey'],2) . ",1,GoTo(" . $room['pkey'] . ",1)\n";
 	}	   		 	
 }
 
