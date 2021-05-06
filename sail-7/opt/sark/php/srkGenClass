@@ -946,10 +946,10 @@ LOCAL;
 		foreach ($phone as $IPphone) {
 			$shortdial = $this->helper->displayKey($IPphone['pkey']);
 			$OUT .= "\texten => " . $shortdial . ",hint,SIP/" . $IPphone['pkey'] . "\n";
-			$OUT .= "\texten => " . $shortdial . ",1,agi(sarkhpe,InCall,," . $IPphone['pkey'] . ",)\n";
-//			if ($row['pkey'] != "default") { 
-//				$OUT .= "\texten => " . $shortdial . ",1,GoTo(" . $IPphone['pkey'] . ",1)\n";
-//			}
+			$OUT .= "\texten => " . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall,,,)\n";
+			if ($row['pkey'] != "default") { 
+				$OUT .= "\texten => " . $shortdial . ",1,GoTo(" . $IPphone['pkey'] . ",1)\n";
+			}
 			if ($IPphone['dvrvmail'] != "None") {
 				if ($IPphone['dvrvmail'] == "") {
               		$IPphone['dvrvmail'] = $shortdial;
