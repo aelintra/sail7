@@ -496,8 +496,8 @@ private function saveNew() {
 		$clustId = $res['id'];
 	}
 	
-	$pkey = $clustId . $_POST['pkey'];	
-	$tuple['pkey'] = $pkey;	
+//	$pkey = $_POST['pkey'];	
+	$tuple['pkey'] = $_POST['pkey'];
     $retc = $this->helper->checkXref($pkey,$tuple['cluster']);
     if ($retc) {
     	$this->invalidForm = True;
