@@ -1054,12 +1054,9 @@ LOCAL;
 			$myCluster = $IPphone['cluster'];
 			if ($myCluster == 'default') {
 				$myCluster = 'qrxvtmny';
-				$iKey = $IPphone['pkey'];
 			}
-			else { 
-				$iKey = substr($IPphone['pkey'],2); 
-			}
-			$OUT .= "[" . $myCluster . $iKey . "opencos]\n";
+
+			$OUT .= "[" . $myCluster . $IPphone['pkey'] . "opencos]\n";
 
 			
 			$OUT .= "\tinclude => Emergency\n"; 
@@ -1084,10 +1081,8 @@ LOCAL;
 			}
 
 			$OUT .= "\tinclude => ". $myCluster . "Cosend\n";
-//			$OUT .= "\tinclude => ". $myCluster . $IPphone['pkey'] . "Cosend\n";			
 
-			$OUT .= "[" . $myCluster . $iKey . "closedcos]\n";
-//			$OUT .= "[" . $myCluster . $IPphone['pkey'] . "closedcos]\n";
+			$OUT .= "[" . $myCluster . $IPphone['pkey'] . "closedcos]\n";
 			
 			$OUT .= "\tinclude => Emergency\n"; 
 			
@@ -1107,12 +1102,7 @@ LOCAL;
 					$OUT .= "\tinclude => " . $coskeys['COS_pkey'] . "\n";
 				} 	
 			}
-			$OUT .= "\tinclude => " . $myCluster . "Cosend\n";
-//			$OUT .= "\tinclude => " . $myCluster . $IPphone['pkey'] . "Cosend\n";
-			
-//			$OUT .= '[' . $myCluster . $iKey . "Cosend]\n";
-//			$OUT .= '[' . $myCluster . $IPphone['pkey'] . "Cosend]\n";
-						
+			$OUT .= "\tinclude => " . $myCluster . "Cosend\n";			
 		
 			$OUT .= '[' . $myCluster ."Cosend]\n";  
 			$OUT .= "\texten => _.,1,GoTo($myCluster,\${EXTEN},1))\n";
