@@ -325,10 +325,12 @@ private function genSip() {
 	$OUT = $this->genFileBanner();	 
 	$result = $this->helper->getTable("ipphone",null,false);
 
+	$id = getClusterId($result['cluster']);
+
     foreach ($result as $row) {
 		if ($row['active'] == "YES") {       
 			if ($row['technology'] == "SIP") {
-				$OUT .= "[" . $row['pkey'] . "]\n";
+				$OUT .= "[$id" . $row['pkey'] . "]\n";
 				if ($row['cluster'] == "default") {
 					$myContext = "qrxvtmny";
 				}	 
@@ -1366,12 +1368,7 @@ private function confBridge(&$OUT,$cluster=null) {
  */
 
 		$id = $this->getClusterId($room['cluster']);
-/*
-    	$sql = $this->dbh->prepare("SELECT id FROM cluster WHERE pkey = ?");
-		$sql->execute(array($room['cluster']));
-		$resid = $sql->fetch();
-		$sql=NULL;		
-*/
+/
 		$OUT .= "\tsame => n,ConfBridge($id\${EXTEN},,$profile)\n";
 		$OUT .= "\tsame => n,Hangup()\n";
 //		$OUT .= "\texten => " . substr($room['pkey'],2) . ",1,GoTo(" . $room['pkey'] . ",1)\n";
