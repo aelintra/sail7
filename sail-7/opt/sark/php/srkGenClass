@@ -870,10 +870,10 @@ LOCAL;
 		else {
 
 			$OUT .= "\n\texten => _*8XX.,1,Pickup(" .$row['id'] . "\${EXTEN:2}@PICKUPMARK)\n\n";
-//		}
+		}
 		
 
-
+//
 //Routes
 //
 		$sql = "SELECT * FROM Route WHERE cluster='" . $row['pkey'] . "' ORDER BY pkey";

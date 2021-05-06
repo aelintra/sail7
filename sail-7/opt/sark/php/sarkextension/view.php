@@ -1614,7 +1614,7 @@ private function xRef($pkey,$cluster) {
 	$sql->execute(array($cluster, '%' . $shortkey . '%', '%' . $shortkey . '%'));	
  	$result = $sql->fetchall();	
 	foreach ($result as $row) {
-		$tref .= "Ring Group <a href='javascript:window.top.location.href=" . '"/php/sarkcallgroup/main.php?edit=yes&pkey=' . $row['pkey'] . '"' . "' >" . $this->helper->displayKey($row[pkey]) . ' </a> references this extension <br>' . PHP_EOL;
+		$tref .= "Ring Group <a href='javascript:window.top.location.href=" . '"/php/sarkcallgroup/main.php?edit=yes&pkey=' . $row['pkey'] . '"' . "' >" . $this->helper->displayKey($row['pkey']) . ' </a> references this extension <br>' . PHP_EOL;
 	}
 	
 	if ($tref) {
