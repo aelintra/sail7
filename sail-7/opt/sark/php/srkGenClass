@@ -1368,7 +1368,7 @@ private function confBridge(&$OUT,$cluster=null) {
  */
 
 		$id = $this->getClusterId($room['cluster']);
-/
+
 		$OUT .= "\tsame => n,ConfBridge($id\${EXTEN},,$profile)\n";
 		$OUT .= "\tsame => n,Hangup()\n";
 //		$OUT .= "\texten => " . substr($room['pkey'],2) . ",1,GoTo(" . $room['pkey'] . ",1)\n";
