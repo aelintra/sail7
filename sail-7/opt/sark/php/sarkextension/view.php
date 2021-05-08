@@ -285,7 +285,7 @@ private function showMain() {
 	
 		$clustId = null;
 		if ($row['cluster'] != 'default') {
-			$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $tuple['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+			$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
 			$clustId = $res['id'];
 		}
 		$sKey = $clustId . $row['pkey'];
