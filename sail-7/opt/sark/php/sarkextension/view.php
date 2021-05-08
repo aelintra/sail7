@@ -498,7 +498,7 @@ private function saveNew() {
 	
 //	$pkey = $_POST['pkey'];	
 	$tuple['pkey'] = $_POST['pkey'];
-    $retc = $this->helper->checkXref($pkey,$_POST['cluster']);
+    $retc = $this->helper->checkXref($pkey,$tuple['cluster']);
     if ($retc) {
     	$this->invalidForm = True;
     	$this->error_hash['extinsert'] = "Duplicate found in table $retc - choose a different extension number";

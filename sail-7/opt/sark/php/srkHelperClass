@@ -481,9 +481,9 @@ public function checkXref($key,$cluster=false) {
 	
 	$dbh = DB::getInstance();
 	
-	$sql = "SELECT * FROM master_xref where pkey = '$key'";
+	$sql = "SELECT * FROM master_xref where pkey = '" . $key . "'";
 	if ($cluster) {
-		$sql .= " AND cluster = '$cluster'";
+		$sql .= " AND cluster = '" . $cluster . "'";
 	}
 	
 	$res = $dbh->query($sql)->fetch(PDO::FETCH_ASSOC);
