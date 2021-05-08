@@ -880,32 +880,26 @@ private function showEdit() {
 	$ringdelay = 20;
 	$this->dbh = DB::getInstance();
 
-/*
-	if (isset($this->keychange)) {
-		$pkey = $this->keychange;		
-	}
-	else {
-		if (isset($_POST['pkey'])) {
-			$pkey = $_POST['pkey'];
-		}
-		else {
-			$pkey = $_GET['pkey'];
-		}
-	}
-*/
-
 	$id = $_REQUEST['id'];
+
 //	$cluster = $_GET['cluster'];
 
 	$res = $this->dbh->query("SELECT FQDN,VXT FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	$fqdn = $res['FQDN'];
 	$vxt = $res['VXT'];
 
-	$sql = $this->dbh->prepare("SELECT ip.*, de.noproxy FROM ipphone ip INNER JOIN device de on ip.device=de.pkey WHERE ip.id=?");
+	$sql = $this->dbh->prepare("SELECT * FROM ipphone  WHERE id=?");
 	$sql->execute(array($id));
 	$extension = $sql->fetch();
-	$pkey = $extension['pkey'];
-	
+/*
+	if (isset($this->keychange)) {
+		$pkey = $this->keychange;		
+	}
+	else {
+			$pkey = $_REQUEST['pkey'];
+		}
+	}
+*/	
 	$extlist=array();
 	array_push($extlist,"None");	
 	$res = $this->helper->getTable("ipphone","select pkey from ipphone WHERE cluster='" . $extension['cluster'] . "'",false);
@@ -1242,6 +1236,14 @@ private function showEdit() {
 }
 
 private function saveEdit() {
+
+// Fetch the existing row 	
+
+	$id = $_REQUEST['id'];
+	$sql = $this->dbh->prepare("SELECT * FROM ipphone  WHERE id=?");
+	$sql->execute(array($id));
+	$extension = $sql->fetch();	
+
 // save the data away
 
 	$tuple = array();
@@ -1347,7 +1349,7 @@ private function saveEdit() {
 /*
  * check for keychange
  */
-		if ($newkey != $tuple['pkey']) {
+		if ($extension['pkey'] != $tuple['pkey']) {
 
 			$sql = $this->dbh->prepare("SELECT pkey FROM ipphone WHERE pkey=?");
 			$sql->execute(array($newkey));
@@ -1360,7 +1362,6 @@ private function saveEdit() {
 			}
 			else {
 				// signal a key change to the editor
-				$this->keychange = $newkey;
 				// set the mailbox to the new extension
 				$tuple['dvrvmail'] = $newkey;
 				$this->chkMailbox($tuple['dvrvmail'],$tuple['sipiaxfriend'],$tuple['cluster']);
