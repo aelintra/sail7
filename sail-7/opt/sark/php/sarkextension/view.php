@@ -264,7 +264,7 @@ private function showMain() {
 
 //		$shortkey = $this->helper->displayKey($row['pkey']);
 
-		echo '<td class="read_only">' . $pkey . '</td>' . PHP_EOL;
+		echo '<td class="read_only">' . $row['pkey'] . '</td>' . PHP_EOL;
 		
 		$display = $row['desc'];
 		if ( strlen($row['desc']) > 7 ) {
@@ -273,20 +273,7 @@ private function showMain() {
 		}			 
 		echo '<td class="w3-hide-small  w3-hide-medium" title = "' . $row['desc'] . '" >' . $display  . '</td>' . PHP_EOL;
 		
-		$display = $row['device'];
-/*		
-		preg_match('/^(\w+)\s+/',$display,$matches);
-		if (isset($matches[1])) {
-			if (strlen($matches[1]) > 12) {
-				$display = substr($row['device'] , 0, 11);
-				$display .= '.';
-			}
-			else {
-				$display = $matches[1];
-			}
-		}
-*/
-		echo '<td class="w3-hide-small  w3-hide-medium" title = "' . $row['device'] . '" >' . $display  . '</td>' . PHP_EOL;	
+		echo '<td class="w3-hide-small  w3-hide-medium" title = "' . $row['device'] . '" >' .  $row['device']  . '</td>' . PHP_EOL;	
 		
 		$display_macaddr = 'N/A';
 		if (!empty ($row['macaddr'])) {
@@ -298,13 +285,21 @@ private function showMain() {
 		if ($row['technology'] != 'SIP') {
 			$display_ipaddr = $row['technology'];
 		}		
-		else if (isset ($sip_peers [$row['pkey']]['IPaddress']) && $sip_peers [$row['pkey']]['IPaddress'] == '-none-') {		
-			if (preg_match(' /(..)(..)(..)(..)(..)(..)/ ',$row['macaddr'],$matches)) {
-				$formalmac = strtoupper($matches[1] . ':' . $matches[2] . ':' . $matches[3] . ':' . $matches[4] . ':' . $matches[5] . ':' . $matches[6]);		
-				$mac = `/bin/grep $formalmac /proc/net/arp`;			
-				if (!empty ($mac)) {
-					preg_match(' /^(\d+\.\d+\.\d+\.\d+)/ ',$mac,$match);
-					$display_ipaddr = $match[1];
+		else {
+			$clustId = null;
+			if ($row['cluster'] != 'default') {
+				$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $tuple['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+				$clustId = $res['id'];
+			}
+			$sKey = $clustId . $row['pkey'];
+			if (isset ($sip_peers [$sKey]['IPaddress']) && $sip_peers [$sKey]['IPaddress'] == '-none-') {		
+				if (preg_match(' /(..)(..)(..)(..)(..)(..)/ ',$row['macaddr'],$matches)) {
+					$formalmac = strtoupper($matches[1] . ':' . $matches[2] . ':' . $matches[3] . ':' . $matches[4] . ':' . $matches[5] . ':' . $matches[6]);		
+					$mac = `/bin/grep $formalmac /proc/net/arp`;			
+					if (!empty ($mac)) {
+						preg_match(' /^(\d+\.\d+\.\d+\.\d+)/ ',$mac,$match);
+						$display_ipaddr = $match[1];
+					}
 				}
 			}
 		}
