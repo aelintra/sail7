@@ -897,7 +897,7 @@ private function showEdit() {
 			$pkey = $_GET['pkey'];
 		}
 	}
-	$cluster = $_GET['cluaster'];
+	$cluster = $_GET['cluster'];
 
 	$res = $this->dbh->query("SELECT FQDN,VXT FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	$fqdn = $res['FQDN'];
