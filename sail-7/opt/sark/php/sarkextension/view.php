@@ -999,7 +999,7 @@ private function showEdit() {
 
 //	$shortkey = $this->helper->displayKey($extension['pkey']);
 
-	$this->myPanel->displayInputFor('rule','text',$pkey,'newkey');
+	$this->myPanel->displayInputFor('rule','text',$extension['pkey'],'pkey');
 
 /*	
 	echo '<div class="cluster">';
