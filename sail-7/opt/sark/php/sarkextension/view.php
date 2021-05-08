@@ -282,30 +282,23 @@ private function showMain() {
 		echo '<td class="w3-hide-small">' . $display_macaddr . '</td>' . PHP_EOL;
 		
 		$display_ipaddr = 'N/A';		
-		if ($row['technology'] != 'SIP') {
-			$display_ipaddr = $row['technology'];
-		}		
-		else {
-			$clustId = null;
-			if ($row['cluster'] != 'default') {
-				$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $tuple['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
-				$clustId = $res['id'];
-			}
-			$sKey = $clustId . $row['pkey'];
-			if (isset ($sip_peers [$sKey]['IPaddress']) && $sip_peers [$sKey]['IPaddress'] == '-none-') {		
-				if (preg_match(' /(..)(..)(..)(..)(..)(..)/ ',$row['macaddr'],$matches)) {
-					$formalmac = strtoupper($matches[1] . ':' . $matches[2] . ':' . $matches[3] . ':' . $matches[4] . ':' . $matches[5] . ':' . $matches[6]);		
-					$mac = `/bin/grep $formalmac /proc/net/arp`;			
-					if (!empty ($mac)) {
-						preg_match(' /^(\d+\.\d+\.\d+\.\d+)/ ',$mac,$match);
-						$display_ipaddr = $match[1];
-					}
+	
+		$clustId = null;
+		if ($row['cluster'] != 'default') {
+			$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $tuple['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+			$clustId = $res['id'];
+		}
+		$sKey = $clustId . $row['pkey'];
+		if (isset ($sip_peers [$sKey]['IPaddress']) && $sip_peers [$sKey]['IPaddress'] == '-none-') {		
+			if (preg_match(' /(..)(..)(..)(..)(..)(..)/ ',$row['macaddr'],$matches)) {
+				$formalmac = strtoupper($matches[1] . ':' . $matches[2] . ':' . $matches[3] . ':' . $matches[4] . ':' . $matches[5] . ':' . $matches[6]);		
+				$mac = `/bin/grep $formalmac /proc/net/arp`;			
+				if (!empty ($mac)) {
+					preg_match(' /^(\d+\.\d+\.\d+\.\d+)/ ',$mac,$match);
+					$display_ipaddr = $match[1];
 				}
 			}
-		}
-		else if (isset ($sip_peers [$row['pkey']]['IPaddress'])) {
-			$display_ipaddr = $sip_peers [$row['pkey']]['IPaddress'];
-		}		
+		}	
 		
 		$display = $display_ipaddr;
         if ( strlen($display_ipaddr) > 15 ) {
