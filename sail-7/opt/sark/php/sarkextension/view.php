@@ -289,6 +289,7 @@ private function showMain() {
 			$clustId = $res['id'];
 		}
 		$sKey = $clustId . $row['pkey'];
+/*
 		if (isset ($sip_peers [$sKey]['IPaddress']) && $sip_peers [$sKey]['IPaddress'] == '-none-') {		
 			if (preg_match(' /(..)(..)(..)(..)(..)(..)/ ',$row['macaddr'],$matches)) {
 				$formalmac = strtoupper($matches[1] . ':' . $matches[2] . ':' . $matches[3] . ':' . $matches[4] . ':' . $matches[5] . ':' . $matches[6]);		
@@ -298,7 +299,11 @@ private function showMain() {
 					$display_ipaddr = $match[1];
 				}
 			}
-		}	
+		}
+*/
+		if (isset ($sip_peers [$sKey]['IPaddress'])) {
+			$display_ipaddr = $sip_peers [$sKey]]['IPaddress'];
+		}		
 		
 		$display = $display_ipaddr;
         if ( strlen($display_ipaddr) > 15 ) {
