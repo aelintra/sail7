@@ -739,7 +739,7 @@ encryption=\$encryption";
 /*
  *	Add the row
  */
-	$ret = $this->helper->createTuple("ipphone",$tuple);
+	$ret = $this->helper->createTuple("ipphone",$tuple,true,true);
 	if ($ret == 'OK') {
 		$this->createCos(); 
 		$this->message = "Saved new extension(s) ";
