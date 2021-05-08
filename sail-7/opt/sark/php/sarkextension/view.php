@@ -871,12 +871,13 @@ private function deleteRow() {
 	$res = $this->dbh->query("SELECT pkey FROM ipphone where id = $id")->fetch(PDO::FETCH_ASSOC);
 	$pkey = $res['pkey'];
 	$this->helper-> delTupleById($tab,$id); 
-	
+
 /* delete COS information */
 	$this->helper->predDelTuple("IPphoneCOSopen","IPphone_pkey",$pkey);
 	$this->helper->predDelTuple("IPphoneCOSclosed","IPphone_pkey",$pkey);
 	$this->helper->predDelTuple("IPphone_Fkey","pkey",$pkey);
 	$this->message = "Deleted extension " . $pkey;
+}
 
 private function showEdit() {
 
