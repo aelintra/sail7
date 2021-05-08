@@ -301,8 +301,8 @@ private function showMain() {
 			}
 		}
 */
-		if (isset ($sip_peers [$sKey]['IPaddress'])) {
-			$display_ipaddr = $sip_peers [$sKey]['IPaddress'];
+		if (isset ($sip_peers [$sKey]['IPaddress']) && $sip_peers [$sKey]['IPaddress'] == '-none-') { 
+			$display_ipaddr = $sip_peers [$sKey]['IPaddress'] 
 		}		
 		
 		$display = $display_ipaddr;
