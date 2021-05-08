@@ -1677,6 +1677,16 @@ Class page {
 		echo '"><img src="' . $this->iconpath . 'delete.png" alt = "Click to Delete" title = "Click to Delete"';
         echo ' onclick = "return confirmOK(\'Confirm Delete - Are you sure?\')"></a></td>';
 	}
+
+    public function deleteClickById ($callback, $id) {
+    
+        echo '<td><a href="'; 
+        echo $callback;
+        echo '?delete=yes&amp;id=';
+        echo $id;
+        echo '"><img src="' . $this->iconpath . 'delete.png" alt = "Click to Delete" title = "Click to Delete"';
+        echo ' onclick = "return confirmOK(\'Confirm Delete - Are you sure?\')"></a></td>';
+    }
 	
 	public function lockState ($lock=true) {
 		

@@ -340,7 +340,7 @@ private function showMain() {
 
 		$this->myPanel->editClick($_SERVER['PHP_SELF'],$get);
 
-		$this->myPanel->deleteClick($_SERVER['PHP_SELF'],$row['id']);
+		$this->myPanel->deleteClickById($_SERVER['PHP_SELF'],$row['id']);
 	}
 	
 
@@ -867,6 +867,7 @@ private function deleteLastBlf() {
 }
 
 private function deleteRow() {
+
 	$id = $_REQUEST['id'];
 	$res = $this->dbh->query("SELECT pkey FROM ipphone where id = $id")->fetch(PDO::FETCH_ASSOC);
 	$pkey = $res['pkey'];
@@ -886,6 +887,7 @@ private function showEdit() {
 	$ringdelay = 20;
 	$this->dbh = DB::getInstance();
 
+/*
 	if (isset($this->keychange)) {
 		$pkey = $this->keychange;		
 	}
@@ -897,14 +899,17 @@ private function showEdit() {
 			$pkey = $_GET['pkey'];
 		}
 	}
-	$cluster = $_GET['cluster'];
+*/
+
+	$id = $_REQUEST['id'];
+//	$cluster = $_GET['cluster'];
 
 	$res = $this->dbh->query("SELECT FQDN,VXT FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	$fqdn = $res['FQDN'];
 	$vxt = $res['VXT'];
 
-	$sql = $this->dbh->prepare("SELECT ip.*, de.noproxy FROM ipphone ip INNER JOIN device de on ip.device=de.pkey WHERE ip.pkey=? AND ip.cluster=?");
-	$sql->execute(array($pkey,$cluster));
+	$sql = $this->dbh->prepare("SELECT ip.*, de.noproxy FROM ipphone ip INNER JOIN device de on ip.device=de.pkey WHERE ip.pkey=?");
+	$sql->execute(array($id));
 	$extension = $sql->fetch();
 	
 	$extlist=array();
