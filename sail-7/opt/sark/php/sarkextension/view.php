@@ -911,12 +911,13 @@ private function showEdit() {
 	$sql = $this->dbh->prepare("SELECT ip.*, de.noproxy FROM ipphone ip INNER JOIN device de on ip.device=de.pkey WHERE ip.id=?");
 	$sql->execute(array($id));
 	$extension = $sql->fetch();
+	$pkey = $extension['pkey'];
 	
 	$extlist=array();
 	array_push($extlist,"None");	
 	$res = $this->helper->getTable("ipphone","select pkey from ipphone WHERE cluster='" . $extension['cluster'] . "'",false);
 	foreach ($res as $row) {
-		array_push($extlist,$this->helper->displayKey($row['pkey']));
+		array_push($extlist,$row['pkey']);
 	}
 
 	$protocol = array('IPV4');
