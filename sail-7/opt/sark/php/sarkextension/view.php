@@ -871,7 +871,7 @@ private function deleteRow() {
 	$id = $_REQUEST['id'];
 	$res = $this->dbh->query("SELECT pkey FROM ipphone where id = $id")->fetch(PDO::FETCH_ASSOC);
 	$pkey = $res['pkey'];
-	$this->helper-> delTupleById($tab,$id); 
+	$this->helper-> delTupleById('ipphone',$id); 
 
 /* delete COS information */
 	$this->helper->predDelTuple("IPphoneCOSopen","IPphone_pkey",$pkey);
