@@ -908,7 +908,7 @@ private function showEdit() {
 	$fqdn = $res['FQDN'];
 	$vxt = $res['VXT'];
 
-	$sql = $this->dbh->prepare("SELECT ip.*, de.noproxy FROM ipphone ip INNER JOIN device de on ip.device=de.pkey WHERE ip.pkey=?");
+	$sql = $this->dbh->prepare("SELECT ip.*, de.noproxy FROM ipphone ip INNER JOIN device de on ip.device=de.pkey WHERE ip.id=?");
 	$sql->execute(array($id));
 	$extension = $sql->fetch();
 	
