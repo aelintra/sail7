@@ -879,7 +879,9 @@ private function showEdit() {
 	$cfbs = NULL;
 	$ringdelay = 20;
 	$this->dbh = DB::getInstance();
+
 	$id = $_REQUEST['id'];
+
 
 //	$cluster = $_GET['cluster'];
 
