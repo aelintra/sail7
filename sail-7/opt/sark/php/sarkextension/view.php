@@ -316,8 +316,8 @@ private function showMain() {
 		echo '<td class="w3-hide-small  w3-hide-medium">' . $row['sndcreds'] . '</td>' . PHP_EOL;
 		
 		$latency = 'N/A';
-		if (isset($sip_peers [$sKey]]['Status'])) {
-			$latency = $sip_peers [$sKey]]['Status'];	
+		if (isset($sip_peers [$sKey]['Status'])) {
+			$latency = $sip_peers [$sKey]['Status'];	
 		}
 		if ($row['stolen']) {
 			if (!preg_match(" /VXT/i ", $row['device'])) {
