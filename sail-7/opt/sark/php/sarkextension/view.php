@@ -882,7 +882,6 @@ private function showEdit() {
 
 	$id = $_REQUEST['id'];
 
-
 //	$cluster = $_GET['cluster'];
 
 	$res = $this->dbh->query("SELECT FQDN,VXT FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
@@ -997,6 +996,7 @@ private function showEdit() {
 	$this->myPanel->displayInputFor('rule','text',$extension['pkey'],'pkey');
 	echo '</div>';    
     $this->myPanel->displayBooleanFor('active',$extension['active']);
+    echo '<input type="hidden" name="id" id="id" value="' . $extension['id'] . '"  />' . PHP_EOL;
 
 //	$shortkey = $this->helper->displayKey($extension['pkey']);
 
@@ -1077,6 +1077,8 @@ private function showEdit() {
  *
  */	
 		
+
+	echo '<input type="hidden" name="id" id="id" size="20"  value="' . $extension['id'] . '"  />' . PHP_EOL;
 	if (preg_match(' /^OK/ ', $latency)) {
 		echo '<input type="hidden" name="latency" id="latency" size="20"  value="' . $latency . '"  />' . PHP_EOL;
 	} 
@@ -1224,7 +1226,6 @@ private function showEdit() {
 	}	
 
 	echo '</div>';
-	echo '<input type="hidden" name="id" id="id" value="' . $extension['id'] . '"  />' . PHP_EOL;
 	$endButtonArray['cancel'] = true;
 	$endButtonArray['update'] = "endupdate";	
 	$this->myPanel->endBar($endButtonArray);
