@@ -993,13 +993,12 @@ private function showEdit() {
     $this->myPanel->internalEditBoxStart();
 	echo '<div id="clustershow">';
 	$this->myPanel->displayInputFor('cluster','text',$extension['cluster'],'cluster');
+	$this->myPanel->displayInputFor('rule','text',$extension['pkey'],'pkey');
 	echo '</div>';    
     $this->myPanel->displayBooleanFor('active',$extension['active']);
     echo '<input type="hidden" name="id" id="id" value="' . $extension['id'] . '"  />' . PHP_EOL;
 
 //	$shortkey = $this->helper->displayKey($extension['pkey']);
-
-	$this->myPanel->displayInputFor('rule','text',$extension['pkey'],'pkey');
 
 /*	
 	echo '<div class="cluster">';

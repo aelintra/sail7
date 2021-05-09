@@ -295,7 +295,7 @@ INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('route','Rout
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('routeable','Routeable?','Set this value to YES if this custom trunk will be used to route inbound traffic. ');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('routedesc','Description','Free form description');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('routename','Route Name','The route name should be systemwide unique.  By convention (although it isnt mandatory) we use UPPERCASE for the route name.');
-INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('rule','Extension Number','Extension Number.  This is the system internal extension number. For new extensions, SARK will set this value to the first unused extension number it can find, however you can override this if you wish.');
+INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('rule','Extension Number','Extension Number.  This is the system internal extension number. It can be three or four digits in length,');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('runfop','Flash Operator Panel','Enables/disables the FOP server.  The FOP server is quite heavy on resource and it can cause big CPU spikes on a small system.  Disable it to save CPU.');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('s-peername','Far-end Hostname','The linux hostname of the Sibling (given by uname -n).');
 INSERT OR IGNORE INTO tt_help_core(pkey,displayname,htext) values ('schedend','End','End of a schedule period ');
