@@ -288,7 +288,7 @@ private function showMain() {
 			$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
 			$clustId = $res['id'];
 		}
-		$sKey = getFullExtKey($row['pkey'], $row[cluster]);
+		$sKey = $this->helper->getFullExtKey($row['pkey'], $row[cluster]);
 /*
 		if (isset ($sip_peers [$sKey]['IPaddress']) && $sip_peers [$sKey]['IPaddress'] == '-none-') {		
 			if (preg_match(' /(..)(..)(..)(..)(..)(..)/ ',$row['macaddr'],$matches)) {
@@ -1299,7 +1299,7 @@ private function saveEdit() {
 		$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $extension['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
 		$clustId = $res['id'];
 	}
-	$sKey = getFullExtKey($row['pkey'], $row[cluster]);
+	$sKey = $this->helper->getFullExtKey($row['pkey'], $row[cluster]);
 			
 /*	
  * update the asterisk internal database (callforwards and ringdelay)
