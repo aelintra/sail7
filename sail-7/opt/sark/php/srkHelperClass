@@ -1207,6 +1207,20 @@ public function xRef($pkey,$apptype="object") {
     return $xref;  		   				
 }
 
+public function getFullExtKey($pkey, $cluster) {
+
+	$dbh = DB::getInstance();
+
+	if ($cluster == 'default') {
+		return $pkey;
+	}
+
+	$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $cluster . "'")->fetch(PDO::FETCH_ASSOC);
+	
+	$sKey = $res['id'] . $pkey;
+	return $sKey;
+}
+
 public function displayKey($key) {	
 	if (strlen($key) <= 4) {
 		return $key;

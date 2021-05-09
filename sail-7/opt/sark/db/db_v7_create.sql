@@ -175,7 +175,7 @@ dialstring TEXT,                        -- not used
 dvrvmail TEXT,                          -- mailbox
 extalert TEXT,                          -- alert info
 externalip TEXT,                        -- not used
-firstseen TEXT DEFAULT NULL,							-- first date provisioned (or NULL)
+firstseen TEXT DEFAULT NULL,			-- first date provisioned (or NULL)
 lastseen TEXT DEFAULT NULL,				-- last date provisioned (or NULL)
 location TEXT DEFAULT 'LOCAL',          -- local/remote
 macaddr TEXT,                           -- macaddr
@@ -194,6 +194,7 @@ tls TEXT,
 transport TEXT DEFAULT 'udp',			-- transport(udp/tcp/tls)
 twin TEXT,                              -- not used
 vmailfwd TEXT,                          -- not used
+vmailreset INTEGER DEFAULT 0,			-- request vmail pwd reset at next commit
 z_created datetime,
 z_updated datetime,
 z_updater TEXT DEFAULT 'system'

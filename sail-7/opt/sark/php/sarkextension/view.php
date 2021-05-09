@@ -288,7 +288,7 @@ private function showMain() {
 			$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
 			$clustId = $res['id'];
 		}
-		$sKey = $clustId . $row['pkey'];
+		$sKey = getFullExtKey($row['pkey'], $row[cluster]);
 /*
 		if (isset ($sip_peers [$sKey]['IPaddress']) && $sip_peers [$sKey]['IPaddress'] == '-none-') {		
 			if (preg_match(' /(..)(..)(..)(..)(..)(..)/ ',$row['macaddr'],$matches)) {
@@ -883,8 +883,6 @@ private function showEdit() {
 
 	$id = $_REQUEST['id'];
 
-//	$cluster = $_GET['cluster'];
-
 	$res = $this->dbh->query("SELECT FQDN,VXT FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	$fqdn = $res['FQDN'];
 	$vxt = $res['VXT'];
@@ -892,15 +890,7 @@ private function showEdit() {
 	$sql = $this->dbh->prepare("SELECT * FROM ipphone  WHERE id=?");
 	$sql->execute(array($id));
 	$extension = $sql->fetch();
-/*
-	if (isset($this->keychange)) {
-		$pkey = $this->keychange;		
-	}
-	else {
-			$pkey = $_REQUEST['pkey'];
-		}
-	}
-*/	
+
 	$extlist=array();
 	array_push($extlist,"None");	
 	$res = $this->helper->getTable("ipphone","select pkey from ipphone WHERE cluster='" . $extension['cluster'] . "'",false);
@@ -913,7 +903,7 @@ private function showEdit() {
 // see if we can do ipv6	
 	$ipv6gua = $this->netHelper->get_IPV6GUA();
 	if (!empty($ipv6gua)) {
-// see ifphone can do IPV6
+// see if phone can do IPV6
 		$shortdevice = substr($extension['device'],0,4);
 		if ($shortdevice == 'snom' || $shortdevice == 'Yeal' || $shortdevice == 'Pana'  || $shortdevice == 'Vtec') {
 			array_push($protocol,'IPV6');
@@ -953,13 +943,7 @@ private function showEdit() {
 	if ($this->invalidForm) {
 		$this->myPanel->showErrors($this->error_hash);
 	}
-/*	
-	 if ($pkey) {
-             $this->myPanel->navRowDisplay($pkey);
-     }
 
-	$this->myPanel->Heading($this->head . " " . $pkey,$this->message);
-*/
 	echo '<div class="w3-container w3-padding ' . $this->myPanel->bgColorClass . '">'; 
 	$this->myPanel->navRowDisplay($pkey);
 	echo '<span class="w3-text-blue-grey" style="margin:0;font-size:24px;">';
@@ -998,8 +982,6 @@ private function showEdit() {
 	echo '</div>';    
     $this->myPanel->displayBooleanFor('active',$extension['active']);
     echo '<input type="hidden" name="id" id="id" value="' . $extension['id'] . '"  />' . PHP_EOL;
-
-//	$shortkey = $this->helper->displayKey($extension['pkey']);
 
 /*	
 	echo '<div class="cluster">';
@@ -1099,7 +1081,7 @@ private function showEdit() {
 /*
  * 	TAB XREF 
  */ 
- 	$xref = $this->xRef($pkey,$extension['cluster']);
+ 	$xref = $this->xRef($extension['pkey'],$extension['cluster']);
  	if ($xref) {
 		$this->myPanel->internalEditBoxStart();
 		echo '<div class="w3-margin-bottom">';	
@@ -1317,7 +1299,7 @@ private function saveEdit() {
 		$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $extension['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
 		$clustId = $res['id'];
 	}
-	$sKey = $clustId . $row['pkey'];
+	$sKey = getFullExtKey($row['pkey'], $row[cluster]);
 			
 /*	
  * update the asterisk internal database (callforwards and ringdelay)

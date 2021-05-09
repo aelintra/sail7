@@ -332,7 +332,7 @@ private function genSip() {
 		if ($row['active'] == "YES") {       
 			if ($row['technology'] == "SIP") {
 				$id = $this->getClusterId($row['cluster']);
-				if ($row[cluster] == 'default') {
+				if ($row['cluster'] == 'default') {
 					$id = NULL;
 				}
 				$OUT .= "[$id" . $row['pkey'] . "]\n";
@@ -465,7 +465,7 @@ private function genQueues() {
 	fwrite($fh,$OUT) or die('Could not write to file sark_queues_main.conf!');
 	fclose($fh); 
 
-// write the voicemail Master file
+// write the Queues Master file
 	$fh = fopen("/etc/asterisk/queues.conf", 'w') or die('Could not open file queues.conf!');
     $OUT = $this->genFileBanner();        
 	fwrite($fh, $OUT. " \n" .
@@ -517,9 +517,7 @@ private function genVmail() {
     	$rec = file($file) or die('Could not read file voicemail.conf !');
      	foreach ($rec as $line) {
 			$line = trim ($line);
-/*
-Context not currently used but may be in future
- */			
+		
 			if (preg_match(" /^(\[.*\])$/ ",$line,$matches)) {
 				$context = $matches[1];
 			}
@@ -569,7 +567,7 @@ BANNEREND;
     $result = $this->helper->getTable("ipphone",null,false,false,"cluster,pkey");
     $cluster=null;
     foreach ($result as $row) {
-    	$shortkey = $this->helper->displayKey($row['pkey']);
+
     	if ($row['cluster'] != $cluster) {
     		$cluster = $row['cluster'];
     		$OUT .= "[" . $cluster . "]\n";
@@ -579,9 +577,9 @@ BANNEREND;
 				$pwd = $mailbox[$row['cluster']][$row['pkey']]['password'];
 			}
 			else {
-				$pwd = $this->helper->displayKey($row['pkey']);
+				$pwd = $row['pkey'];
 			}
-			$OUT .= $shortkey . ' => ' . $pwd . ',' . $row['desc'] . ',' .
+			$OUT .= $row['pkey'] . ' => ' . $pwd . ',' . $row['desc'] . ',' .
 			$row['vmailfwd'];
 			if (isset($mailbox[$row['cluster']][$row['pkey']]['options'])) {
 				$OUT .= ',' . $mailbox[$row['cluster']][$row['pkey']]['options'];
