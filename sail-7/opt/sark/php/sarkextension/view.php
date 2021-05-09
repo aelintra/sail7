@@ -996,7 +996,6 @@ private function showEdit() {
 	$this->myPanel->displayInputFor('rule','text',$extension['pkey'],'pkey');
 	echo '</div>';    
     $this->myPanel->displayBooleanFor('active',$extension['active']);
-    echo '<input type="hidden" name="id" id="id" value="' . $extension['id'] . '"  />' . PHP_EOL;
 
 //	$shortkey = $this->helper->displayKey($extension['pkey']);
 
@@ -1226,6 +1225,7 @@ private function showEdit() {
 	}	
 
 	echo '</div>';
+	echo '<input type="hidden" name="id" id="id" value="' . $extension['id'] . '"  />' . PHP_EOL;
 	$endButtonArray['cancel'] = true;
 	$endButtonArray['update'] = "endupdate";	
 	$this->myPanel->endBar($endButtonArray);
