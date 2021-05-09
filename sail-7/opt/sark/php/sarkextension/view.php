@@ -1365,7 +1365,7 @@ private function saveEdit() {
 
 			if ( isset($res['pkey']) ) { 
 */
-			if ($this-helper->checkXref($tuple['pkey'],$tuple['cluster'])) {
+			if ( $this->helper->checkXref($tuple['pkey'],$tuple['cluster']) ) {
 				$this->invalidForm = True;
 				$this->message = "<B>  --  Validation Errors!</B>";	
 				$this->error_hash['extensave'] = " " . $newkey . " already exists!";	
