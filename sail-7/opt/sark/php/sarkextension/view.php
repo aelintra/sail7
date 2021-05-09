@@ -1252,10 +1252,10 @@ private function saveEdit() {
 		
 	$this->validator = new FormValidator();
 	
-	$this->validator->addValidation("newkey","num","Invalid extension number");
-	$this->validator->addValidation("newkey","req","You must specify an extension number");
-	$this->validator->addValidation("newkey","minlen=3","Extension number must be 3 or 4 digits");
-	$this->validator->addValidation("newkey","maxlen=4","Extension number must be 3 or 4 digits");
+	$this->validator->addValidation("pkey","num","Invalid extension number");
+	$this->validator->addValidation("pkey","req","You must specify an extension number");
+	$this->validator->addValidation("pkey","minlen=3","Extension number must be 3 or 4 digits");
+	$this->validator->addValidation("pkey","maxlen=4","Extension number must be 3 or 4 digits");
 	$this->validator->addValidation("cellphone","num","cellphone number must be numeric");
     $this->validator->addValidation("vmailfwd","email","Invalid email address format");
 //    $this->validator->addValidation("callgroup","alnum","Call Group name must be alphanumeric(no spaces)");  
@@ -1277,7 +1277,6 @@ private function saveEdit() {
 						'ringdelay' => True,
 						'opencos' => True,
 						'closedcos' => True,
-						'newkey' => True,
 						'vdelete' => True,
 						'vreset' => True,
 						'celltwin' => True,
@@ -1303,22 +1302,30 @@ private function saveEdit() {
 		else {
 			$tuple['celltwin'] = False;
 		}
-*/				
+				
 		$newkey =  trim(strip_tags($_POST['newkey']));
+*/		
 
 /*
  * 	Adjust the Asterisk and provisioning boxes
  */
 
 	$this->adjustAstProvSettings($tuple);
+
+	$clustId = null;
+	if ($extension['cluster'] != 'default') {
+		$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $extension['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+		$clustId = $res['id'];
+	}
+	$sKey = $clustId . $row['pkey'];
 			
 /*	
  * update the asterisk internal database (callforwards and ringdelay)
  */  
- 		if ($this->astrunning) {
-			$amiHelper = new amiHelper();
-			$amiHelper->put_database($newkey);			
-		}
+ 	if ($this->astrunning) {
+		$amiHelper = new amiHelper();
+		$amiHelper->put_database($skey);			
+	}
  		
 /*
  * reset/empty voicemail if requested
@@ -1347,15 +1354,18 @@ private function saveEdit() {
 		$this->doCos($cosSetArray);
 		
 /*
- * check for keychange
+ * check for keychange - can I cjeck dups?
  */
 		if ($extension['pkey'] != $tuple['pkey']) {
-
-			$sql = $this->dbh->prepare("SELECT pkey FROM ipphone WHERE pkey=?");
+/*
+			$sql = $this->dbh->prepare("SELECT pkey FROM ipphone WHERE pkey=? AND cluster = ");
 			$sql->execute(array($newkey));
 			$res = $sql->fetch();	
 			$sql = NULL; 
+
 			if ( isset($res['pkey']) ) { 
+*/
+			if $this-helper->checkXref($tuple['pkey'],$tuple['cluster']) {
 				$this->invalidForm = True;
 				$this->message = "<B>  --  Validation Errors!</B>";	
 				$this->error_hash['extensave'] = " " . $newkey . " already exists!";	
