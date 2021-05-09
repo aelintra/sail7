@@ -1239,8 +1239,6 @@ private function saveEdit() {
 
 // Fetch the existing row 	
 
-print_r($_REQUEST);
-
 	$id = $_REQUEST['id'];
 	$sql = $this->dbh->prepare("SELECT * FROM ipphone  WHERE id=?");
 	$sql->execute(array($id));
