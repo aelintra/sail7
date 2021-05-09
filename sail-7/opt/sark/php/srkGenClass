@@ -593,8 +593,8 @@ BANNEREND;
         }
     }
 
-	$sql = $this->dbh->prepare("UPDATE ipphone SET vmailreset = ?");
-	$sql->execute(array(0));			
+	$sql = $this->dbh->prepare("UPDATE ipphone SET vmailreset=0");
+	$sql->execute(array());			
 	$sql=NULL;
 
 	$fh = fopen("/etc/asterisk/voicemail.conf", 'w') or die('Could not open file voicemail.conf!'); 
