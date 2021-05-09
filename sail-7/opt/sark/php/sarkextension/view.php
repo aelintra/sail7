@@ -879,10 +879,7 @@ private function showEdit() {
 	$cfbs = NULL;
 	$ringdelay = 20;
 	$this->dbh = DB::getInstance();
-print_r($_REQUEST);
 	$id = $_REQUEST['id'];
-
-	echo $id;
 
 //	$cluster = $_GET['cluster'];
 
@@ -1078,8 +1075,6 @@ print_r($_REQUEST);
  *
  */	
 		
-
-	echo '<input type="hidden" name="id" id="id" size="20"  value="' . $extension['id'] . '"  />' . PHP_EOL;
 	if (preg_match(' /^OK/ ', $latency)) {
 		echo '<input type="hidden" name="latency" id="latency" size="20"  value="' . $latency . '"  />' . PHP_EOL;
 	} 
