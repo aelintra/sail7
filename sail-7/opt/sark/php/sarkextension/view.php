@@ -316,8 +316,8 @@ private function showMain() {
 		echo '<td class="w3-hide-small  w3-hide-medium">' . $row['sndcreds'] . '</td>' . PHP_EOL;
 		
 		$latency = 'N/A';
-		if (isset($sip_peers [$row['pkey']]['Status'])) {
-			$latency = $sip_peers [$row['pkey']]['Status'];	
+		if (isset($sip_peers [$sKey]]['Status'])) {
+			$latency = $sip_peers [$sKey]]['Status'];	
 		}
 		if ($row['stolen']) {
 			if (!preg_match(" /VXT/i ", $row['device'])) {
@@ -1598,7 +1598,7 @@ private function xRef($pkey,$cluster) {
  * Build Xrefs
  */
 // 	$shortkey = $this->helper->displayKey($pkey);
- 	$this->helper->logit("Xref running for $pkey and $shortkey on cluster $cluster ",1 );
+ 	$this->helper->logit("Xref running for $pkey on cluster $cluster ",1 );
 	$xref = NULL;
 	$tref = NULL;
 	$sql = $this->dbh->prepare("SELECT * FROM IPphone WHERE cluster=? AND dvrvmail LIKE ? AND pkey != ? ORDER BY pkey");
