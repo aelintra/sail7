@@ -573,11 +573,16 @@ BANNEREND;
     		$OUT .= "[" . $cluster . "]\n";
     	} 
 		if ($row['dvrvmail'] != 'None') {
-			if (!empty ($mailbox[$row['cluster']][$row['pkey']]['password'])) {
-				$pwd = $mailbox[$row['cluster']][$row['pkey']]['password'];
-			}
-			else {
+			if ($row['vmailreset']) {
 				$pwd = $row['pkey'];
+			}
+			else {			
+				if (!empty ($mailbox[$row['cluster']][$row['pkey']]['password'])) {
+					$pwd = $mailbox[$row['cluster']][$row['pkey']]['password'];
+				}
+				else {
+					$pwd = $row['pkey'];
+				}
 			}
 			$OUT .= $row['pkey'] . ' => ' . $pwd . ',' . $row['desc'] . ',' .
 			$row['vmailfwd'];
@@ -587,6 +592,10 @@ BANNEREND;
 			$OUT .= " \n";
         }
     }
+
+	$sql = $this->dbh->prepare("UPDATE ipphone SET vmailreset = ?");
+	$sql->execute(array(0));			
+	$sql=NULL;
 
 	$fh = fopen("/etc/asterisk/voicemail.conf", 'w') or die('Could not open file voicemail.conf!'); 
 	fwrite($fh,$OUT) or die('Could not write to file voicemail.conf' );
