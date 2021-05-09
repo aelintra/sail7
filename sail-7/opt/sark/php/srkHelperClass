@@ -1215,7 +1215,7 @@ public function getFullExtKey($pkey, $cluster) {
 		return $pkey;
 	}
 
-	$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $cluster . "'")->fetch(PDO::FETCH_ASSOC);
+	$res = $dbh->query("SELECT id FROM cluster WHERE pkey = '" . $cluster . "'")->fetch(PDO::FETCH_ASSOC);
 	
 	$sKey = $res['id'] . $pkey;
 	return $sKey;
