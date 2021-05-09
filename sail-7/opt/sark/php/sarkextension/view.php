@@ -517,7 +517,7 @@ private function saveNew() {
 	
 //remove first two digits - or return an array from the sub.
 
-	$tuple['desc'] = $this->helper->displayKey($tuple['pkey']);
+//	$tuple['desc'] = $this->helper->displayKey($tuple['pkey']);
 
 	if ($vcl) {
 		$tuple['location'] = 'remote';
@@ -577,9 +577,10 @@ private function saveNew() {
 					$tuple['desc'] = $tuple['pkey'];
 				}
 				else {
-*/
+
 					$tuple['desc'] = $this->helper->displayKey($tuple['pkey']);
-//				}
+				}
+*/				
 				$this->addNewExtension($tuple);
 				if ($usercreate == 'YES') {
 					$this->addNewUser($tuple);
@@ -598,7 +599,7 @@ private function saveNew() {
 			$tuple['device'] = 'General SIP';
 			$blksize = strip_tags($_POST['blksize']);
 			while ($blksize) {
-				$tuple['desc'] = $this->helper->displaykey($tuple['pkey']);;
+				$tuple['desc'] = $tuple['pkey'];
 				$this->addNewExtension($tuple);
 				if ($usercreate == 'YES') {
 					$this->addNewUser($tuple);
@@ -628,7 +629,7 @@ private function saveNew() {
 						
 		case 'MAILBOX':
 			$tuple['device'] = 'MAILBOX';
-			$tuple['desc'] = $this->helper->displaykey($tuple['pkey']);;
+			$tuple['desc'] = $tuple['pkey'];
 			$this->addNewExtension($tuple);
 
 			break;
@@ -710,7 +711,7 @@ encryption=\$encryption";
 	}
 	$tuple['technology'] = $resdevice['technology'];			
 	$tuple['passwd'] = $this->helper->ret_password ($this->passwordLength);
-	$tuple['dvrvmail'] = $this->helper->displayKey($tuple['pkey']);
+	$tuple['dvrvmail'] = $tuple['pkey'];
 			
 // ToDo permit ipv6 acl
 /*
@@ -1238,6 +1239,8 @@ private function saveEdit() {
 
 // Fetch the existing row 	
 
+print_r($_REQUEST);
+
 	$id = $_REQUEST['id'];
 	$sql = $this->dbh->prepare("SELECT * FROM ipphone  WHERE id=?");
 	$sql->execute(array($id));
@@ -1352,63 +1355,18 @@ private function saveEdit() {
 // do COS			
 		$this->doCos($cosSetArray);
 		
-/*
- * check for keychange - can I cjeck dups?
- */
-		if ($extension['pkey'] != $tuple['pkey']) {
-/*
-			$sql = $this->dbh->prepare("SELECT pkey FROM ipphone WHERE pkey=? AND cluster = ");
-			$sql->execute(array($newkey));
-			$res = $sql->fetch();	
-			$sql = NULL; 
-
-			if ( isset($res['pkey']) ) { 
-*/
-			if ( $this->helper->checkXref($tuple['pkey'],$tuple['cluster']) ) {
-				$this->invalidForm = True;
-				$this->message = "<B>  --  Validation Errors!</B>";	
-				$this->error_hash['extensave'] = " " . $newkey . " already exists!";	
-			}
-			else {
-				// signal a key change to the editor
-				// set the mailbox to the new extension
-				$tuple['dvrvmail'] = $newkey;
-				$this->chkMailbox($tuple['dvrvmail'],$tuple['sipiaxfriend'],$tuple['cluster']);
-
-				$ret = $this->helper->setTuple("ipphone",$tuple,$newkey);
-				if ($ret == 'OK') {
-					$this->message = "Updated extension " . $tuple['pkey'];
-					// move any mail
-					$maildir = '/var/spool/asterisk/voicemail/default/'.$tuple['pkey'];
-					if (is_dir($maildir)) {
-						$oldmail = '/var/spool/asterisk/voicemail/default/'.$tuple['pkey'];
-						$newmail = '/var/spool/asterisk/voicemail/default/'.$newkey;
-						$this->helper->request_syscmd ("/bin/mv $oldmail $newmail");
-					}
-					// delete the old COS entries
-					$this->helper->predDelTuple("IPphoneCOSopen","IPphone_pkey",$tuple['pkey']);
-	 				$this->helper->predDelTuple("IPphoneCOSclosed","IPphone_pkey",$tuple['pkey']);
-				}
-				
-				else {
-					$this->invalidForm = True;
-					$this->message = "Validation Errors!";	
-					$this->error_hash['extensave'] = $ret;	
-				}
-			}
+// do update
+		$this->chkMailbox($tuple['dvrvmail'],$tuple['sipiaxfriend'],$tuple['cluster']);		
+		$ret = $this->helper->setTupleById("ipphone",$tuple);
+		if ($ret == 'OK') {
+			$this->message = "Updated extension " . $tuple['pkey'];
 		}
 		else {
-			$this->chkMailbox($tuple['dvrvmail'],$tuple['sipiaxfriend'],$tuple['cluster']);		
-			$ret = $this->helper->setTuple("ipphone",$tuple,$newkey);
-			if ($ret == 'OK') {
-				$this->message = "Updated extension " . $this->helper->displayKey($tuple['pkey']);
-			}
-			else {
-				$this->invalidForm = True;
-				$this->message = "Validation Errors!";	
-				$this->error_hash['extensave'] = $ret;	
-			}
-		}			
+			$this->invalidForm = True;
+			$this->message = "Validation Errors!";	
+			$this->error_hash['extensave'] = $ret;	
+		}
+		
 	}
     else {
 		$this->invalidForm = True;
@@ -1604,7 +1562,7 @@ private function xRef($pkey,$cluster) {
 	$sql->execute(array($cluster,$pkey,$pkey));
 	$result = $sql->fetchall();	
 	foreach ($result as $row) {
-		$tref .= "This extension provides a voicemailbox for " . $this->helper->displayKey($row[pkey]) . "<br>" . PHP_EOL;
+		$tref .= "This extension provides a voicemailbox for " . $row[pkey] . "<br>" . PHP_EOL;
 	}
 	if ($tref) {
     	$xref .= $tref;
@@ -1626,7 +1584,7 @@ private function xRef($pkey,$cluster) {
 	$sql->execute(array($cluster, '%' . $pkey . '%', '%' . $pkey . '%'));	
  	$result = $sql->fetchall();	
 	foreach ($result as $row) {
-		$tref .= "Ring Group <a href='javascript:window.top.location.href=" . '"/php/sarkcallgroup/main.php?edit=yes&pkey=' . $row['pkey'] . '"' . "' >" . $this->helper->displayKey($row['pkey']) . ' </a> references this extension <br>' . PHP_EOL;
+		$tref .= "Ring Group <a href='javascript:window.top.location.href=" . '"/php/sarkcallgroup/main.php?edit=yes&pkey=' . $row['pkey'] . '"' . "' >" . $row['pkey'] . ' </a> references this extension <br>' . PHP_EOL;
 	}
 	
 	if ($tref) {
