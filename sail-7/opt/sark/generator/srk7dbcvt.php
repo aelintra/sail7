@@ -218,11 +218,12 @@ $custTables = array(
 /*
  *	Handle the extensions
  */
+/*
    			$id = $v7dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN); 			
    			$sql = $v7dbh->prepare("UPDATE IPphone SET pkey = ? WHERE pkey = ?");
    			$sql->execute(array($id . $row['pkey'], $row['pkey']));
    			$res = NULL;
-
+*/
    		}
 
    	}

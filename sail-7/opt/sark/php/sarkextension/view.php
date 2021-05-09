@@ -264,7 +264,7 @@ private function showMain() {
 
 //		$shortkey = $this->helper->displayKey($row['pkey']);
 
-		echo '<td class="read_only">' . $row['pkey'] . '</td>' . PHP_EOL;
+		echo '<td>' . $row['pkey'] . '</td>' . PHP_EOL;
 		
 		$display = $row['desc'];
 		if ( strlen($row['desc']) > 7 ) {
