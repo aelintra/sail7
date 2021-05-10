@@ -33,7 +33,6 @@ Class sarkextension {
 	protected $invalidForm;
 	protected $error_hash = array();
 	protected $astrunning=false;
-	protected $keychange=NULL;
 	protected $cosresult;
 	protected $passwordLength=12;
 	protected $myBooleans = array(
@@ -92,7 +91,7 @@ public function showForm() {
 */	
 	$this->myPanel->pagename = 'Extensions';
 	
-	if (isset($_POST['new']) || isset($_GET['new'])) { 
+	if (isset($_REQUEST['new'])) { 
 		$this->showNew();
 		return;		
 	}
@@ -159,11 +158,8 @@ public function showForm() {
 		$this->saveNew();
 		if ($this->invalidForm) {
 			$this->showNew();
-		}
-		else {
-			$this->showEdit();
-		}
-		return;					
+			return;
+		}			
 	}
 	
 	if (isset($_POST['update']) || isset($_POST['endupdate'])) { 
@@ -1320,9 +1316,12 @@ private function saveEdit() {
 	}	
 	
 	if (isset($_POST['vreset'])) { 
+/*		
 		$skey = $_POST['pkey'];		
 		$rc = $this->helper->request_syscmd ("/bin/sed -i 's/^$skey => [0-9]*\(.*\)/$skey => $pkey\\1/' /etc/asterisk/voicemail.conf");	
 		$this->message = "Voicemail password reset";	
+*/
+		$tuple['vmailreset'] == "1";
 	}
 		
 /*
