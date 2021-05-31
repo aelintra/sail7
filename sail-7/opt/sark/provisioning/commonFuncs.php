@@ -109,13 +109,13 @@ function cleanConfig($phonepkey,$rawConfig,&$db,&$retstring,&$loopCheck,$sndcred
   }
 }
 
-function genFkeys($phonepkey,$devpkey,$db,&$inline) {
+function genFkeys($id,$devpkey,$db,&$inline) {
 logIt("BLF iteration for phonepkey=$phonepkey, devpkey=$devpkey");
 	global $blfKeys;
 
 	try {
-		$extConfig = $db->prepare('select protocol,provisionwith from ipphone where pkey = ?');
-		$extConfig->execute(array($phonepkey));
+		$extConfig = $db->prepare('select protocol,provisionwith from ipphone where id = ?');
+		$extConfig->execute(array($id));
 		$thisextConfig = $extConfig->fetchObject();
 		$extConfig = NULL;		
 
