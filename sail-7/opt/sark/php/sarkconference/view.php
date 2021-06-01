@@ -243,7 +243,7 @@ private function saveNew() {
 	
 	$this->helper->buildTupleArray($_POST,$tuple);	
 			  
-	$ret = $this->helper->createTuple("meetme",$tuple);
+	$ret = $this->helper->createTuple("meetme",$tuple,false,$tuple['cluster']);
 	if ($ret == 'OK') {
 		$this->message = "Saved new Conference Room " . $tuple['pkey'] . "!";
 	}
