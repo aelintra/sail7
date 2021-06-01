@@ -959,21 +959,19 @@ LOCAL;
 		foreach ($phone as $IPphone) {
 //			$shortdial = $this->helper->displayKey($IPphone['pkey']);
 			$OUT .= "\texten => " . $IPphone['pkey'] . ",hint,SIP/" . $IPphone['pkey'] . "\n";
-			
+			$OUT .= "\texten => " . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall,,,)\n";
+/*			
 			if ($row['pkey'] != "default") { 
-				$OUT .= "\texten => " . $row['id'] . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall,,,)\n";
-				$OUT .= "\texten => " . $IPphone['pkey'] . ",1,GoTo(" . $row['id'] . $IPphone['pkey'] . ",1)\n";
+				$OUT .= "\texten => " . $shortdial . ",1,GoTo(" . $IPphone['pkey'] . ",1)\n";
 			}
-			else {
-				$OUT .= "\texten => " . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall,,,)\n";
-			}
+*/
 			if ($IPphone['dvrvmail'] != "None") {
 				if ($IPphone['dvrvmail'] == "") {
               		$IPphone['dvrvmail'] = $IPphone['pkey'];
             	}
           		$OUT .=  "\texten => *" . $IPphone['pkey'] . ",1,Voicemail(" . $IPphone['dvrvmail'] . "@" . $row['pkey']  . ",su)\n";
-         		$OUT .=  "\texten => vm" . $IPphone['pkey'] . ",hint,Custom:vm" . $IPphone['pkey'] . "\n";
-          		$OUT .=  "\texten => vm" . $IPphone['pkey'] . ",1,VoicemailMain(" . $IPphone['pkey'] . ")\n";          		
+         		$OUT .=  "\texten => vm" .$IPphone['pkey'] . ",hint,Custom:vm" . $IPphone['pkey'] . "\n";
+          		$OUT .=  "\texten => vm" . $IPphone['pkey'] . ",1,Voicemail(" . $IPphone['dvrvmail'] . "@" . $row['pkey']  . ",su)\n";          		
 			}
 /*			
 			if ($this->globals['CAMPONQONOFF'] == "ON") {
