@@ -957,14 +957,17 @@ LOCAL;
 		$phone = $qRes->fetchAll();
 		$qRes = NULL;				
 		foreach ($phone as $IPphone) {
-//			$shortdial = $this->helper->displayKey($IPphone['pkey']);
-			$OUT .= "\texten => " . $IPphone['pkey'] . ",hint,SIP/" . $IPphone['pkey'] . "\n";
-			$OUT .= "\texten => " . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall,,,)\n";
-/*			
-			if ($row['pkey'] != "default") { 
-				$OUT .= "\texten => " . $shortdial . ",1,GoTo(" . $IPphone['pkey'] . ",1)\n";
+			
+			if ($row['pkey'] != "default") {
+				$OUT .= "\texten => " . $IPphone['pkey'] . ",hint,SIP/" . $row['id'] . $IPphone['pkey'] . "\n";
+				$OUT .= "\texten => " . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall,," .  $row['id'] . $IPphone['pkey']  . ",)\n";
 			}
-*/
+			else {
+				$OUT .= "\texten => " . $IPphone['pkey'] . ",hint,SIP/" . $IPphone['pkey'] . "\n";
+				$OUT .= "\texten => " . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall,," .  $IPphone['pkey']  . ",)\n";
+
+			}
+
 			if ($IPphone['dvrvmail'] != "None") {
 				if ($IPphone['dvrvmail'] == "") {
               		$IPphone['dvrvmail'] = $IPphone['pkey'];
