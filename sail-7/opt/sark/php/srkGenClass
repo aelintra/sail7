@@ -961,8 +961,8 @@ LOCAL;
 			$OUT .= "\texten => " . $IPphone['pkey'] . ",hint,SIP/" . $IPphone['pkey'] . "\n";
 			
 			if ($row['pkey'] != "default") { 
-				$OUT .= "\texten => " . $row['pkey'] . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall,,,)\n";
-				$OUT .= "\texten => " . $IPphone['pkey'] . ",1,GoTo(" . $row['pkey'] . $IPphone['pkey'] . ",1)\n";
+				$OUT .= "\texten => " . $row['id'] . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall,,,)\n";
+				$OUT .= "\texten => " . $IPphone['pkey'] . ",1,GoTo(" . $row['id'] . $IPphone['pkey'] . ",1)\n";
 			}
 			else {
 				$OUT .= "\texten => " . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall,,,)\n";
