@@ -332,7 +332,7 @@ private function genSip() {
 		if ($row['active'] == "YES") {       
 			if ($row['technology'] == "SIP") {				
 				if ($row['cluster'] == 'default') {
-					$id = NULL;
+	//				$id = NULL;
 					$myContext = "qrxvtmny";
 				}
 				else {
