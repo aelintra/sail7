@@ -957,16 +957,19 @@ LOCAL;
 		$phone = $qRes->fetchAll();
 		$qRes = NULL;				
 		foreach ($phone as $IPphone) {
-			
+
+
+/*			
 			if ($row['pkey'] != "default") {
 				$OUT .= "\texten => " . $IPphone['pkey'] . ",hint,SIP/" . $row['id'] . $IPphone['pkey'] . "\n";
 				$OUT .= "\texten => " . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall," .  $row['id'] . $IPphone['pkey']  . ")\n";
 			}
 			else {
+*/
 				$OUT .= "\texten => " . $IPphone['pkey'] . ",hint,SIP/" . $IPphone['pkey'] . "\n";
 				$OUT .= "\texten => " . $IPphone['pkey'] . ",1,agi(sarkhpe,InCall," .  $IPphone['pkey']  . ")\n";
 
-			}
+//			}
 
 			if ($IPphone['dvrvmail'] != "None") {
 				if ($IPphone['dvrvmail'] == "") {
