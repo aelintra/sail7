@@ -1544,12 +1544,12 @@ Class page {
 		$ipphone = $helper->getTable("ipphone", "SELECT pkey,cluster from ipphone WHERE cluster='" . $cluster . "'");		
 		$html .= '<optgroup label="EXTENSIONS">' . PHP_EOL; 		
 		foreach ($ipphone as $ipphone => $value)  {
-			if ($value['cluster'] == 'default') {
+//			if ($value['cluster'] == 'default') {
 				$shortkey = $value['pkey']; 	
-			}
-			else {
-            	$shortkey = substr($value['pkey'],2); 
-            }
+//			}
+//			else {
+//            	$shortkey = substr($value['pkey'],2); 
+//            }
 			$html = $this->genHtml( $shortkey,$html);
 		}
 		$html .= '</optgroup>' . PHP_EOL;
