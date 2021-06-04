@@ -336,9 +336,9 @@ private function genSip() {
 					$myContext = "qrxvtmny";
 				}
 				else {
-					$id = $this->getClusterId($row['cluster']);
 					$myContext = $row['cluster'];
 				}
+				$id = $this->getClusterId($row['cluster']);				
 				$OUT .= "[$id" . $row['pkey'] . "]\n";
 
 //				$OUT .= "context=" . $myContext . "COS\n";		
