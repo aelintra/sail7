@@ -1408,6 +1408,7 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 	$pagearray = array();
  	foreach ($speed as $row) { 
 		$outlist = $this->synthAlias($row['pkey']);
+		echo "outlist from synthAlias = $outlist \n";
 		foreach ($outlist as $ep) {
 			$phonekey = $id . $ep;
 //			$phonekey = $ep;			
@@ -1496,6 +1497,7 @@ private function synthAlias($alias)  {
 //  input - db handle & callgroup number
 //  output - unordered array of extension numbers or an empty array
 //	
+	echo "In synthAlias with $alias \n";
 	$array=array();
     $sql = "select count(*) from speed WHERE pkey = '" . $alias . "'";
     $qRes = $this->dbh->query($sql);
