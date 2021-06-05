@@ -693,15 +693,13 @@ try {
 	if (file_exists('/etc/debian_version')) {
        	$OUT .= "\tMONITOR_EXEC=/opt/sark/scripts/selmixd\n";
     }
-    else {
-		$OUT .= "\tMONITOR_EXEC=/opt/sark/scripts/selmix\n";
-	}
+
 	if (file_exists( "/opt/sark/recone" )) {
         	$OUT .= "\tSET_DYNAMIC_FEATURES=>YES\n";
 	}
 	else {
 			$OUT .= "\tSET_DYNAMIC_FEATURES=>NO\n";
-        	$OUT .= "\tDYNAMIC_FEATURES=>automon\n";
+//        	$OUT .= "\tDYNAMIC_FEATURES=>automon\n";
 	}
 	$OUT .= "\n"; 
 //
