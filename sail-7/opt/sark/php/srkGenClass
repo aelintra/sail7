@@ -1013,7 +1013,7 @@ LOCAL;
 		}
 		else { 
 */
-			$myId = $row['pkey']; 
+			$myId = $row['id']; 
 //		}
 
 
