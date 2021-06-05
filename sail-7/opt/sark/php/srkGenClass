@@ -1412,7 +1412,7 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 			$phonekey = $id . $ep;
 //			$phonekey = $ep;			
 			if (strlen($phonekey) <= 6 ) {
-				$sql = "select * from IPphone WHERE pkey = $phonekey AND cluster = $cluster"; 
+				$sql = "select * from IPphone WHERE pkey = $ep AND cluster = $cluster"; 
 				$qRes = $this->dbh->query($sql);
 				$IPphone = $qRes->fetch();
 				$qRes = NULL;			
