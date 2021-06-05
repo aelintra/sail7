@@ -1475,40 +1475,6 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 
 }	
 
-private function synthAlias($alias)  {
-//
-//  Recursive function to build a callgroup.
-//  input - db handle & callgroup number
-//  output - unordered array of extension numbers or an empty array
-//	
-	echo "In synthAlias with $alias \n";
-	$array=array();
-    $sql = "select count(*) from speed WHERE pkey = '" . $alias . "'";
-    $qRes = $this->dbh->query($sql);
-	$count = $qRes->fetch();
-	$qRes = NULL;
-
-//	$res = $dbh->query($sql)->fetch(PDO::FETCH_ASSOC);
-//	
-	if ($count['count(*)'] != 0) {
-		$sql = "select * from speed WHERE pkey = '" . $alias . "'";
-		$qRes = $this->dbh->query($sql);
-		$row = $qRes->fetch();
-		$qRes = NULL;		
-//		$row = $dbh->query($sql)->fetch(PDO::FETCH_ASSOC);
-		$row['out'] = preg_replace ( '/\s+/'," ", $row['out'] );
-		$row['out'] = preg_replace ( '/\s*$/',"", $row['out'] );
-		$extension = explode(" ", $row['out']);
-        	foreach ($extension as $ext) {
-			$array = array_merge((array)$array, (array)$this->synthAlias($ext));
-        	}
-    	}
-	else {
-		array_push($array,$alias);
-	}
-    	return (isset($array) ? $array : false);
-}
-
 private function getClusterId($cluster)  {
 
 	$sql = $this->dbh->prepare("SELECT id FROM cluster WHERE pkey = ?");
