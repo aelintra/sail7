@@ -1408,7 +1408,8 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 	$pagearray = array();
  	foreach ($speed as $row) { 
 		$outlist = $this->synthAlias($row['pkey']);
-		echo "outlist from synthAlias = $outlist \n";
+		echo "outlist from synthAlias = \n";
+		print_r ($outlist);
 		foreach ($outlist as $ep) {
 			$phonekey = $id . $ep;
 //			$phonekey = $ep;			
