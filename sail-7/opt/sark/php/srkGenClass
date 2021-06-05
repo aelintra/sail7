@@ -1417,7 +1417,9 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 				$sql = "select * from IPphone WHERE pkey = $ep AND cluster = $cluster"; 
 				$qRes = $this->dbh->query($sql);
 				$IPphone = $qRes->fetch();
-				$qRes = NULL;			
+				$qRes = NULL;	
+				echo "found iphone\n";
+				print_r($IPphone);		
 				if (!empty($IPphone['technology']) && $IPphone['technology'] == "Custom") {
 					continue;
 				}
