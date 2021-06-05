@@ -998,7 +998,7 @@ LOCAL;
     		if ($count > 30) {
     			break;
     		}    
-			$ringall .= "SIP/" . $this->helper->displayKey($exten['pkey']) .'&';
+			$ringall .= "SIP/" . $row['id'] . $exten['pkey'] .'&';
 			$count++;
     	} 
    	
