@@ -877,13 +877,15 @@ LOCAL;
 //  pickup marks
 //
 
+/*
 		if ($row['pkey'] == 'default') {
 			$OUT .= "\n\texten => _*8XX.,1,Pickup(\${EXTEN:2}@PICKUPMARK)\n\n";
 		}
 		else {
+*/
 
 			$OUT .= "\n\texten => _*8XX.,1,Pickup(" .$row['id'] . "\${EXTEN:2}@PICKUPMARK)\n\n";
-		}
+//		}
 		
 
 //
@@ -1005,13 +1007,14 @@ LOCAL;
 		if ($ringall != '') {
 			$OUT .= "\texten => RINGALL,1,agi(sarkhpe,Alias,$ringall,\${EXTEN},)\n"; 
 		}
-
+/*
 		if ($row['pkey'] == 'default') {
 			$myId = NULL;
 		}
 		else { 
+*/
 			$myId = $row['pkey']; 
-		}
+//		}
 
 
 		$this->generateRingGroups($OUT,$row['pkey'],$myId);	
@@ -1407,8 +1410,9 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 		$outlist = $this->synthAlias($row['pkey']);
 		foreach ($outlist as $ep) {
 			$phonekey = $id . $ep;
+//			$phonekey = $ep;			
 			if (strlen($phonekey) <= 6 ) {
-				$sql = "select * from IPphone WHERE pkey = '" . $phonekey . "'"; 
+				$sql = "select * from IPphone WHERE pkey = $phonekey AND cluster = $cluster"; 
 				$qRes = $this->dbh->query($sql);
 				$IPphone = $qRes->fetch();
 				$qRes = NULL;			
