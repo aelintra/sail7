@@ -1411,6 +1411,7 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 		echo "outlist from synthAlias = \n";
 		print_r ($outlist);
 		foreach ($outlist as $ep) {
+			echo "working with ep $ep \n";
 			$phonekey = $id . $ep;
 //			$phonekey = $ep;			
 			if (strlen($phonekey) <= 6 ) {
