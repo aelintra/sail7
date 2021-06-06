@@ -755,8 +755,16 @@ try {
 		
 		$OUT .= "\t" . 'exten => _.,n,GoToIf($["${myClusterOclo}" = "CLOSED"]?' . 
 			$myCluster . '${CALLERID(num)}closedcos,${EXTEN},1:' . 
-			$myCluster . '${CALLERID(num)}opencos,${EXTEN},1)' . "\n\n";
+			$myCluster . '${CALLERID(num)}opencos,${EXTEN},1)' . "\n\n";			
+		
+		$OUT .= '[' . $myCluster ."Cosend]\n";  
+		$OUT .= "\texten => _.,1,GoTo($myCluster,\${EXTEN},1))\n";
+		$OUT .= "\n\n[" . $myCluster . "Emergency]\n"; 		
+		foreach ($eDialplan as $plan) {
+			$OUT .= "\texten => $plan,1,GoTo($myCluster,\${EXTEN},1))\n\n";
+		} 	
 	}
+
 
 //
 //	priv_sibling patch
@@ -1127,16 +1135,8 @@ LOCAL;
 					$OUT .= "\tinclude => " . $coskeys['COS_pkey'] . "\n";
 				} 	
 			}
-
+			$OUT .= "\tinclude => ". $myCluster . "Cosend\n";
 		}
-		$OUT .= "\tinclude => " . $myCluster . "Cosend\n";			
-		
-		$OUT .= '[' . $myCluster ."Cosend]\n";  
-		$OUT .= "\texten => _.,1,GoTo($myCluster,\${EXTEN},1))\n";
-		$OUT .= "\n[" . $myCluster . "Emergency]\n"; 		
-		foreach ($eDialplan as $plan) {
-			$OUT .= "\texten => $plan,1,GoTo($myCluster,\${EXTEN},1))\n";
-		} 	
 	}
 			
 //	$sql = "SELECT * FROM COS ORDER BY pkey";
