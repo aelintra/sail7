@@ -714,7 +714,7 @@ try {
 	
 
 	$OUT .= "\n[from-internal]\t; Compatibility \n";
-	$OUT .= "\tinclude => internal \n\n";
+	$OUT .= "\tinclude => internal \n";
 
 
 
@@ -759,11 +759,11 @@ try {
 		
 		$OUT .= "\t" . 'exten => _.,n,GoToIf($["${myClusterOclo}" = "CLOSED"]?' . 
 			$myCluster . '${CALLERID(num)}closedcos,${EXTEN},1:' . 
-			$myCluster . '${CALLERID(num)}opencos,${EXTEN},1)' . "\n\n";			
+			$myCluster . '${CALLERID(num)}opencos,${EXTEN},1)' . "\n";			
 		
 		$OUT .= '[' . $myCluster ."Cosend]\n";  
 		$OUT .= "\texten => _.,1,GoTo($myCluster,\${EXTEN},1))\n";
-		$OUT .= "\n[" . $myCluster . "Emergency]\n"; 		
+		$OUT .= "[" . $myCluster . "Emergency]\n"; 		
 		foreach ($eDialplan as $plan) {
 			$OUT .= "\texten => $plan,1,GoTo($myCluster,\${EXTEN},1))\n";
 		} 	
