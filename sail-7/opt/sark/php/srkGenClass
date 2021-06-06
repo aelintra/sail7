@@ -1147,7 +1147,7 @@ LOCAL;
 	$this->globals['EMERGENCY'] = preg_replace ( '/\s*$/',"", $this->globals['EMERGENCY'] );
 	$dialplan = explode(" ", $this->globals['EMERGENCY']);
 	foreach ($dialplan as $plan) {
-			$OUT .= "\texten => $plan,1,agi(sarkhpe,OutCluster,\${EXTEN},,)\n";
+			$OUT .= "\texten => $plan,1,GoTo($myCluster,\${EXTEN},1))\n";
 	} 	 
 
 //
