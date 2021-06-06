@@ -1133,7 +1133,7 @@ LOCAL;
 		
 			$OUT .= '[' . $myCluster ."Cosend]\n";  
 			$OUT .= "\texten => _.,1,GoTo($myCluster,\${EXTEN},1))\n";
-			$OUT .= "\n[" . $Mycluster . "Emergency]\n"; 		
+			$OUT .= "\n[" . $myCluster . "Emergency]\n"; 		
 			foreach ($eDialplan as $plan) {
 				$OUT .= "\texten => $plan,1,GoTo($myCluster,\${EXTEN},1))\n";
 			} 	
