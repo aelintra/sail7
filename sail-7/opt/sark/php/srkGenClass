@@ -773,7 +773,7 @@ try {
 //
 //	priv_sibling patch
 //	
-	$OUT .= "\n\n[priv_sibling] \n";
+	$OUT .= "\n[priv_sibling] \n";
 	$OUT .= "\tinclude => internal \n";
 //
 //  Clusters 
