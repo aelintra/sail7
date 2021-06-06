@@ -1072,6 +1072,10 @@ LOCAL;
 		$cosphone = $qRes->fetchAll();
 		$qRes = NULL;	
 
+		$this->globals['EMERGENCY'] = preg_replace ( '/\s+/'," ", $this->globals['EMERGENCY'] );
+		$this->globals['EMERGENCY'] = preg_replace ( '/\s*$/',"", $this->globals['EMERGENCY'] );
+		$eDialplan = explode(" ", $this->globals['EMERGENCY']);
+
 		foreach ($cosphone as $IPphone) {
 			$myCluster = $IPphone['cluster'];
 			if ($myCluster == 'default') {
@@ -1106,7 +1110,7 @@ LOCAL;
 
 			$OUT .= "[" . $myCluster . $IPphone['pkey'] . "closedcos]\n";
 			
-			$OUT .= "\tinclude => Emergency\n"; 
+			$OUT .= "\tinclude => $myCluster" . "Emergency\n"; 
 			
 			foreach ($orideclosedarray as $key => $value) {
 				$OUT .= "\tinclude => " . $key . "\n";
@@ -1124,10 +1128,15 @@ LOCAL;
 					$OUT .= "\tinclude => " . $coskeys['COS_pkey'] . "\n";
 				} 	
 			}
+
 			$OUT .= "\tinclude => " . $myCluster . "Cosend\n";			
 		
 			$OUT .= '[' . $myCluster ."Cosend]\n";  
 			$OUT .= "\texten => _.,1,GoTo($myCluster,\${EXTEN},1))\n";
+			$OUT .= "\n[$MyclusterEmergency]\n"; 		
+			foreach ($eDialplan as $plan) {
+				$OUT .= "\texten => $plan,1,GoTo($myCluster,\${EXTEN},1))\n";
+			} 	
 		}
 	}
 			
@@ -1142,13 +1151,7 @@ LOCAL;
     		$OUT .= "\texten => $plan,2,Hangup\n";
 		}
 	}
-	$OUT .= "\n[Emergency]\n"; 		
-	$this->globals['EMERGENCY'] = preg_replace ( '/\s+/'," ", $this->globals['EMERGENCY'] );
-	$this->globals['EMERGENCY'] = preg_replace ( '/\s*$/',"", $this->globals['EMERGENCY'] );
-	$dialplan = explode(" ", $this->globals['EMERGENCY']);
-	foreach ($dialplan as $plan) {
-			$OUT .= "\texten => $plan,1,GoTo($myCluster,\${EXTEN},1))\n";
-	} 	 
+ 
 
 //
 //  begin mainmenu (inbound context) 
