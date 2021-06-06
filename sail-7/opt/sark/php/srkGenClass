@@ -741,6 +741,9 @@ try {
 //
 //	extension start contexts
 //
+	$this->globals['EMERGENCY'] = preg_replace ( '/\s+/'," ", $this->globals['EMERGENCY'] );
+	$this->globals['EMERGENCY'] = preg_replace ( '/\s*$/',"", $this->globals['EMERGENCY'] );
+	$eDialplan = explode(" ", $this->globals['EMERGENCY']);
 	foreach ($cluster as $row) {
 		$myCluster = $row['pkey'];
 		if ($row['pkey'] == "default") {
@@ -1079,10 +1082,6 @@ LOCAL;
 		$qRes = $this->dbh->query($sql);
 		$cosphone = $qRes->fetchAll();
 		$qRes = NULL;	
-
-		$this->globals['EMERGENCY'] = preg_replace ( '/\s+/'," ", $this->globals['EMERGENCY'] );
-		$this->globals['EMERGENCY'] = preg_replace ( '/\s*$/',"", $this->globals['EMERGENCY'] );
-		$eDialplan = explode(" ", $this->globals['EMERGENCY']);
 
 		foreach ($cosphone as $IPphone) {
 			$myCluster = $IPphone['cluster'];
