@@ -1083,9 +1083,8 @@ LOCAL;
 			}
 
 			$OUT .= "[" . $myCluster . $IPphone['pkey'] . "opencos]\n";
-
 			
-			$OUT .= "\tinclude => Emergency\n"; 
+			$OUT .= "\tinclude => $myCluster" . "Emergency\n"; 
 //			
 //			print the overrides
 //			 
