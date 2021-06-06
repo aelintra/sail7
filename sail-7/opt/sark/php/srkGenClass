@@ -1127,7 +1127,6 @@ LOCAL;
 					$OUT .= "\tinclude => " . $coskeys['COS_pkey'] . "\n";
 				} 	
 			}
-
 			$OUT .= "\tinclude => " . $myCluster . "Cosend\n";			
 		
 			$OUT .= '[' . $myCluster ."Cosend]\n";  
