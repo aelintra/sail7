@@ -1017,15 +1017,14 @@ LOCAL;
 		if ($ringall != '') {
 			$OUT .= "\texten => RINGALL,1,agi(sarkhpe,Alias,$ringall,\${EXTEN},)\n"; 
 		}
-/*
-		if ($row['pkey'] == 'default') {
-			$myId = NULL;
-		}
-		else { 
-*/
-			$myId = $row['id']; 
-//		}
 
+// Generate a page 
+
+		$OUT .= "\texten => *40*,1,NoOp(PAGEALL)
+		$OUT .= "\texten => *40*,2,SIPAddHeader(Call-Info:<sip:%s>;answer-after=0)
+		$OUT .= "\texten => *40*,3,Page($ringall,is) 
+
+		$myId = $row['id']; 
 
 		$this->generateRingGroups($OUT,$row['pkey'],$myId);	
 		$this->confBridge($OUT,$row['pkey']);
@@ -1261,7 +1260,6 @@ THERE;
         exten => _*67[*]XXX,1,agi(sarkhpe,\${EXTEN},,)		; ChanSpy (Whisper)        
         exten => _*68[*]XXXX,1,agi(sarkhpe,\${EXTEN},,)		; ChanSpy
         exten => _*68[*]XXX,1,agi(sarkhpe,\${EXTEN},,)		; ChanSpy
-        exten => _*40[*],1,agi(sarkhpe,\${EXTEN},,)         ; Page
         exten => _*40[*]XXXX,1,agi(sarkhpe,\${EXTEN},,)     ; Page Group
         exten => _*40[*]XXX,1,agi(sarkhpe,\${EXTEN},,)		; Page Group
         exten => _*4[12][*],1,agi(sarkhpe,\${EXTEN},,)		; ProVu DND
