@@ -1021,7 +1021,7 @@ LOCAL;
 // Generate a page 
 
 		$OUT .= "\texten => *40*,1,NoOp(PAGEALL)\n";
-		$OUT .= "\texten => *40*,2,SIPAddHeader(Call-Info:<sip:\${LOCALIP}>\;answer-after=0)\n";
+		$OUT .= "\texten => *40*,2,SIPAddHeader(Call-Info: sip:\${LOCALIP}\;answer-after=0)\n";
 		$OUT .= "\texten => *40*,3,Page($ringall,is)\n";
 
 		$myId = $row['id']; 
