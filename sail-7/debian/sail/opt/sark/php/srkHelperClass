@@ -481,9 +481,9 @@ public function checkXref($key,$cluster=false) {
 	
 	$dbh = DB::getInstance();
 	
-	$sql = "SELECT * FROM master_xref where pkey = '$key'";
+	$sql = "SELECT * FROM master_xref where pkey = '" . $key . "'";
 	if ($cluster) {
-		$sql .= " AND cluster = '$cluster'";
+		$sql .= " AND cluster = '" . $cluster . "'";
 	}
 	
 	$res = $dbh->query($sql)->fetch(PDO::FETCH_ASSOC);
@@ -1205,6 +1205,20 @@ public function xRef($pkey,$apptype="object") {
     	$xref .= 'No IVRs reference this  ' . $apptype . '<br/>' . PHP_EOL;
     } 
     return $xref;  		   				
+}
+
+public function getFullExtKey($pkey, $cluster) {
+
+	$dbh = DB::getInstance();
+
+	if ($cluster == 'default') {
+		return $pkey;
+	}
+
+	$res = $dbh->query("SELECT id FROM cluster WHERE pkey = '" . $cluster . "'")->fetch(PDO::FETCH_ASSOC);
+	
+	$sKey = $res['id'] . $pkey;
+	return $sKey;
 }
 
 public function displayKey($key) {	

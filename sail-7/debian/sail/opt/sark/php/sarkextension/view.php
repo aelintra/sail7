@@ -33,7 +33,6 @@ Class sarkextension {
 	protected $invalidForm;
 	protected $error_hash = array();
 	protected $astrunning=false;
-	protected $keychange=NULL;
 	protected $cosresult;
 	protected $passwordLength=12;
 	protected $myBooleans = array(
@@ -92,7 +91,7 @@ public function showForm() {
 */	
 	$this->myPanel->pagename = 'Extensions';
 	
-	if (isset($_POST['new']) || isset($_GET['new'])) { 
+	if (isset($_REQUEST['new'])) { 
 		$this->showNew();
 		return;		
 	}
@@ -159,11 +158,8 @@ public function showForm() {
 		$this->saveNew();
 		if ($this->invalidForm) {
 			$this->showNew();
-		}
-		else {
-			$this->showEdit();
-		}
-		return;					
+			return;
+		}			
 	}
 	
 	if (isset($_POST['update']) || isset($_POST['endupdate'])) { 
@@ -240,7 +236,7 @@ private function showMain() {
 	$this->myPanel->aHeaderFor('macaddr',false,'w3-hide-small');
 	$this->myPanel->aHeaderFor('ipaddr',false,'w3-hide-small');
 	$this->myPanel->aHeaderFor('headlocation',false,'w3-hide-small w3-hide-medium');	
-	$this->myPanel->aHeaderFor('sndcreds',false,'w3-hide-small w3-hide-medium');
+//	$this->myPanel->aHeaderFor('sndcreds',false,'w3-hide-small w3-hide-medium');
 //	$this->myPanel->aHeaderFor('bt',false,'w3-hide-small w3-hide-medium');
 //	$this->myPanel->aHeaderFor('trns',false,'w3-hide-small w3-hide-medium');
 	$this->myPanel->aHeaderFor('tstate');
@@ -257,14 +253,14 @@ private function showMain() {
 
 	$rows = $this->helper->getTable("ipphone","select ip.*, de.noproxy from ipphone ip inner join device de on ip.device=de.pkey",true,false,'ip.pkey');
 	foreach ($rows as $row ) {
-		echo '<tr id="' . $row['pkey'] . '">'. PHP_EOL; 
+		echo '<tr id="' . $row['id'] . '">'. PHP_EOL; 
 
 		echo '<td class="w3-hide-small  w3-hide-medium">' . $row['cluster'] . '</td>' . PHP_EOL;
-		echo '<input type="hidden" name="pkey" id="pkey" value="' . $row['pkey'] . '"  />' . PHP_EOL;
+		echo '<input type="hidden" name="id" id="id" value="' . $row['id'] . '"  />' . PHP_EOL;
 
-		$shortkey = $this->helper->displayKey($row['pkey']);
+//		$shortkey = $this->helper->displayKey($row['pkey']);
 
-		echo '<td class="read_only">' . $shortkey . '</td>' . PHP_EOL;
+		echo '<td>' . $row['pkey'] . '</td>' . PHP_EOL;
 		
 		$display = $row['desc'];
 		if ( strlen($row['desc']) > 7 ) {
@@ -273,20 +269,7 @@ private function showMain() {
 		}			 
 		echo '<td class="w3-hide-small  w3-hide-medium" title = "' . $row['desc'] . '" >' . $display  . '</td>' . PHP_EOL;
 		
-		$display = $row['device'];
-/*		
-		preg_match('/^(\w+)\s+/',$display,$matches);
-		if (isset($matches[1])) {
-			if (strlen($matches[1]) > 12) {
-				$display = substr($row['device'] , 0, 11);
-				$display .= '.';
-			}
-			else {
-				$display = $matches[1];
-			}
-		}
-*/
-		echo '<td class="w3-hide-small  w3-hide-medium" title = "' . $row['device'] . '" >' . $display  . '</td>' . PHP_EOL;	
+		echo '<td class="w3-hide-small  w3-hide-medium" title = "' . $row['device'] . '" >' .  $row['device']  . '</td>' . PHP_EOL;	
 		
 		$display_macaddr = 'N/A';
 		if (!empty ($row['macaddr'])) {
@@ -295,10 +278,15 @@ private function showMain() {
 		echo '<td class="w3-hide-small">' . $display_macaddr . '</td>' . PHP_EOL;
 		
 		$display_ipaddr = 'N/A';		
-		if ($row['technology'] != 'SIP') {
-			$display_ipaddr = $row['technology'];
-		}		
-		else if (isset ($sip_peers [$row['pkey']]['IPaddress']) && $sip_peers [$row['pkey']]['IPaddress'] == '-none-') {		
+	
+		$clustId = null;
+		if ($row['cluster'] != 'default') {
+			$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+			$clustId = $res['id'];
+		}
+		$sKey = $this->helper->getFullExtKey($row['pkey'], $row['cluster']);
+/*
+		if (isset ($sip_peers [$sKey]['IPaddress']) && $sip_peers [$sKey]['IPaddress'] == '-none-') {		
 			if (preg_match(' /(..)(..)(..)(..)(..)(..)/ ',$row['macaddr'],$matches)) {
 				$formalmac = strtoupper($matches[1] . ':' . $matches[2] . ':' . $matches[3] . ':' . $matches[4] . ':' . $matches[5] . ':' . $matches[6]);		
 				$mac = `/bin/grep $formalmac /proc/net/arp`;			
@@ -308,8 +296,9 @@ private function showMain() {
 				}
 			}
 		}
-		else if (isset ($sip_peers [$row['pkey']]['IPaddress'])) {
-			$display_ipaddr = $sip_peers [$row['pkey']]['IPaddress'];
+*/
+		if (isset ($sip_peers [$sKey]['IPaddress']) && $sip_peers [$sKey]['IPaddress'] != '-none-' ) { 
+			$display_ipaddr = $sip_peers [$sKey]['IPaddress']; 
 		}		
 		
 		$display = $display_ipaddr;
@@ -320,11 +309,11 @@ private function showMain() {
     	echo '<td  class="w3-hide-small" title = "' . $display_ipaddr . '" >' . $display  . '</td>' . PHP_EOL;
 		echo '<td class="w3-hide-small  w3-hide-medium">' . $row['location'] . '</td>' . PHP_EOL;
 		
-		echo '<td class="w3-hide-small  w3-hide-medium">' . $row['sndcreds'] . '</td>' . PHP_EOL;
+//		echo '<td class="w3-hide-small  w3-hide-medium">' . $row['sndcreds'] . '</td>' . PHP_EOL;
 		
 		$latency = 'N/A';
-		if (isset($sip_peers [$row['pkey']]['Status'])) {
-			$latency = $sip_peers [$row['pkey']]['Status'];	
+		if (isset($sip_peers [$sKey]['Status'])) {
+			$latency = $sip_peers [$sKey]['Status'];	
 		}
 		if ($row['stolen']) {
 			if (!preg_match(" /VXT/i ", $row['device'])) {
@@ -335,11 +324,12 @@ private function showMain() {
 		echo '<td class="icons" title = "Device State">' . $latency . '</td>' . PHP_EOL;
 		echo '<td class="w3-hide-small" >' . $row['active'] . '</td>' . PHP_EOL;				
 
-		$get = '?edit=yes&amp;pkey=';
-		$get .= $row['pkey'];	
-		$this->myPanel->editClick($_SERVER['PHP_SELF'],$get);
-		$this->myPanel->deleteClick($_SERVER['PHP_SELF'],$row['pkey']);
+		$get = '?edit=yes&amp;id=';
+		$get .= $row['id'];	
 
+		$this->myPanel->editClick($_SERVER['PHP_SELF'],$get);
+
+		$this->myPanel->deleteClickById($_SERVER['PHP_SELF'],$row['id']);
 	}
 	
 
@@ -496,8 +486,8 @@ private function saveNew() {
 		$clustId = $res['id'];
 	}
 	
-	$pkey = $clustId . $_POST['pkey'];	
-	$tuple['pkey'] = $pkey;	
+//	$pkey = $_POST['pkey'];	
+	$tuple['pkey'] = $_POST['pkey'];
     $retc = $this->helper->checkXref($pkey,$tuple['cluster']);
     if ($retc) {
     	$this->invalidForm = True;
@@ -523,7 +513,7 @@ private function saveNew() {
 	
 //remove first two digits - or return an array from the sub.
 
-	$tuple['desc'] = $this->helper->displayKey($tuple['pkey']);
+//	$tuple['desc'] = $this->helper->displayKey($tuple['pkey']);
 
 	if ($vcl) {
 		$tuple['location'] = 'remote';
@@ -583,9 +573,10 @@ private function saveNew() {
 					$tuple['desc'] = $tuple['pkey'];
 				}
 				else {
-*/
+
 					$tuple['desc'] = $this->helper->displayKey($tuple['pkey']);
-//				}
+				}
+*/				
 				$this->addNewExtension($tuple);
 				if ($usercreate == 'YES') {
 					$this->addNewUser($tuple);
@@ -604,7 +595,7 @@ private function saveNew() {
 			$tuple['device'] = 'General SIP';
 			$blksize = strip_tags($_POST['blksize']);
 			while ($blksize) {
-				$tuple['desc'] = $this->helper->displaykey($tuple['pkey']);;
+				$tuple['desc'] = $tuple['pkey'];
 				$this->addNewExtension($tuple);
 				if ($usercreate == 'YES') {
 					$this->addNewUser($tuple);
@@ -634,7 +625,7 @@ private function saveNew() {
 						
 		case 'MAILBOX':
 			$tuple['device'] = 'MAILBOX';
-			$tuple['desc'] = $this->helper->displaykey($tuple['pkey']);;
+			$tuple['desc'] = $tuple['pkey'];
 			$this->addNewExtension($tuple);
 
 			break;
@@ -716,7 +707,7 @@ encryption=\$encryption";
 	}
 	$tuple['technology'] = $resdevice['technology'];			
 	$tuple['passwd'] = $this->helper->ret_password ($this->passwordLength);
-	$tuple['dvrvmail'] = $this->helper->displayKey($tuple['pkey']);
+	$tuple['dvrvmail'] = $tuple['pkey'];
 			
 // ToDo permit ipv6 acl
 /*
@@ -739,7 +730,7 @@ encryption=\$encryption";
 /*
  *	Add the row
  */
-	$ret = $this->helper->createTuple("ipphone",$tuple);
+	$ret = $this->helper->createTuple("ipphone",$tuple,true,true);
 	if ($ret == 'OK') {
 		$this->createCos(); 
 		$this->message = "Saved new extension(s) ";
@@ -866,15 +857,17 @@ private function deleteLastBlf() {
 }
 
 private function deleteRow() {
-	$pkey = $_REQUEST['pkey'];
-	$this->helper->delTuple("ipphone",$pkey); 
+
+	$id = $_REQUEST['id'];
+	$res = $this->dbh->query("SELECT pkey FROM ipphone where id = $id")->fetch(PDO::FETCH_ASSOC);
+	$pkey = $res['pkey'];
+	$this->helper-> delTupleById('ipphone',$id); 
+
 /* delete COS information */
 	$this->helper->predDelTuple("IPphoneCOSopen","IPphone_pkey",$pkey);
 	$this->helper->predDelTuple("IPphoneCOSclosed","IPphone_pkey",$pkey);
 	$this->helper->predDelTuple("IPphone_Fkey","pkey",$pkey);
-	$this->message = "Deleted extension " . $this->helper->displayKey($pkey);
-//	$this->myPanel->msgDisplay('Deleted extension ' . $pkey);
-//	$this->myPanel->navRowDisplay("ipphone", $pkey);
+	$this->message = "Deleted extension " . $pkey;
 }
 
 private function showEdit() {
@@ -884,31 +877,21 @@ private function showEdit() {
 	$ringdelay = 20;
 	$this->dbh = DB::getInstance();
 
-	if (isset($this->keychange)) {
-		$pkey = $this->keychange;		
-	}
-	else {
-		if (isset($_POST['pkey'])) {
-			$pkey = $_POST['pkey'];
-		}
-		else {
-			$pkey = $_GET['pkey'];
-		}
-	}
+	$id = $_REQUEST['id'];
 
 	$res = $this->dbh->query("SELECT FQDN,VXT FROM globals where pkey = 'global'")->fetch(PDO::FETCH_ASSOC);
 	$fqdn = $res['FQDN'];
 	$vxt = $res['VXT'];
 
-	$sql = $this->dbh->prepare("SELECT ip.*, de.noproxy FROM ipphone ip INNER JOIN device de on ip.device=de.pkey WHERE ip.pkey=?");
-	$sql->execute(array($pkey));
+	$sql = $this->dbh->prepare("SELECT * FROM ipphone  WHERE id=?");
+	$sql->execute(array($id));
 	$extension = $sql->fetch();
-	
+
 	$extlist=array();
 	array_push($extlist,"None");	
 	$res = $this->helper->getTable("ipphone","select pkey from ipphone WHERE cluster='" . $extension['cluster'] . "'",false);
 	foreach ($res as $row) {
-		array_push($extlist,$this->helper->displayKey($row['pkey']));
+		array_push($extlist,$row['pkey']);
 	}
 
 	$protocol = array('IPV4');
@@ -916,7 +899,7 @@ private function showEdit() {
 // see if we can do ipv6	
 	$ipv6gua = $this->netHelper->get_IPV6GUA();
 	if (!empty($ipv6gua)) {
-// see ifphone can do IPV6
+// see if phone can do IPV6
 		$shortdevice = substr($extension['device'],0,4);
 		if ($shortdevice == 'snom' || $shortdevice == 'Yeal' || $shortdevice == 'Pana'  || $shortdevice == 'Vtec') {
 			array_push($protocol,'IPV6');
@@ -956,13 +939,7 @@ private function showEdit() {
 	if ($this->invalidForm) {
 		$this->myPanel->showErrors($this->error_hash);
 	}
-/*	
-	 if ($pkey) {
-             $this->myPanel->navRowDisplay($pkey);
-     }
 
-	$this->myPanel->Heading($this->head . " " . $pkey,$this->message);
-*/
 	echo '<div class="w3-container w3-padding ' . $this->myPanel->bgColorClass . '">'; 
 	$this->myPanel->navRowDisplay($pkey);
 	echo '<span class="w3-text-blue-grey" style="margin:0;font-size:24px;">';
@@ -997,13 +974,10 @@ private function showEdit() {
     $this->myPanel->internalEditBoxStart();
 	echo '<div id="clustershow">';
 	$this->myPanel->displayInputFor('cluster','text',$extension['cluster'],'cluster');
+	$this->myPanel->displayInputFor('rule','text',$extension['pkey'],'pkey');
 	echo '</div>';    
     $this->myPanel->displayBooleanFor('active',$extension['active']);
-    echo '<input type="hidden" name="pkey" id="pkey" value="' . $extension['pkey'] . '"  />' . PHP_EOL;
-
-	$shortkey = $this->helper->displayKey($extension['pkey']);
-
-	$this->myPanel->displayInputFor('rule','text',$shortkey,'newkey');
+    echo '<input type="hidden" name="id" id="id" value="' . $extension['id'] . '"  />' . PHP_EOL;
 
 /*	
 	echo '<div class="cluster">';
@@ -1083,7 +1057,7 @@ private function showEdit() {
  */	
 		
 
-	echo '<input type="hidden" name="pkey" id="pkey" size="20"  value="' . $pkey . '"  />' . PHP_EOL;
+	echo '<input type="hidden" name="id" id="id" size="20"  value="' . $extension['id'] . '"  />' . PHP_EOL;
 	if (preg_match(' /^OK/ ', $latency)) {
 		echo '<input type="hidden" name="latency" id="latency" size="20"  value="' . $latency . '"  />' . PHP_EOL;
 	} 
@@ -1103,7 +1077,7 @@ private function showEdit() {
 /*
  * 	TAB XREF 
  */ 
- 	$xref = $this->xRef($pkey,$extension['cluster']);
+ 	$xref = $this->xRef($extension['pkey'],$extension['cluster']);
  	if ($xref) {
 		$this->myPanel->internalEditBoxStart();
 		echo '<div class="w3-margin-bottom">';	
@@ -1240,6 +1214,14 @@ private function showEdit() {
 }
 
 private function saveEdit() {
+
+// Fetch the existing row 	
+
+	$id = $_REQUEST['id'];
+	$sql = $this->dbh->prepare("SELECT * FROM ipphone  WHERE id=?");
+	$sql->execute(array($id));
+	$extension = $sql->fetch();	
+
 // save the data away
 
 	$tuple = array();
@@ -1248,10 +1230,10 @@ private function saveEdit() {
 		
 	$this->validator = new FormValidator();
 	
-	$this->validator->addValidation("newkey","num","Invalid extension number");
-	$this->validator->addValidation("newkey","req","You must specify an extension number");
-	$this->validator->addValidation("newkey","minlen=3","Extension number must be 3 or 4 digits");
-	$this->validator->addValidation("newkey","maxlen=4","Extension number must be 3 or 4 digits");
+	$this->validator->addValidation("pkey","num","Invalid extension number");
+	$this->validator->addValidation("pkey","req","You must specify an extension number");
+	$this->validator->addValidation("pkey","minlen=3","Extension number must be 3 or 4 digits");
+	$this->validator->addValidation("pkey","maxlen=4","Extension number must be 3 or 4 digits");
 	$this->validator->addValidation("cellphone","num","cellphone number must be numeric");
     $this->validator->addValidation("vmailfwd","email","Invalid email address format");
 //    $this->validator->addValidation("callgroup","alnum","Call Group name must be alphanumeric(no spaces)");  
@@ -1273,7 +1255,6 @@ private function saveEdit() {
 						'ringdelay' => True,
 						'opencos' => True,
 						'closedcos' => True,
-						'newkey' => True,
 						'vdelete' => True,
 						'vreset' => True,
 						'celltwin' => True,
@@ -1299,37 +1280,48 @@ private function saveEdit() {
 		else {
 			$tuple['celltwin'] = False;
 		}
-*/				
+				
 		$newkey =  trim(strip_tags($_POST['newkey']));
+*/		
 
 /*
  * 	Adjust the Asterisk and provisioning boxes
  */
 
 	$this->adjustAstProvSettings($tuple);
+
+	$clustId = null;
+	if ($extension['cluster'] != 'default') {
+		$res = $this->dbh->query("SELECT id FROM cluster WHERE pkey = '" . $extension['cluster'] . "'")->fetch(PDO::FETCH_ASSOC);
+		$clustId = $res['id'];
+	}
+	$sKey = $this->helper->getFullExtKey($row['pkey'], $row['cluster']);
 			
 /*	
  * update the asterisk internal database (callforwards and ringdelay)
  */  
- 		if ($this->astrunning) {
-			$amiHelper = new amiHelper();
-			$amiHelper->put_database($newkey);			
-		}
+ 	if ($this->astrunning) {
+		$amiHelper = new amiHelper();
+		$amiHelper->put_database($skey);			
+	}
  		
 /*
  * reset/empty voicemail if requested
  */
  
-	$shortkey = $this->helper->displayKey($skey);
-	if (isset($_POST['vdelete'])) { 
-		$rc = $this->helper->request_syscmd ("/bin/rm -rf /var/spool/asterisk/voicemail/" . $_POST['cluster'] . '/' . $shortkey . "/*");	
+//	$shortkey = $this->helper->displayKey($skey);
+	if ($_POST['vdelete'] == 'YES') { 
+		$rc = $this->helper->request_syscmd ("/bin/rm -rf /var/spool/asterisk/voicemail/" . $_POST['cluster'] . '/' . $pkey . "/*");	
 		$this->message = "Voicemail deleted";
 	}	
 	
-	if (isset($_POST['vreset'])) { 
+	if ($_POST['vreset'] == 'YES') { 
+/*		
 		$skey = $_POST['pkey'];		
-		$rc = $this->helper->request_syscmd ("/bin/sed -i 's/^$skey => [0-9]*\(.*\)/$skey => $shortkey\\1/' /etc/asterisk/voicemail.conf");	
+		$rc = $this->helper->request_syscmd ("/bin/sed -i 's/^$skey => [0-9]*\(.*\)/$skey => $pkey\\1/' /etc/asterisk/voicemail.conf");	
 		$this->message = "Voicemail password reset";	
+*/
+		$tuple['vmailreset'] == "1";
 	}
 		
 /*
@@ -1342,61 +1334,18 @@ private function saveEdit() {
 // do COS			
 		$this->doCos($cosSetArray);
 		
-/*
- * check for keychange
- */
-		if ($newkey != $tuple['pkey']) {
-
-			$sql = $this->dbh->prepare("SELECT pkey FROM ipphone WHERE pkey=?");
-			$sql->execute(array($newkey));
-			$res = $sql->fetch();	
-			$sql = NULL; 
-			if ( isset($res['pkey']) ) { 
-				$this->invalidForm = True;
-				$this->message = "<B>  --  Validation Errors!</B>";	
-				$this->error_hash['extensave'] = " " . $newkey . " already exists!";	
-			}
-			else {
-				// signal a key change to the editor
-				$this->keychange = $newkey;
-				// set the mailbox to the new extension
-				$tuple['dvrvmail'] = $newkey;
-				$this->chkMailbox($tuple['dvrvmail'],$tuple['sipiaxfriend'],$tuple['cluster']);
-
-				$ret = $this->helper->setTuple("ipphone",$tuple,$newkey);
-				if ($ret == 'OK') {
-					$this->message = "Updated extension " . $tuple['pkey'];
-					// move any mail
-					$maildir = '/var/spool/asterisk/voicemail/default/'.$tuple['pkey'];
-					if (is_dir($maildir)) {
-						$oldmail = '/var/spool/asterisk/voicemail/default/'.$tuple['pkey'];
-						$newmail = '/var/spool/asterisk/voicemail/default/'.$newkey;
-						$this->helper->request_syscmd ("/bin/mv $oldmail $newmail");
-					}
-					// delete the old COS entries
-					$this->helper->predDelTuple("IPphoneCOSopen","IPphone_pkey",$tuple['pkey']);
-	 				$this->helper->predDelTuple("IPphoneCOSclosed","IPphone_pkey",$tuple['pkey']);
-				}
-				
-				else {
-					$this->invalidForm = True;
-					$this->message = "Validation Errors!";	
-					$this->error_hash['extensave'] = $ret;	
-				}
-			}
+// do update
+		$this->chkMailbox($tuple['dvrvmail'],$tuple['sipiaxfriend'],$tuple['cluster']);		
+		$ret = $this->helper->setTupleById("ipphone",$tuple);
+		if ($ret == 'OK') {
+			$this->message = "Updated extension " . $tuple['pkey'];
 		}
 		else {
-			$this->chkMailbox($tuple['dvrvmail'],$tuple['sipiaxfriend'],$tuple['cluster']);		
-			$ret = $this->helper->setTuple("ipphone",$tuple,$newkey);
-			if ($ret == 'OK') {
-				$this->message = "Updated extension " . $this->helper->displayKey($tuple['pkey']);
-			}
-			else {
-				$this->invalidForm = True;
-				$this->message = "Validation Errors!";	
-				$this->error_hash['extensave'] = $ret;	
-			}
-		}			
+			$this->invalidForm = True;
+			$this->message = "Validation Errors!";	
+			$this->error_hash['extensave'] = $ret;	
+		}
+		
 	}
     else {
 		$this->invalidForm = True;
@@ -1584,15 +1533,15 @@ private function xRef($pkey,$cluster) {
 /*
  * Build Xrefs
  */
- 	$shortkey = $this->helper->displayKey($pkey);
- 	$this->helper->logit("Xref running for $pkey and $shortkey on cluster $cluster ",1 );
+// 	$shortkey = $this->helper->displayKey($pkey);
+ 	$this->helper->logit("Xref running for $pkey on cluster $cluster ",1 );
 	$xref = NULL;
 	$tref = NULL;
 	$sql = $this->dbh->prepare("SELECT * FROM IPphone WHERE cluster=? AND dvrvmail LIKE ? AND pkey != ? ORDER BY pkey");
-	$sql->execute(array($cluster,$shortkey,$pkey));
+	$sql->execute(array($cluster,$pkey,$pkey));
 	$result = $sql->fetchall();	
 	foreach ($result as $row) {
-		$tref .= "This extension provides a voicemailbox for " . $this->helper->displayKey($row[pkey]) . "<br>" . PHP_EOL;
+		$tref .= "This extension provides a voicemailbox for " . $row[pkey] . "<br>" . PHP_EOL;
 	}
 	if ($tref) {
     	$xref .= $tref;
@@ -1600,7 +1549,7 @@ private function xRef($pkey,$cluster) {
     }
     
 	$sql = $this->dbh->prepare("SELECT * FROM lineio WHERE cluster=? AND (openroute = ? OR closeroute = ?) ORDER BY pkey");
-	$sql->execute(array($cluster,$shortkey,$shortkey));		
+	$sql->execute(array($cluster,$pkey,$pkey));		
 	$result = $sql->fetchall();	
 	foreach ($result as $row) {
         $tref .= "DDI/Class <a href='javascript:window.top.location.href=" . '"/php/sarkddi/main.php?edit=yes&pkey=' . $row['pkey'] . '"' . "' >" . $row[pkey] . ' </a> references this extension <br>' . PHP_EOL;
@@ -1611,10 +1560,10 @@ private function xRef($pkey,$cluster) {
     }
     
  	$sql = $this->dbh->prepare("SELECT * FROM speed WHERE cluster=? AND (outcome LIKE ? OR out LIKE ?) ORDER BY pkey");
-	$sql->execute(array($cluster, '%' . $shortkey . '%', '%' . $shortkey . '%'));	
+	$sql->execute(array($cluster, '%' . $pkey . '%', '%' . $pkey . '%'));	
  	$result = $sql->fetchall();	
 	foreach ($result as $row) {
-		$tref .= "Ring Group <a href='javascript:window.top.location.href=" . '"/php/sarkcallgroup/main.php?edit=yes&pkey=' . $row['pkey'] . '"' . "' >" . $this->helper->displayKey($row[pkey]) . ' </a> references this extension <br>' . PHP_EOL;
+		$tref .= "Ring Group <a href='javascript:window.top.location.href=" . '"/php/sarkcallgroup/main.php?edit=yes&pkey=' . $row['pkey'] . '"' . "' >" . $row['pkey'] . ' </a> references this extension <br>' . PHP_EOL;
 	}
 	
 	if ($tref) {
@@ -1623,7 +1572,7 @@ private function xRef($pkey,$cluster) {
     }
 
  	$sql = $this->dbh->prepare("SELECT * FROM appl WHERE cluster=? AND extcode LIKE ? ORDER BY pkey");
-	$sql->execute(array($cluster,$shortkey));		
+	$sql->execute(array($cluster,$pkey));		
 	$result = $sql->fetchall();	
 	foreach ($result as $row) {
 		$tref .= "Custom App <a href='javascript:window.top.location.href=" . '"/php/sarkappl/main.php?edit=yes&pkey=' . $row['pkey'] . '"' . "' >" . $row['pkey'] . ' </a> references this extension <br>' . PHP_EOL;
@@ -1637,7 +1586,7 @@ private function xRef($pkey,$cluster) {
 	$sql->execute(array($cluster));		
 	$result = $sql->fetchall();	
 	foreach ($result as $row) {
-		if ($row['timeout'] == $shortkey) {
+		if ($row['timeout'] == $pkey) {
 			$tref .= "IVR <a href='javascript:window.top.location.href=" . '"/php/sarkivr/main.php?edit=yes&pkey=' . $row['pkey'] . '"' . "' >" . $row['pkey'] . ' </a> references this extension <br>' . PHP_EOL;
 		}
 		else {

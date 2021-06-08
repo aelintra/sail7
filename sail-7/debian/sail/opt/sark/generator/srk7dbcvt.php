@@ -85,9 +85,11 @@ $custTables = array(
 		$oldtablecols = $dbh->query("PRAGMA table_info($table)")->fetchall(PDO::FETCH_ASSOC);
 		$oldtablecolumnnames = array(); 
 		foreach ($oldtablecols as $col) {
+// ignore timestamps
 			if (preg_match(' /^z_/ ', $col['name'])) {
 				continue;
 			}
+// ignore id columns
 			if (preg_match(' /^id/ ', $col['name'])) {
 				continue;
 			} 			 
@@ -97,6 +99,7 @@ $custTables = array(
 		$newtablecols = $v7dbh->query("PRAGMA table_info($table)")->fetchall(PDO::FETCH_ASSOC);
 		$newtablecolumnnames = array();
 		foreach ($newtablecols as $col) {
+// ignore timestamps
 			if (preg_match(' /^z_/ ', $col['name'])) {
 				continue;
 			} 
@@ -108,9 +111,11 @@ $custTables = array(
 		foreach ($newtablecolumnnames as $col) {
 			$commoncol = null;
 			$commoncol = array_search($col, $oldtablecolumnnames);
+// ignore dropped columns not present in the new schema
 			if ($commoncol === false) {
 				continue;
 			}
+// ignore id columns
 			if (preg_match(' /^id/ ', $col)) {
 				continue;
 			}
@@ -119,7 +124,7 @@ $custTables = array(
 		$columnlist  = rtrim($columnlist , ',');
 
 /*
- *  Fetch the qualifying old data.  Device is a special case.   Only bring customer 
+ *  Fetch the qualifying old data.  Device is a special case.   Only bring customer data from it
  */
 		if ($table == 'Device') {
 			$count = $dbh->query("select count(*) from device  WHERE owner != 'system'")->fetchColumn();
@@ -147,7 +152,7 @@ $custTables = array(
 			}
 			$valuelist  = rtrim($valuelist , ',');
 			$insertfile .= "INSERT OR IGNORE INTO $table ($columnlist) values ($valuelist);\n";
-			$res = $v7dbh->query("INSERT OR IGNORE INTO $table ($columnlist) values ($valuelist)");
+			$res = $v7dbh->query("INSERT OR IGNORE INTO $table ($columnlist) values ($valuelist)");                                                                                                                                                                                                                                                                                                                                                                       
 			$valuelist = '';	
 		}
 	}
@@ -218,11 +223,12 @@ $custTables = array(
 /*
  *	Handle the extensions
  */
+/*
    			$id = $v7dbh->query("SELECT id FROM cluster WHERE pkey = '" . $row['cluster'] . "'")->fetch(PDO::FETCH_COLUMN); 			
    			$sql = $v7dbh->prepare("UPDATE IPphone SET pkey = ? WHERE pkey = ?");
    			$sql->execute(array($id . $row['pkey'], $row['pkey']));
    			$res = NULL;
-
+*/
    		}
 
    	}

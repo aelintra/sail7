@@ -1544,12 +1544,12 @@ Class page {
 		$ipphone = $helper->getTable("ipphone", "SELECT pkey,cluster from ipphone WHERE cluster='" . $cluster . "'");		
 		$html .= '<optgroup label="EXTENSIONS">' . PHP_EOL; 		
 		foreach ($ipphone as $ipphone => $value)  {
-			if ($value['cluster'] == 'default') {
+//			if ($value['cluster'] == 'default') {
 				$shortkey = $value['pkey']; 	
-			}
-			else {
-            	$shortkey = substr($value['pkey'],2); 
-            }
+//			}
+//			else {
+//            	$shortkey = substr($value['pkey'],2); 
+//            }
 			$html = $this->genHtml( $shortkey,$html);
 		}
 		$html .= '</optgroup>' . PHP_EOL;
@@ -1574,8 +1574,8 @@ Class page {
 			if (!empty($conferences)) {
 				$html .= '<optgroup label="CONF ROOMS">' . PHP_EOL;
 				foreach ($conferences as $conf)  {
-                    $shortkey = substr($conf['pkey'],2);                   
-					$html = $this->genHtml($shortkey,$html);	
+//                    $shortkey = substr($conf['pkey'],2);                   
+					$html = $this->genHtml($conf['pkey'],$html);	
 				}
 				$html .= '</optgroup>' . PHP_EOL;
 			}			
@@ -1583,8 +1583,8 @@ Class page {
 			$html .= '<optgroup label="VOICEMAIL">' . PHP_EOL;
 			$ipphone = $helper->getTable("ipphone", "SELECT pkey from ipphone WHERE cluster='" . $cluster . "'"); 		
 			foreach ($ipphone as $ipphone => $value)  {
-				$shortkey = substr($value['pkey'],2); 
-				$html = $this->genHtml("*". $shortkey,$html);
+//				$shortkey = substr($value['pkey'],2); 
+				$html = $this->genHtml("*". $value['pkey'],$html);
 			}
 			$html .= '</optgroup>' . PHP_EOL;	
 	
@@ -1677,6 +1677,16 @@ Class page {
 		echo '"><img src="' . $this->iconpath . 'delete.png" alt = "Click to Delete" title = "Click to Delete"';
         echo ' onclick = "return confirmOK(\'Confirm Delete - Are you sure?\')"></a></td>';
 	}
+
+    public function deleteClickById ($callback, $id) {
+    
+        echo '<td><a href="'; 
+        echo $callback;
+        echo '?delete=yes&amp;id=';
+        echo $id;
+        echo '"><img src="' . $this->iconpath . 'delete.png" alt = "Click to Delete" title = "Click to Delete"';
+        echo ' onclick = "return confirmOK(\'Confirm Delete - Are you sure?\')"></a></td>';
+    }
 	
 	public function lockState ($lock=true) {
 		

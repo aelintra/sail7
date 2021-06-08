@@ -134,7 +134,7 @@ private function showMain() {
 		echo '<tr id="' . $row['pkey'] . '">'. PHP_EOL; 
 		echo '<td class="read_only">' . $row['cluster'] . '</td>' . PHP_EOL;
 		echo '<input type="hidden" name="pkey" id="pkey" value="' . $row['pkey'] . '"  />' . PHP_EOL;
-		echo '<td class="read_only">' . substr($row['pkey'],2) . '</td>' . PHP_EOL;
+		echo '<td class="read_only">' . $row['pkey'] . '</td>' . PHP_EOL;
 		echo '<td class="w3-hide-small">' . $row['description']  . '</td>' . PHP_EOL;				 
 		echo '<td class="w3-hide-small">' . $row['type']  . '</td>' . PHP_EOL;		
 		echo '<td class="w3-hide-small">' . $row['pin']  . '</td>' . PHP_EOL;
@@ -233,7 +233,7 @@ private function saveNew() {
 	$resid = $sql->fetch();
 	$sql=NULL;
 
-	$_POST['pkey'] = $resid['id'] . $_POST['pkey'];
+//	$_POST['pkey'] = $resid['id'] . $_POST['pkey'];
     $retc = $this->helper->checkXref($_POST['pkey'],$_POST['cluster']);
 	if ($retc) {
     	$this->invalidForm = True;
@@ -243,9 +243,9 @@ private function saveNew() {
 	
 	$this->helper->buildTupleArray($_POST,$tuple);	
 			  
-	$ret = $this->helper->createTuple("meetme",$tuple);
+	$ret = $this->helper->createTuple("meetme",$tuple,false,$tuple['cluster']);
 	if ($ret == 'OK') {
-		$this->message = "Saved new Conference Room " . substr($tuple['pkey'],2) . "!";
+		$this->message = "Saved new Conference Room " . $tuple['pkey'] . "!";
 	}
 	else {
 		$this->invalidForm = True;
@@ -271,7 +271,7 @@ private function showEdit() {
 	$this->myPanel->responsiveSetup(2);
 
 	$this->myPanel->internalEditBoxStart();
-	$this->myPanel->subjectBar("Edit Conference " . substr($tuple['pkey'],2));
+	$this->myPanel->subjectBar("Edit Conference " . $tuple['pkey']);
 
 	echo '<form id="sarkconferenceForm" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
 
@@ -313,7 +313,7 @@ private function saveEdit() {
 	}	
 	$ret = $this->helper->setTuple("meetme",$tuple);
 	if ($ret == 'OK') {
-		$this->message = "Updated Conference Room " . substr($tuple['pkey'],2);
+		$this->message = "Updated Conference Room " . $tuple['pkey'];
 	}
 	else {
 		$this->invalidForm = True;

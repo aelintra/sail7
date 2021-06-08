@@ -261,9 +261,9 @@ SIP_PRSNC_ADDR_1="$localip"
 SIP_DNSSRV_ENA_1="Y"
 
 # Set TLS initially OFF
-SIP_RGSTR_PORT_1=“5060"
-SIP_PRXY_PORT_1=“5060"
-SIP_PRSNC_PORT_1="5060"
+SIP_RGSTR_PORT_1="$bindport"
+SIP_PRXY_PORT_1="$bindport"
+SIP_PRSNC_PORT_1="$bindport"
 SIP_SRC_PORT_1=“5060"
 SIP_TRANSPORT_1=“0"
 SIP_TLS_MODE_1=“0"
@@ -985,8 +985,11 @@ account.1.auth_name = $ext
 account.1.password = $password  
 account.1.user_name =  $ext
 account.1.sip_server_host = $localip
+account.1.sip_server_port = $bindport
 account.1.outbound_host = $localip
+account.1.outbound_port = $bindport
 account.1.proxy_require = $localip
+account.1.outbound_proxy_enable = 0
 
 ','type=peer
 defaultuser=$desc
@@ -1451,7 +1454,8 @@ INSERT OR IGNORE INTO Device(pkey,blfkeyname,desc,owner,provision,sipiaxfriend,t
 user_name1$: $ext
 user_pname1$: $ext
 user_pass1$: $password
-user_host1$: $localip','type=peer
+user_host1$: $localip:$bindport
+user_idle_text1$: $ext($desc)','type=peer
 defaultuser=$desc
 secret=$password
 mailbox=$ext
@@ -1559,9 +1563,9 @@ logon_wizard$: skip welcome
 
 ;set an http UID & password
 http_user!: user
-http_pass!: 1111
+http_pass!: $puserpass
 
-admin_mode_password!: 2222','Descriptor');
+admin_mode_password!: $padminpass','Descriptor');
 INSERT OR IGNORE INTO Device(pkey,desc,owner,provision,technology) values ('snom.Fkey','Snom BLF template','system','fkey$seq$: $type $value
 fkey_label$seq$: $label','BLF Template');
 INSERT OR IGNORE INTO Device(pkey,desc,owner,provision,technology) values ('snom.ipv4','snom ipv4 fragment','system','dhcp_v6$: off','Descriptor');
@@ -2260,8 +2264,8 @@ INSERT OR IGNORE INTO Device(pkey,desc,owner,provision,technology) values ('yeal
 ##File header "#!version:1.0.0.1" can not be edited or deleted, and must be placed in the first line.##
 
 # # phone browser access - change for your site
-security.user_password = admin:myadminpass
-security.user_password = user:myuserpass
+security.user_password = admin:$myadminpass
+security.user_password = user:$myuserpass
 
 features.direct_ip_call_enable = 0
 
@@ -2422,4 +2426,465 @@ INSERT OR IGNORE INTO Device(pkey,desc,owner,provision,technology) values ('yeal
 account.1.outbound_port = 5060
 account.1.srtp_encryption = 0
 security.trust_certificates = 0','Descriptor');
+INSERT OR IGNORE INTO Device(pkey,desc,owner,provision,sipiaxfriend,technology) values ('Fanvil','Fanvil SIP phone range','system','<<VOIP CONFIG FILE>>Version:2.0000000000                      
+
+<SIP CONFIG MODULE>
+--SIP Line List--  :
+SIP1 Enable Reg         :1
+SIP1 Phone Number       :$ext
+SIP1 Display Name       :$ext($desc)
+SIP1 Sip Name           :$ext
+SIP1 Register Addr      :$localip
+SIP1 Register Port      :$bindport
+SIP1 Register User      :$ext
+SIP1 Register Pswd      :$password
+SIP1 Pickup Num         :*8
+SIP1 MWI Num            :*50*
+SIP1 VoiceCodecMap      :PCMU,PCMA,G726-32,G729,G723,iLBC,AMR,G722,AMR-WB
+
+<CALL FEATURE MODULE>
+--Alert Info Ring--:
+Alert1 Text               :
+Alert1 Line               :-1
+Alert1 Ring Type          :Type 1
+Alert2 Text               :
+Alert2 Line               :-1
+Alert2 Ring Type          :Type 1
+Alert3 Text               :
+Alert3 Line               :-1
+Alert3 Ring Type          :Type 1
+Alert4 Text               :
+Alert4 Line               :-1
+Alert4 Ring Type          :Type 1
+Alert5 Text               :
+Alert5 Line               :-1
+Alert5 Ring Type          :Type 1
+Alert6 Text               :
+Alert6 Line               :-1
+Alert6 Ring Type          :Type 1
+Alert7 Text               :
+Alert7 Line               :-1
+Alert7 Ring Type          :Type 1
+Alert8 Text               :
+Alert8 Line               :-1
+Alert8 Ring Type          :Type 1
+Alert9 Text               :
+Alert9 Line               :-1
+Alert9 Ring Type          :Type 1
+Alert10 Text               :
+Alert10 Line               :-1
+Alert10 Ring Type          :Type 1
+
+<PHONE FEATURE MODULE>
+Menu Password      :123
+KeyLock Password   :123
+Fast Keylock Code  :
+Enable KeyLock     :0
+KeyLock Timeout    :0
+KeyLock Status     :0
+Emergency Call     :110
+Push XML IP        :
+SIP Number Plan    :0
+LDAP Search        :0
+Search Path        :0
+Caller Display T   :5
+CallLog DisplayType:0
+Enable Recv SMS    :1
+Enable Call History:1
+Line Display Format:$name@$protocol$instance
+Enable MWI Tone    :0
+All Pswd Encryption:0
+SIP Notify XML     :1
+Block XML When Call:1
+XML Update Interval:30
+Vqm Display Order  :
+Enable Push XML Auth:0
+Pickup Visual Alert:0
+Pickup Audio Alert :0
+Pickup Ring Type   :
+--Display Input--  :
+LCD Title          :VOIP PHONE
+LCD Constrast      :5
+Enable Energysaving:4
+LCD Luminance Level:12
+Backlight Off Time :45
+Disable CHN IME    :0
+Phone Model        :
+Host Name          :bcm911188sv
+Default Language   :en
+Enable Greetings   :0
+--Power LED--      :
+Power              :0
+MWI Or SMS         :3
+In Using           :0
+Ring               :2
+Hold               :0
+Mute               :0
+Missed Call        :3
+--Line LED--       :
+Line Idle Color    :0
+Line Idle Ctl      :1
+--BLF LED--        :
+BLF Idle Color     :0
+BLF Idle Ctl       :1
+BLF Idle Text      :terminated
+BLF Ring Color     :1
+BLF Ring Ctl       :2
+BLF Ring Text      :early
+BLF Dialing Color  :1
+BLF Dialing Ctl    :0
+BLF Dialing Text   :
+BLF Talking Color  :1
+BLF Talking Ctl    :1
+BLF Talking Text   :confirmed
+BLF Hold Color     :1
+BLF Hold Ctl       :0
+BLF Hold Text      :
+BLF Failed Color   :2
+BLF Failed Ctl     :0
+BLF Failed Text    :failed
+BLF Parked Color   :0
+BLF Parked Ctl     :3
+BLF Parked Text    :parked
+--Voice Volume--   :
+Handset Vol        :5
+Handset Mic Vol    :3
+Headset Vol        :5
+Headset Mic Vol    :3
+Headset Ring Vol   :5
+HandFree Vol       :5
+HandFree Mic Vol   :3
+HandFree Ring Vol  :5
+Ring Type          :1
+--DateTime Config--:
+Enable SNTP        :1
+SNTP Server        :0.pool.ntp.org
+Second SNTP Server :time.nist.gov
+Time Zone          :0
+Time Zone Name     :United Kingdom(London) 
+SNTP Timeout       :60
+DST Type           :0
+DST Location       :0
+DST Rule Mode      :0
+DST Min Offset     :60
+DST Start Mon      :3
+DST Start Week     :5
+DST Start Wday     :0
+DST Start Hour     :2
+DST End Mon        :10
+DST End Week       :5
+DST End Wday       :0
+DST End Hour       :2
+--DateTime Display--:
+Enable TimeDisplay :0
+Time Display Style :0
+Date Display Style :0
+Date Separator     :0
+--Softkey Config-- :
+Softkey Mode       :0
+SoftKey Exit Style :2
+Desktop Softkey    :history;contact;dnd;menu;
+Talking Softkey    :hold;xfer;conf;end;
+Ringing Softkey    :accept;none;forward;reject;
+Alerting Softkey   :end;none;none;none;
+XAlerting Softkey  :end;none;none;xfer;
+Conference Softkey :hold;none;split;end;
+Waiting Softkey    :xfer;accept;reject;end;
+Ending Softkey     :redial;none;none;end;
+DialerPre Softkey  :send;save;delete;exit;
+DialerCall Softkey :send;2aB;delete;exit;
+DialerXfer Softkey :delete;xfer;send;exit;
+DialerCfwd Softkey :send;2aB;delete;exit;
+Desktop Click      :history;status;none;none;none;
+Dailer  Click      :pline;nline;none;none;none;
+Ringing Click      :none;none;none;none;none;
+Call    Click      :none;none;voldown;volup;none;
+Desktop Long Press :status;none;none;none;reset;
+DialerConf Softkey :contact;clogs;redial;video;cancel;
+--LDAP Config--    :
+LDAP1 Title              :LDAP
+LDAP1 Server             :$localip
+LDAP1 port               :389
+LDAP1 Base               :
+LDAP1 Use SSL            :0
+LDAP1 Version            :3
+LDAP1 Calling Line       :-1
+LDAP1 Bind Line          :-1
+LDAP1 In Call Search     :0
+LDAP1 Out Call Search    :0
+LDAP1 Authenticate       :3
+LDAP1 Username           :
+LDAP1 Password           :
+LDAP1 Tel Attr           :telephoneNumber
+LDAP1 Mobile Attr        :mobile
+LDAP1 Other Attr         :other
+LDAP1 Name Attr          :cn sn ou
+LDAP1 Sort Attr          :cn
+LDAP1 Displayname        :cn
+LDAP1 Number Filter      :(|(telephoneNumber=%)(mobile=%)(other=%))
+LDAP1 Name Filter        :(|(cn=%)(sn=%))
+LDAP1 Max Hits           :50
+
+<DSSKEY CONFIG MODULE>
+Select DsskeyAction:0
+Memory Key to BXfer:3
+FuncKey Page Num   :5
+SideKey Page Num   :1
+DSS Home Page      :0
+Display Parked Info:0
+DSS DIAL Switch Mode :0
+First Call Wait Time :16
+First Num Start Time :360
+First Num End Time   :1080
+DSS Long Press Action:1
+Extern1 Page Belong :0
+Extern2 Page Belong :0
+Extern3 Page Belong :0
+Extern4 Page Belong :0
+Extern5 Page Belong :0
+DSS Extend1 MAC     :
+DSS Extend1 IP      :
+DSS Extend2 MAC     :
+DSS Extend2 IP      :
+DSS Extend3 MAC     :
+DSS Extend3 IP      :
+DSS Extend4 MAC     :
+DSS Extend4 IP      :
+DSS Extend5 MAC     :
+DSS Extend5 IP      :
+--Sidekey Config1--:
+Fkey1 Type               :2
+Fkey1 Value              :SIP1
+Fkey1 Title              :
+Fkey1 ICON               :Green
+Fkey2 Type               :2
+Fkey2 Value              :SIP2
+Fkey2 Title              :
+Fkey2 ICON               :Green
+Fkey3 Type               :2
+Fkey3 Value              :SIP3
+Fkey3 Title              :
+Fkey3 ICON               :Green
+Fkey4 Type               :2
+Fkey4 Value              :SIP4
+Fkey4 Title              :
+Fkey4 ICON               :Green
+--Dsskey Config1--:
+Fkey1 Type               :0
+Fkey1 Value              :
+Fkey1 Title              :
+Fkey1 ICON               :Green
+Fkey2 Type               :0
+Fkey2 Value              :
+Fkey2 Title              :
+Fkey2 ICON               :Green
+Fkey3 Type               :0
+Fkey3 Value              :
+Fkey3 Title              :
+Fkey3 ICON               :Green
+Fkey4 Type               :0
+Fkey4 Value              :
+Fkey4 Title              :
+Fkey4 ICON               :Green
+Fkey5 Type               :0
+Fkey5 Value              :
+Fkey5 Title              :
+Fkey5 ICON               :Green
+Fkey6 Type               :0
+Fkey6 Value              :
+Fkey6 Title              :
+Fkey6 ICON               :Green
+--Dsskey Config2--:
+Fkey1 Type               :0
+Fkey1 Value              :
+Fkey1 Title              :
+Fkey1 ICON               :Green
+Fkey2 Type               :0
+Fkey2 Value              :
+Fkey2 Title              :
+Fkey2 ICON               :Green
+Fkey3 Type               :0
+Fkey3 Value              :
+Fkey3 Title              :
+Fkey3 ICON               :Green
+Fkey4 Type               :0
+Fkey4 Value              :
+Fkey4 Title              :
+Fkey4 ICON               :Green
+Fkey5 Type               :0
+Fkey5 Value              :
+Fkey5 Title              :
+Fkey5 ICON               :Green
+Fkey6 Type               :0
+Fkey6 Value              :
+Fkey6 Title              :
+Fkey6 ICON               :Green
+--Dsskey Config3--:
+Fkey1 Type               :0
+Fkey1 Value              :
+Fkey1 Title              :
+Fkey1 ICON               :Green
+Fkey2 Type               :0
+Fkey2 Value              :
+Fkey2 Title              :
+Fkey2 ICON               :Green
+Fkey3 Type               :0
+Fkey3 Value              :
+Fkey3 Title              :
+Fkey3 ICON               :Green
+Fkey4 Type               :0
+Fkey4 Value              :
+Fkey4 Title              :
+Fkey4 ICON               :Green
+Fkey5 Type               :0
+Fkey5 Value              :
+Fkey5 Title              :
+Fkey5 ICON               :Green
+Fkey6 Type               :0
+Fkey6 Value              :
+Fkey6 Title              :
+Fkey6 ICON               :Green
+--Dsskey Config4--:
+Fkey1 Type               :0
+Fkey1 Value              :
+Fkey1 Title              :
+Fkey1 ICON               :Green
+Fkey2 Type               :0
+Fkey2 Value              :
+Fkey2 Title              :
+Fkey2 ICON               :Green
+Fkey3 Type               :0
+Fkey3 Value              :
+Fkey3 Title              :
+Fkey3 ICON               :Green
+Fkey4 Type               :0
+Fkey4 Value              :
+Fkey4 Title              :
+Fkey4 ICON               :Green
+Fkey5 Type               :0
+Fkey5 Value              :
+Fkey5 Title              :
+Fkey5 ICON               :Green
+Fkey6 Type               :0
+Fkey6 Value              :
+Fkey6 Title              :
+Fkey6 ICON               :Green
+--Dsskey Config5--:
+Fkey1 Type               :0
+Fkey1 Value              :
+Fkey1 Title              :
+Fkey1 ICON               :Green
+Fkey2 Type               :0
+Fkey2 Value              :
+Fkey2 Title              :
+Fkey2 ICON               :Green
+Fkey3 Type               :0
+Fkey3 Value              :
+Fkey3 Title              :
+Fkey3 ICON               :Green
+Fkey4 Type               :0
+Fkey4 Value              :
+Fkey4 Title              :
+Fkey4 ICON               :Green
+Fkey5 Type               :0
+Fkey5 Value              :
+Fkey5 Title              :
+Fkey5 ICON               :Green
+Fkey6 Type               :0
+Fkey6 Value              :
+Fkey6 Title              :
+Fkey6 ICON               :Green
+--SoftDss Config-- :
+Fkey1 Type               :0
+Fkey1 Value              :
+Fkey1 Title              :
+Fkey1 ICON               :Green
+Fkey2 Type               :0
+Fkey2 Value              :
+Fkey2 Title              :
+Fkey2 ICON               :Green
+Fkey3 Type               :0
+Fkey3 Value              :
+Fkey3 Title              :
+Fkey3 ICON               :Green
+Fkey4 Type               :0
+Fkey4 Value              :
+Fkey4 Title              :
+Fkey4 ICON               :Green
+Fkey5 Type               :0
+Fkey5 Value              :
+Fkey5 Title              :
+Fkey5 ICON               :Green
+Fkey6 Type               :0
+Fkey6 Value              :
+Fkey6 Title              :
+Fkey6 ICON               :Green
+Fkey7 Type               :0
+Fkey7 Value              :
+Fkey7 Title              :
+Fkey7 ICON               :Green
+Fkey8 Type               :0
+Fkey8 Value              :
+Fkey8 Title              :
+Fkey8 ICON               :Green
+Fkey9 Type               :0
+Fkey9 Value              :
+Fkey9 Title              :
+Fkey9 ICON               :Green
+Fkey10 Type               :0
+Fkey10 Value              :
+Fkey10 Title              :
+Fkey10 ICON               :Green
+
+<MMI CONFIG MODULE>
+--MMI Account--    :
+Account1 Name               :admin
+Account1 Password           :$padminpass
+Account1 Level              :10
+Account2 Name               :user
+Account2 Password           :$userpass
+Account2 Level              :5
+
+<AUTOUPDATE CONFIG MODULE>
+
+Flash Server IP    :http://$localip/provisioning
+<<END OF FILE>>','type=peer
+defaultuser=$desc
+secret=$password
+mailbox=$ext
+host=dynamic
+qualify=yes
+context=internal
+call-limit=3
+callerid="$desc" <$ext>
+canreinvite=no
+pickupgroup=1
+callgroup=1
+subscribecontext=extensions
+disallow=all 
+allow=alaw
+allow=ulaw
+nat=$nat
+transport=$transport
+encryption=$encryption','SIP');
+INSERT OR IGNORE INTO Device(pkey,desc,owner,provision,technology) values ('fanvil.Common','Fanvil common file','system','phone.date.SNTPEnabled = 1
+phone.date.SNTPServer = pool.ntp.org
+phone.date.SecondSNTPServer = 
+phone.date.TimeZone = 0
+phone.date.TimeZoneName = United Kingdom(London) 
+
+call.port.1.AllowIPCall = 0
+
+sip.line.1.PickupCode = *8
+sip.line.1.MWICode = *50*
+
+web.account.1.Name = admin
+web.account.1.Password = $padminpass
+web.account.1.Level = 10
+web.account.2.Name = user
+web.account.2.Password = $puserpass
+web.account.2.Level = 5
+
+','Descriptor');
+
 COMMIT;

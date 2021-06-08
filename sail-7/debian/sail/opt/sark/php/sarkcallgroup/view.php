@@ -128,7 +128,7 @@ private function showMain() {
 			echo '<input type="hidden" name="pkey" id="pkey" value="' . $row['pkey'] . '"  />' . PHP_EOL;
 
 //			if ($row['cluster'] != 'default') {
-				$shortkey = substr($row['pkey'],2);
+//				$shortkey = substr($row['pkey'],2);
 /*
 			}
 			else {
@@ -136,7 +136,7 @@ private function showMain() {
 			}	
 */		 
 			echo '<td class="w3-hide-medium w3-hide-small">' . $row['cluster'] . '</td>' . PHP_EOL;
-			echo '<td class="read_only">' . $shortkey . '</td>' . PHP_EOL;					
+			echo '<td class="read_only">' . $row['pkey'] . '</td>' . PHP_EOL;					
 			echo '<td >' . $row['longdesc'] . '</td>' . PHP_EOL;
 			echo '<td class="w3-hide-medium w3-hide-small">' . $row['grouptype'] . '</td>' . PHP_EOL;
 			echo '<td class="w3-hide-medium w3-hide-small">' . $row['calleridname'] . '</td>' . PHP_EOL;
@@ -237,7 +237,7 @@ private function saveNew() {
 		$resid = $sql->fetch();
 		$sql=NULL;
 		
-		$_POST['pkey'] = $resid['id'] . $_POST['pkey'];
+//		$_POST['pkey'] = $resid['id'] . $_POST['pkey'];
 
     	$retc = $this->helper->checkXref($_POST['pkey'],$_POST['cluster']);
 	    if ($retc) {
@@ -265,7 +265,7 @@ private function saveNew() {
 			$ret = $this->helper->createTuple("speed",$tuple);
 			if ($ret == 'OK') {
 //				$this->helper->commitOn();	
-				$this->message = "Saved new Ring Group " . substr($tuple['pkey'],2) . "!";
+				$this->message = "Saved new Ring Group " . $tuple['pkey'] . "!";
 			}
 			else {
 				$this->invalidForm = True;
@@ -413,7 +413,7 @@ private function saveEdit() {
  */ 	
 			if ($ret == 'OK') {
 //				$this->helper->commitOn();	
-				$this->message = "Updated Ring Group " . substr($tuple['pkey'],2) . "!";
+				$this->message = "Updated Ring Group " . $tuple['pkey'] . "!";
 			}
 			else {
 				$this->invalidForm = True;
