@@ -1457,7 +1457,7 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 //			$OUT .= "\texten => $shortKey,1,GoTo($fullKey,1)\n";
 		}
 		else {
-			if ($row['grouptype'] != "Page") {	
+			if ($row['grouptype'] == "Page") {	
 			// build a page group (key & dialstring)
 				$dialstr = preg_replace ( '/\s/',"&", $dialstr );
 				$dialstr = preg_replace ( '/Local/',"SIP", $dialstr );
