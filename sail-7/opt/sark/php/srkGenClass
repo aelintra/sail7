@@ -1418,7 +1418,6 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 			else if (!empty($ep)) {
 				$dialstr .= "Local/$ep@" . $row['cluster'] . "&";	
 			} 		
-
 		}
 		$dialstr = preg_replace ( '/&$/',"", $dialstr );
 
@@ -1459,8 +1458,12 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 		else {
 			if ($row['grouptype'] == "Page") {	
 			// build a page group (key & dialstring)
+				foreach ($outlist as $ep) {
+					if (!empty($ep)) {
+						$dialstr .= "SIP/$id$ep@" . $row['cluster'] . "&";	
+					} 			
+				}
 				$dialstr = preg_replace ( '/\s/',"&", $dialstr );
-				$dialstr = preg_replace ( '/Local/',"SIP", $dialstr );
 				$OUT .= "\texten => $fullKey,1,NoOp(PAGEGROUP)\n";
 				$OUT .= "\texten => $fullKey,2,SIPAddHeader(Call-Info: sip:\${LOCALIP}\; answer-after=0)\n";	
 				$OUT .= "\texten => $fullKey,3,Page($dialstr,is)\n";	
