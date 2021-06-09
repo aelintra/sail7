@@ -1461,7 +1461,7 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 			    $pagedialstr = null;
 				foreach ($outlist as $ep) {
 					if (!empty($ep)) {
-						$pagedialstr .= "SIP/$id$ep@" . $row['cluster'] . "&";	
+						$pagedialstr .= "SIP/$id$ep" . "&";	
 					} 			
 				}
 				$pagedialstr = preg_replace ( '/&$/',"", $pagedialstr );
