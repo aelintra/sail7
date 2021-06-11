@@ -314,7 +314,7 @@ private function showEdit($pkey=false) {
 	$this->myPanel->sysSelect('operator',false,true,false,$res['pkey']) . PHP_EOL;
 	$this->myPanel->aHelpBoxFor('clustersysop');
 
-//	$this->myPanel->displayInputFor('include','text',$res['include']);
+	$this->myPanel->displayInputFor('include','text',$res['include']);
 	$this->myPanel->displayInputFor('clusterclid','text',$res['clusterclid']);
 	$this->myPanel->displayInputFor('localarea','text',$res['localarea']);
 	$this->myPanel->displayInputFor('localdplan','text',$res['localdplan']);
@@ -422,6 +422,7 @@ private function saveEdit() {
     $this->validator->addValidation("localarea","num","Local Area Code must be numeric"); 
     $this->validator->addValidation("clusterclid","num","CLID must be numeric");
     $this->validator->addValidation("localdplan","regexp=/^[_0-9XNZxnz!#\s\*\.\-\[\]]+$/","Local Dialplan must be a valid Asterisk dialplan");
+    $this->validator->addValidation("include","regexp=/^ALL$|^[0-9]{2}\s]+$/","Include must be the keyword 'ALL' or a space delimited list of 2-digit tenant prefixes ");
     $this->validator->addValidation("abstimeout","num","Absolute Timeout must be numeric");
     $this->validator->addValidation("chanmax","num","Channels must be numeric");
     $this->validator->addValidation("startagent","num","startagent must be numeric");
