@@ -291,7 +291,7 @@ private function showEdit($pkey=false) {
 	$res = $this->dbh->query("SELECT * FROM cluster WHERE pkey = '" . $pkey . "'")->fetch(PDO::FETCH_ASSOC);
 	
 	$buttonArray['cancel'] = true;
-	$this->myPanel->actionBar($buttonArray,"sarkclusterForm",false,false,false);
+	$this->myPanel->actionBar($buttonArray,"sarkclusterForm",false,false,true);
 	
 	$this->myPanel->showErrors($this->error_hash);
 	
