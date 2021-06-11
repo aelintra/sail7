@@ -241,7 +241,7 @@ private function saveNew() {
     $this->validator->addValidation("pkey","req","Please fill in Tenant name");
     $this->validator->addValidation("localarea","num","Local Area Code must be numeric"); 
     $this->validator->addValidation("localdplan","regexp=/^[_0-9XNZxnz!#\s\*\.\-\[\]]+$/","Local Dialplan must be a valid Asterisk dialplan");
-    $this->validator->addValidation("include","regexp=/^ALL$|^[0-9]{2}\s]+$/","Include must be the keyword 'ALL' or a space delimited list of 2-digit tenant prefixes ");
+    $this->validator->addValidation("include","regexp=/^ALL$|^[1-9]\d(?:\s[1-9]\d){0,9}$/","Include must be the keyword 'ALL' or a space delimited list of 2-digit tenant prefixes ");
     $this->validator->addValidation("abstimeout","num","Absolute Timeout must be numeric");
     $this->validator->addValidation("chanmax","num","Channels must be numeric");
 
