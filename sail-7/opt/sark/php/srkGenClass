@@ -524,7 +524,7 @@ private function genVmail() {
 			if (!preg_match(" /^;.*/",$line)) {
 				$line = preg_replace( '/\s+/', ' ', $line );
 				if (preg_match(" /^(\d{3,6})\s*=>\s*((\d*)?),/",$line,$matches)) {			
-					$mailbox[$context][$matches[1]]['password'] = substr($matches[2],2);
+					$mailbox[$context][$matches[1]]['password'] = $matches[2]);
 				}
 				$parts = explode('=>',$line);
 				if (isset($parts[1])) {	
@@ -547,6 +547,8 @@ private function genVmail() {
     	}
 	
 	}
+
+	print_r ($mailbox);
 
 	$OUT = <<<BANNEREND
 ;
