@@ -806,6 +806,7 @@ try {
                  
 WHCLID;
 
+		$OUT .= "\n";
 		if (isset($row['include'])) {
 			if (preg_match('/^ALL$/',$row['include'])) {
 
@@ -814,8 +815,8 @@ WHCLID;
 				$myList = explode(" ",$row['include']);
 				foreach ($myList as $incl) {
 					$myKey = $this->getClusterKey($incl);
-					$OUT .= "\texten => _" . $incl . "xxx,1,GoTo(" . $myKey . "\${EXTEN:2},1)\n";
-					$OUT .= "\texten => _" . $incl . "xxxx,1,GoTo(" . $myKey . "\${EXTEN:2},1)\n";
+					$OUT .= "\texten => _" . $incl . "xxx,1,GoTo(" . $myKey . ",\${EXTEN:2},1)\n";
+					$OUT .= "\texten => _" . $incl . "xxxx,1,GoTo(" . $myKey . ",\${EXTEN:2},1)\n";
 				}
 			}
 		}
