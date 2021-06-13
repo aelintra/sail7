@@ -517,7 +517,7 @@ private function genVmail() {
      	foreach ($rec as $line) {
 			$line = trim ($line);
 		
-			if (preg_match(" /^(\[.*\])$/ ",$line,$matches)) {
+			if (preg_match(" /^\[(.*)\]$/ ",$line,$matches)) {
 				$context = $matches[1];
 			}
 
@@ -548,8 +548,6 @@ private function genVmail() {
 	
 	}
 
-	print_r ($mailbox);
-
 	$OUT = <<<BANNEREND
 ;
 ;               Modifying this file
@@ -578,8 +576,8 @@ BANNEREND;
 				$pwd = $row['pkey'];
 			}
 			else {			
-				if (!empty ($mailbox[$row['cluster']][$row['pkey']]['password'])) {
-					$pwd = $mailbox[$row['cluster']][$row['pkey']]['password'];
+				if (!empty ($mailbox[$cluster][$row['pkey']]['password'])) {
+					$pwd = $mailbox[$cluster][$row['pkey']]['password'];
 				}
 				else {
 					$pwd = $row['pkey'];
@@ -807,7 +805,20 @@ try {
         exten => _141XXXXX.,n,GoTo(\${EXTEN:3},1)
                  
 WHCLID;
-		
+
+		if (isset($row['include'])) {
+			if (preg_match('/^ALL$/',$row['include'])) {
+
+			}
+			else {
+				myList = explode(" ",$row['include']);
+				foreach ($myList as $incl) {
+					$myKey = $this->getClusterKey($incl);
+					$OUT .= "\texten => _" . $incl . "xxx,1,GoTo(" . $mykey . "\${EXTEN:2},1)\n"
+					$OUT .= "\texten => _" . $incl . "xxxx,1,GoTo(" . $mykey . "\${EXTEN:2},1)\n"
+				}
+			}
+		}
 		$OUT .= "\n";
 		$sql = "SELECT * FROM Appl WHERE cluster='" . $row['pkey'] . "' ORDER BY pkey";
 		$qRes = $this->dbh->query($sql);
@@ -1482,6 +1493,16 @@ private function generateRingGroups(&$OUT,$cluster,$id) {
 		$sql=NULL;
  	}
 */
+
+}
+
+private function getClusterKey($id)  {
+
+	$sql = $this->dbh->prepare("SELECT pkey FROM cluster WHERE id = ?");
+	$sql->execute(array($id));
+	$resid = $sql->fetch();
+	$sql=NULL;	
+	return ($resid['pkey']);	
 
 }	
 
