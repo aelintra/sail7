@@ -814,8 +814,8 @@ WHCLID;
 				$myList = explode(" ",$row['include']);
 				foreach ($myList as $incl) {
 					$myKey = $this->getClusterKey($incl);
-					$OUT .= "\texten => _" . $incl . "xxx,1,GoTo(" . $mykey . "\${EXTEN:2},1)\n"
-					$OUT .= "\texten => _" . $incl . "xxxx,1,GoTo(" . $mykey . "\${EXTEN:2},1)\n"
+					$OUT .= "\texten => _" . $incl . "xxx,1,GoTo(" . $mykey . "\${EXTEN:2},1)\n";
+					$OUT .= "\texten => _" . $incl . "xxxx,1,GoTo(" . $mykey . "\${EXTEN:2},1)\n";
 				}
 			}
 		}
