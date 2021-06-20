@@ -1,3 +1,16 @@
+sail (7.0.1-3+ubuntu20) UNRELEASED; urgency=low
+  * tagged
+
+  - Bugfixes to 1-2
+  - Purekey upgrade - Only short keys are used in Ipphone and Default is no longer treated differently
+  - Fixes to handle CoS Emergency path
+  - Moved Page out od the AGI and into the mainline
+  - New generation sequence for cross tenant dialling using prefix (id) key
+  - fix to vreset and vdelete brought forward from 6.2
+  - minor mods to the DB regen code
+  
+ -- CoCoSoft <admin@aelintra.com>  Mon, 20  Jun 2021 18:00:00 +0000
+ 
 sail (7.0.1-2+ubuntu20) UNRELEASED; urgency=low
   * tagged
 
